@@ -1,6 +1,12 @@
 body {
     font-family: 'Inter', sans-serif;
-    background-color: #f1f5f9; /* slate-100 */
+    /* Tailwind's bg-slate-100 */
+    background-color: #f1f5f9; 
+}
+
+/* Tailwind's dark:bg-slate-900 */
+body.dark {
+    background-color: #0f172a;
 }
 
 /* Custom font class for Bengali */
@@ -24,7 +30,7 @@ body {
     transition: width 0.5s ease-in-out;
 }
 
-/* Custom scrollbar for aesthetics */
+/* Custom scrollbar for aesthetics (Light Mode) */
 ::-webkit-scrollbar {
     width: 8px;
 }
@@ -33,9 +39,22 @@ body {
     border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb {
-    background: #cbd5e1; /* slate-300 */
+    /* slate-300 */
+    background: #cbd5e1; 
     border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8; /* slate-400 */
+    /* slate-400 */
+    background: #94a3b8;
+}
+
+/* Custom scrollbar for aesthetics (Dark Mode) */
+html.dark ::-webkit-scrollbar-track {
+    background: #1e293b; /* slate-800 */
+}
+html.dark ::-webkit-scrollbar-thumb {
+    background: #475569; /* slate-600 */
+}
+html.dark ::-webkit-scrollbar-thumb:hover {
+    background: #64748b; /* slate-500 */
 }
