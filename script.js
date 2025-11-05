@@ -13,6 +13,7 @@ let currentQuizQuestionIndex = 0;
 let quizScores = { correct: 0, incorrect: 0 };
 let missedWords = [];
 let isAnswered = false;
+let masteryChart = null;
 
 // --- 3. DOM ELEMENTS ---
 const htmlElement = document.documentElement;
@@ -21,7 +22,9 @@ const sections = {
     learn: document.getElementById('learn-section'),
     test: document.getElementById('test-section'),
     results: document.getElementById('results-section'),
-    dictionary: document.getElementById('dictionary-section') // --- NEW ---
+    dictionary: document.getElementById('dictionary-section'),
+    stats: document.getElementById('stats-section'), // --- NEW ---
+    about: document.getElementById('about-section') // --- NEW ---
 };
 const progressBarFill = document.getElementById('progress-bar-fill');
 const progressBarText = document.getElementById('progress-bar-text');
@@ -29,6 +32,8 @@ const progressBarText = document.getElementById('progress-bar-text');
 // --- NEW: Header Buttons ---
 const mainMenuButton = document.getElementById('main-menu-button');
 const dictionaryButton = document.getElementById('dictionary-button');
+const statsButton = document.getElementById('stats-button'); // --- NEW ---
+const aboutButton = document.getElementById('about-button'); // --- NEW ---
 const darkModeToggle = document.getElementById('dark-mode-toggle');
 const darkIconMoon = document.getElementById('dark-icon-moon');
 const darkIconSun = document.getElementById('dark-icon-sun');
@@ -121,6 +126,7 @@ function updateMainProgress() {
  */
 function loadWelcome() {
     updateMainProgress();
+    renderStudyStreak(); // --- NEW ---
     const nextChunkIndex = Math.floor(totalMasteredCount / WORDS_PER_CHUNK);
     const startWord = (nextChunkIndex * WORDS_PER_CHUNK) + 1;
     const endWord = Math.min(startWord + WORDS_PER_CHUNK - 1, vocabList.length);
@@ -150,11 +156,12 @@ function loadLearnSection(chunkIndex) {
 
     learnHeader.textContent = `Learning Set: Words ${start + 1}-${end}`;
     
-    let html = '';
-    wordsInCurrentChunk.forEach(word => {
-        // --- UPDATED: Added dark mode classes ---
-        html += `
-        <div class="bg-white dark:bg-slate-800 p-5 rounded-lg shadow-md border border-slate-200 dark:border-slate-700">
+    learnContainer.innerHTML = ''; // Clear previous cards
+    wordsInCurrentChunk.forEach((word, index) => {
+        const card = document.createElement('div');
+        card.className = "bg-white dark:bg-slate-800 p-5 rounded-lg shadow-md border border-slate-200 dark:border-slate-700 fade-in-card";
+        card.style.animationDelay = `${index * 100}ms`;
+        card.innerHTML = `
             <div class="flex justify-between items-center mb-1">
                 <h4 class="text-2xl font-bold text-indigo-800 dark:text-indigo-300">${word.id}. ${word.word}</h4>
                 <button class="speak-button p-2 rounded-full text-indigo-600 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-slate-700 active:bg-indigo-200 dark:active:bg-slate-600 transition-colors" data-word="${word.word}" aria-label="Pronounce word">
@@ -166,10 +173,9 @@ function loadLearnSection(chunkIndex) {
             </div>
             <p class="lang-bn text-xl text-slate-700 dark:text-slate-300 mb-2">${word.bengali}</p>
             <p class="text-md text-slate-500 dark:text-slate-400 italic">${word.english}</p>
-        </div>
         `;
+        learnContainer.appendChild(card);
     });
-    learnContainer.innerHTML = html;
     showSection('learn');
 }
 
@@ -272,8 +278,8 @@ function createOptionButton(text, isCorrect) {
     const button = document.createElement('button');
     button.dataset.correct = isCorrect;
     button.innerHTML = `<span class="font-medium">${text}</span>`;
-    // --- UPDATED: Added dark mode classes ---
-    button.className = "quiz-option-button w-full text-left p-4 bg-white dark:bg-slate-700 border-2 border-slate-200 dark:border-slate-600 rounded-lg shadow-sm hover:bg-slate-50 dark:hover:bg-slate-600 transition-all duration-150 text-lg dark:text-slate-100";
+    // --- UPDATED: Added dark mode classes and pop effect ---
+    button.className = "quiz-option-button w-full text-left p-4 bg-white dark:bg-slate-700 border-2 border-slate-200 dark:border-slate-600 rounded-lg shadow-sm hover:bg-slate-50 dark:hover:bg-slate-600 transition-all duration-150 text-lg dark:text-slate-100 transform active:scale-95 duration-100";
     
     button.addEventListener('click', () => checkAnswer(button));
     quizOptionsContainer.appendChild(button);
@@ -320,6 +326,7 @@ function checkAnswer(selectedButton) {
         feedbackCorrectAnswer.textContent = `Correct: ${currentWord.word} (${currentWord.english})`;
         if (wordInMasterList) {
             wordInMasterList.strength = Math.max(0, wordInMasterList.strength - 2); // Penalize
+            wordInMasterList.missedCount = (wordInMasterList.missedCount || 0) + 1; // --- NEW ---
         }
     }
 
@@ -350,6 +357,14 @@ function showQuizComplete() {
 
     // --- NEW: Save the entire words array with updated strengths ---
     localStorage.setItem(SAVE_KEY_WORDS, JSON.stringify(words));
+
+    // --- NEW: Record Study Session ---
+    const today = new Date().toISOString().split('T')[0]; // Get YYYY-MM-DD
+    let studyHistory = JSON.parse(localStorage.getItem('studyHistory') || '[]');
+    if (!studyHistory.includes(today)) {
+        studyHistory.push(today);
+        localStorage.setItem('studyHistory', JSON.stringify(studyHistory));
+    }
     
     // --- Recalculate mastered count and update progress ---
     totalMasteredCount = words.filter(word => word.strength >= 10).length;
@@ -358,8 +373,10 @@ function showQuizComplete() {
     // --- Update Results Card ---
     const isReview = wordsInCurrentChunk.length > WORDS_PER_CHUNK;
     resultsHeader.textContent = isReview ? `Review Complete!` : `Lesson ${currentChunkIndex + 1} Complete!`;
-    finalScoreText.textContent = `${correct} / ${total}`;
-    finalPercentageText.textContent = `(${percentage}%)`;
+
+    // --- NEW: Animate Score ---
+    animateValue("final-score-text", 0, correct, 500, (val) => `${val} / ${total}`);
+    animateValue("final-percentage-text", 0, percentage, 500, (val) => `(${val}%)`);
 
     if (percentage >= 80) {
         finalScoreText.className = "text-7xl font-bold text-green-600 dark:text-green-400 my-4";
@@ -458,6 +475,7 @@ function initializeWords() {
         id: v.id,
         strength: 0, // 0: unseen, 1-10: learning, >10: mastered
         lastReviewed: null,
+        missedCount: 0, // --- NEW ---
         // We can keep the original data here too for easy access
         ...v
     }));
@@ -577,6 +595,219 @@ function resetProgress() {
         loadWelcome();
     }
 }
+function loadStatsPage() {
+    showSection('stats');
+    renderMasteryChart();
+    renderDifficultWords();
+    renderStudyStreak();
+    renderCalendar();
+}
+
+function renderMasteryChart() {
+    const mastered = words.filter(w => w.strength >= 10).length;
+    const learning = words.filter(w => w.strength > 0 && w.strength < 10).length;
+    const notSeen = words.length - mastered - learning;
+
+    const ctx = document.getElementById('mastery-chart').getContext('2d');
+
+    if (masteryChart) {
+        masteryChart.destroy();
+    }
+
+    masteryChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: [`Mastered (${mastered})`, `Learning (${learning})`, `Not Seen (${notSeen})`],
+            datasets: [{
+                data: [mastered, learning, notSeen],
+                backgroundColor: [
+                    '#16a34a', // green-600
+                    '#f59e0b', // amber-500
+                    '#64748b'  // slate-500
+                ],
+                borderColor: document.documentElement.classList.contains('dark') ? '#1e293b' : '#ffffff',
+                borderWidth: 4,
+                hoverOffset: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        color: document.documentElement.classList.contains('dark') ? '#cbd5e1' : '#475569',
+                        font: {
+                            size: 14,
+                            family: "'Inter', sans-serif"
+                        },
+                        padding: 20
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            const value = context.parsed;
+                            const percentage = ((value / words.length) * 100).toFixed(1);
+                            label += `${percentage}%`;
+                            return label;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+function renderDifficultWords() {
+    const difficultWordsList = document.getElementById('difficult-words-list');
+    const sortedWords = [...words]
+        .filter(word => word.missedCount > 0)
+        .sort((a, b) => b.missedCount - a.missedCount)
+        .slice(0, 5);
+
+    if (sortedWords.length === 0) {
+        difficultWordsList.innerHTML = `<p class="text-slate-500 dark:text-slate-400 text-center italic">No missed words yet. Keep practicing!</p>`;
+        return;
+    }
+
+    let html = '';
+    sortedWords.forEach(word => {
+        html += `
+            <div class="bg-white dark:bg-slate-800 p-3 rounded-md shadow-sm border border-slate-200 dark:border-slate-600">
+                <div class="flex justify-between items-center">
+                    <span class="font-semibold text-slate-800 dark:text-slate-200">${word.word}</span>
+                    <span class="text-sm text-red-500 dark:text-red-400 font-bold">${word.missedCount} missed</span>
+                </div>
+            </div>
+        `;
+    });
+    difficultWordsList.innerHTML = html;
+}
+function calculateStudyStreak() {
+    const studyHistory = JSON.parse(localStorage.getItem('studyHistory') || '[]');
+    if (studyHistory.length === 0) return 0;
+
+    studyHistory.sort((a, b) => new Date(b) - new Date(a));
+
+    let streak = 0;
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+
+    const todayStr = today.toISOString().split('T')[0];
+    const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+    // Check if the most recent study day is today or yesterday
+    const lastStudyDay = new Date(studyHistory[0]);
+    const timeDiff = today.getTime() - lastStudyDay.getTime();
+    const dayDiff = timeDiff / (1000 * 3600 * 24);
+
+    if (dayDiff > 1.5) { // Allow for some timezone flexibility
+        return 0; // Streak is broken
+    }
+
+    streak = 1;
+    let currentDay = new Date(studyHistory[0]);
+
+    for (let i = 1; i < studyHistory.length; i++) {
+        const nextDay = new Date(studyHistory[i]);
+        const expectedNextDay = new Date(currentDay);
+        expectedNextDay.setDate(currentDay.getDate() - 1);
+
+        if (nextDay.toISOString().split('T')[0] === expectedNextDay.toISOString().split('T')[0]) {
+            streak++;
+            currentDay = nextDay;
+        } else {
+            break; // Streak is broken
+        }
+    }
+
+    return streak;
+}
+
+function renderStudyStreak() {
+    const streak = calculateStudyStreak();
+    const streakDisplay = document.getElementById('streak-display');
+    const mainMenuStreakDisplay = document.getElementById('main-menu-streak-display');
+    const mainMenuStreakCount = document.getElementById('main-menu-streak-count');
+
+    if (streak > 0) {
+        streakDisplay.innerHTML = `
+            <p class="text-6xl font-bold text-green-600 dark:text-green-400">${streak}</p>
+            <p class="text-slate-600 dark:text-slate-400">Day Streak</p>
+        `;
+        mainMenuStreakCount.textContent = streak;
+        mainMenuStreakDisplay.style.display = 'block';
+    } else {
+        streakDisplay.innerHTML = `
+            <p class="text-6xl font-bold text-slate-500 dark:text-slate-400">0</p>
+            <p class="text-slate-600 dark:text-slate-400">Day Streak</p>
+            <p class="text-xs text-slate-500 dark:text-slate-500 mt-2">Study today to start a new streak!</p>
+        `;
+        mainMenuStreakDisplay.style.display = 'none';
+    }
+}
+
+function renderCalendar() {
+    const container = document.getElementById('calendar-container');
+    const studyHistory = new Set(JSON.parse(localStorage.getItem('studyHistory') || '[]'));
+    const today = new Date();
+    const month = today.getMonth();
+    const year = today.getFullYear();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const startDayOfWeek = firstDay.getDay();
+
+    let html = '<div class="grid grid-cols-7 gap-1 text-center text-xs text-slate-500 dark:text-slate-400">';
+    const weekdays = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+    weekdays.forEach(day => {
+        html += `<div>${day}</div>`;
+    });
+
+    for (let i = 0; i < startDayOfWeek; i++) {
+        html += '<div></div>';
+    }
+
+    for (let i = 1; i <= daysInMonth; i++) {
+        const date = new Date(year, month, i);
+        const dateStr = date.toISOString().split('T')[0];
+        const isToday = (i === today.getDate());
+        const studied = studyHistory.has(dateStr);
+
+        let classes = 'w-6 h-6 rounded-full flex items-center justify-center ';
+        if (isToday) {
+            classes += 'bg-indigo-600 text-white font-bold ';
+        } else if (studied) {
+            classes += 'bg-green-200 dark:bg-green-800 ';
+        } else {
+            classes += 'bg-slate-200 dark:bg-slate-600 ';
+        }
+        html += `<div><span class="${classes}">${i}</span></div>`;
+    }
+
+    html += '</div>';
+    container.innerHTML = html;
+}
+function animateValue(id, start, end, duration, format) {
+    const obj = document.getElementById(id);
+    let startTimestamp = null;
+    const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        const value = Math.floor(progress * (end - start) + start);
+        obj.textContent = format ? format(value) : value;
+        if (progress < 1) {
+            window.requestAnimationFrame(step);
+        }
+    };
+    window.requestAnimationFrame(step);
+}
+
 
 
 // --- 6. EVENT LISTENERS ---
@@ -596,6 +827,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         // --- Navigation ---
         mainMenuButton.addEventListener('click', loadWelcome);
         dictionaryButton.addEventListener('click', () => showSection('dictionary'));
+        statsButton.addEventListener('click', loadStatsPage);
+        aboutButton.addEventListener('click', () => showSection('about'));
         darkModeToggle.addEventListener('click', toggleDarkMode);
 
         // --- Welcome Screen ---
