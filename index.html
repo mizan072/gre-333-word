@@ -29,6 +29,7 @@
                 <nav class="flex items-center space-x-2 sm:space-x-4 mt-2 sm:mt-0">
                     <button id="main-menu-button" class="text-sm font-medium text-indigo-600 dark:text-indigo-300 hover:text-indigo-800 dark:hover:text-indigo-200 transition-colors">Main Menu</button>
                     <button id="dictionary-button" class="text-sm font-medium text-indigo-600 dark:text-indigo-300 hover:text-indigo-800 dark:hover:text-indigo-200 transition-colors">Dictionary</button>
+                    <button id="stats-button" class="text-sm font-medium text-indigo-600 dark:text-indigo-300 hover:text-indigo-800 dark:hover:text-indigo-200 transition-colors">Stats</button>
                     <button id="about-button" class="text-sm font-medium text-indigo-600 dark:text-indigo-300 hover:text-indigo-800 dark:hover:text-indigo-200 transition-colors">About</button>
                     
                     <button id="dark-mode-toggle" class="p-2 rounded-full text-indigo-600 dark:text-indigo-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" aria-label="Toggle dark mode">
@@ -53,10 +54,21 @@
 
         <section id="welcome-section" class="app-section">
             <div class="bg-white dark:bg-slate-800 p-8 rounded-lg shadow-xl text-center">
-                <h2 class="text-3xl font-bold mb-4 text-indigo-800 dark:text-indigo-300">Welcome, Student!</h2>
+                <div class="max-w-xs mx-auto mb-6">
+                    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <path class="fill-indigo-500 dark:fill-indigo-400" d="M38.1,-63.3C50.2,-57.4,61.4,-49.5,69,-39.1C76.6,-28.7,80.6,-15.8,79.5,-3.6C78.4,8.6,72.2,20.2,64.8,30.3C57.4,40.4,48.8,49,38.8,56.7C28.8,64.4,17.4,71.2,5.2,73.1C-7,75,-20.1,72,-32.1,66.8C-44.1,61.6,-55,54.2,-63.5,44.7C-72,35.2,-78.1,23.6,-79.8,11.1C-81.5,-1.3,-78.8,-14.6,-72.2,-25.9C-65.6,-37.2,-55.1,-46.5,-44.2,-53.4C-33.3,-60.2,-22,-64.6,-10.5,-67.6C1.1,-70.6,12.6,-71.2,24.8,-68.9C37,-66.6,49.2,-62.3,58.1,-54.9L58.1,-54.9C57.1,-54.3,38.1,-63.3,38.1,-63.3Z" transform="translate(100 100) scale(1.2)" />
+                      </svg>
+                </div>
+                <h2 class="text-3xl font-bold mb-4 text-indigo-800 dark:text-indigo-300 text-center">Welcome, Student!</h2>
                 <p class="text-lg text-slate-700 dark:text-slate-300 mb-6 max-w-2xl mx-auto">
                     Reading a list is not learning. We will master this 333-word vocabulary using a proven, psychological method.
                 </p>
+
+                <!-- --- NEW: Current Streak Display --- -->
+                <div id="main-menu-streak-display" class="mb-8 text-center" style="display: none;">
+                    <span class="text-2xl font-bold text-green-600 dark:text-green-400">🔥 Current Streak: <span id="main-menu-streak-count">0</span> Days!</span>
+                </div>
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left mb-10">
                     <div class="bg-slate-50 dark:bg-slate-700 p-6 rounded-lg border border-slate-200 dark:border-slate-600">
                         <h3 class="text-xl font-semibold text-indigo-700 dark:text-indigo-300 mb-2">Step 1: Learn in Chunks</h3>
@@ -159,7 +171,12 @@
 
         <section id="about-section" class="app-section">
             <div class="bg-white dark:bg-slate-800 p-8 sm:p-12 rounded-lg shadow-xl max-w-3xl mx-auto">
-                <h2 class="text-3xl font-bold text-indigo-800 dark:text-indigo-300 mb-6">About This App</h2>
+                <div class="max-w-xs mx-auto mb-6">
+                    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <path class="fill-indigo-500 dark:fill-indigo-400" d="M38.1,-63.3C50.2,-57.4,61.4,-49.5,69,-39.1C76.6,-28.7,80.6,-15.8,79.5,-3.6C78.4,8.6,72.2,20.2,64.8,30.3C57.4,40.4,48.8,49,38.8,56.7C28.8,64.4,17.4,71.2,5.2,73.1C-7,75,-20.1,72,-32.1,66.8C-44.1,61.6,-55,54.2,-63.5,44.7C-72,35.2,-78.1,23.6,-79.8,11.1C-81.5,-1.3,-78.8,-14.6,-72.2,-25.9C-65.6,-37.2,-55.1,-46.5,-44.2,-53.4C-33.3,-60.2,-22,-64.6,-10.5,-67.6C1.1,-70.6,12.6,-71.2,24.8,-68.9C37,-66.6,49.2,-62.3,58.1,-54.9L58.1,-54.9C57.1,-54.3,38.1,-63.3,38.1,-63.3Z" transform="translate(100 100) scale(1.2)" />
+                      </svg>
+                </div>
+                <h2 class="text-3xl font-bold text-indigo-800 dark:text-indigo-300 mb-6 text-center">About This App</h2>
                 <div class="space-y-4 text-slate-700 dark:text-slate-300">
                   <p class="text-lg">This application is built to help students master the 333 essential GRE vocabulary words using proven cognitive science principles.</p>
                   
@@ -184,6 +201,47 @@
               </div>
         </section>
 
+        <section id="stats-section" class="app-section">
+            <div class="bg-white dark:bg-slate-800 p-8 sm:p-12 rounded-lg shadow-xl max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-indigo-800 dark:text-indigo-300 mb-6 text-center">Your Progress Dashboard</h2>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+                    <!-- Left Column: Streak and Difficult Words -->
+                    <div class="lg:col-span-1 space-y-8">
+                        <!-- Study Streak -->
+                        <div class="bg-slate-50 dark:bg-slate-700 p-6 rounded-lg border border-slate-200 dark:border-slate-600">
+                            <h3 class="text-xl font-semibold text-indigo-700 dark:text-indigo-300 mb-4 text-center">Study Streak</h3>
+                            <div id="streak-display" class="text-center">
+                                <p class="text-6xl font-bold text-green-600">5</p>
+                                <p class="text-slate-600 dark:text-slate-400">Day Streak</p>
+                            </div>
+                            <div id="calendar-container" class="mt-4">
+                                <!-- Calendar will be generated here -->
+                            </div>
+                        </div>
+
+                        <!-- Difficult Words -->
+                        <div class="bg-slate-50 dark:bg-slate-700 p-6 rounded-lg border border-slate-200 dark:border-slate-600">
+                            <h3 class="text-xl font-semibold text-red-700 dark:text-red-400 mb-4 text-center">Top 5 Difficult Words</h3>
+                            <div id="difficult-words-list" class="space-y-3">
+                                <!-- Difficult words will be listed here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Mastery Breakdown -->
+                    <div class="lg:col-span-2 bg-slate-50 dark:bg-slate-700 p-6 rounded-lg border border-slate-200 dark:border-slate-600 flex flex-col justify-center items-center">
+                        <h3 class="text-xl font-semibold text-indigo-700 dark:text-indigo-300 mb-4 text-center">Mastery Breakdown</h3>
+                        <div class="w-full max-w-sm mx-auto">
+                            <canvas id="mastery-chart"></canvas>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
     </main>
     <footer class="bg-slate-800 dark:bg-slate-950 text-slate-400 mt-12 py-8 border-t border-slate-700">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center text-center sm:text-left">
@@ -195,6 +253,7 @@
         </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
