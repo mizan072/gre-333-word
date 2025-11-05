@@ -20,15 +20,17 @@
         }
     </script>
 </head>
-<body class="bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 min-h-screen">
+<body class="bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 min-h-screen flex flex-col">
 
     <header class="bg-white dark:bg-slate-800 shadow-md sticky top-0 z-50 border-b border-slate-200 dark:border-slate-700">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div class="flex justify-between items-center">
+            <div class="flex flex-wrap justify-between items-center">
                 <h1 class="text-2xl font-bold text-indigo-700 dark:text-indigo-400">GRE 333 Learning System</h1>
-                <nav class="flex items-center space-x-2 sm:space-x-4">
+                <nav class="flex items-center space-x-2 sm:space-x-4 mt-2 sm:mt-0">
                     <button id="main-menu-button" class="text-sm font-medium text-indigo-600 dark:text-indigo-300 hover:text-indigo-800 dark:hover:text-indigo-200 transition-colors">Main Menu</button>
                     <button id="dictionary-button" class="text-sm font-medium text-indigo-600 dark:text-indigo-300 hover:text-indigo-800 dark:hover:text-indigo-200 transition-colors">Dictionary</button>
+                    <button id="about-button" class="text-sm font-medium text-indigo-600 dark:text-indigo-300 hover:text-indigo-800 dark:hover:text-indigo-200 transition-colors">About</button>
+                    
                     <button id="dark-mode-toggle" class="p-2 rounded-full text-indigo-600 dark:text-indigo-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" aria-label="Toggle dark mode">
                         <svg id="dark-icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                             <path fill-rule="evenodd" d="M9.528 1.718a.75.75 0 0 1 .162.819A8.97 8.97 0 0 0 9 6a9 9 0 0 0 9 9 8.97 8.97 0 0 0 3.463-.69.75.75 0 0 1 .981.162l.01.01a.75.75 0 0 1-.372.845A10.438 10.438 0 0 1 12 21a10.5 10.5 0 0 1-10.5-10.5 10.438 10.438 0 0 1 3.29-7.77.75.75 0 0 1 .845-.372l.01.01Z" clip-rule="evenodd" />
@@ -39,6 +41,7 @@
                     </button>
                 </nav>
             </div>
+            
             <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-3.5 mt-4">
                 <div id="progress-bar-fill" class="bg-green-600 h-3.5 rounded-full" style="width: 0%"></div>
             </div>
@@ -46,7 +49,7 @@
         </div>
     </header>
 
-    <main class="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8">
+    <main class="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8 flex-grow w-full">
 
         <section id="welcome-section" class="app-section">
             <div class="bg-white dark:bg-slate-800 p-8 rounded-lg shadow-xl text-center">
@@ -71,6 +74,9 @@
                     </button>
                     <button id="review-mastered-button" class="w-full max-w-xs mx-auto bg-green-600 text-white text-lg font-bold py-3 rounded-lg shadow-lg hover:bg-green-700 transition-transform transform hover:scale-105 duration-200" style="display: none;">
                         Review Mastered Words (0)
+                    </button>
+                    <button id="daily-random-test-button" class="w-full max-w-xs mx-auto bg-sky-600 text-white text-lg font-bold py-3 rounded-lg shadow-lg hover:bg-sky-700 transition-transform transform hover:scale-105 duration-200">
+                        Daily Random Test (20)
                     </button>
                 </div>
 
@@ -105,7 +111,6 @@
                         <h3 id="quiz-question" class="text-3xl sm:text-4xl font-bold text-center text-slate-800 dark:text-slate-100"></h3>
                         <p id="quiz-question-bengali" class="lang-bn text-2xl sm:text-3xl font-bold text-center text-slate-800 dark:text-slate-100"></p>
                     </div>
-
                     <div id="quiz-options-container" class="p-6 bg-slate-50 dark:bg-slate-800 rounded-b-lg grid grid-cols-1 gap-4">
                         </div>
                 </div>
@@ -152,7 +157,43 @@
                 </div>
         </section>
 
+        <section id="about-section" class="app-section">
+            <div class="bg-white dark:bg-slate-800 p-8 sm:p-12 rounded-lg shadow-xl max-w-3xl mx-auto">
+                <h2 class="text-3xl font-bold text-indigo-800 dark:text-indigo-300 mb-6">About This App</h2>
+                <div class="space-y-4 text-slate-700 dark:text-slate-300">
+                  <p class="text-lg">This application is built to help students master the 333 essential GRE vocabulary words using proven cognitive science principles.</p>
+                  
+                  <h3 class="text-2xl font-semibold text-slate-800 dark:text-slate-100 pt-4">Core Learning Method</h3>
+                  <p>Our system is based on two key ideas:</p>
+                  <ul class="list-disc list-inside space-y-2 pl-4">
+                    <li><strong>Chunking:</strong> We break the 333 words into small, 10-word lessons. This prevents you from being overwhelmed.</li>
+                    <li><strong>Active Recall:</strong> Instead of just re-reading (passive learning), you are immediately tested on each lesson. This act of pulling information *from* your memory is the single most effective way to build strong, long-term retention.</li>
+                  </ul>
+                  
+                  <h3 class="text-2xl font-semibold text-slate-800 dark:text-slate-100 pt-4">Features</h3>
+                  <ul class="list-disc list-inside space-y-2 pl-4">
+                    <li>Full 333-word GRE vocabulary list.</li>
+                    <li>Progress tracking with a mastery-based system (80% to pass).</li>
+                    <li>Spaced repetition-style "Review All Mastered Words" mode.</li>
+                    <li>Daily random tests to check your retention.</li>
+                    <li>Full searchable dictionary.</li>
+                    <li>English (en-US) pronunciation for every word.</li>
+                    <li>Dark mode support.</li>
+                  </ul>
+                </div>
+              </div>
+        </section>
+
     </main>
+    <footer class="bg-slate-800 dark:bg-slate-950 text-slate-400 mt-12 py-8 border-t border-slate-700">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center text-center sm:text-left">
+          <p class="text-sm">&copy; 2025 GRE 333 Learning System. All rights reserved.</p>
+          <nav class="flex space-x-4 mt-4 sm:mt-0">
+            <button id="footer-menu-button" class="text-sm hover:text-indigo-300 transition-colors">Main Menu</button>
+            <button id="footer-about-button" class="text-sm hover:text-indigo-300 transition-colors">About</button>
+          </nav>
+        </div>
+    </footer>
 
     <script src="script.js"></script>
 </body>

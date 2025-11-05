@@ -1,7 +1,12 @@
+/* --- Global Body & Font --- */
 body {
     font-family: 'Inter', sans-serif;
     /* Tailwind's bg-slate-100 */
     background-color: #f1f5f9; 
+    /* NEW: These are part of the sticky footer layout */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 /* Tailwind's dark:bg-slate-900 */
@@ -15,6 +20,7 @@ body.dark {
     font-weight: 500; /* Bolder for clarity */
 }
 
+/* --- Section Navigation --- */
 /* Hide sections by default */
 .app-section {
     display: none;
@@ -25,12 +31,14 @@ body.dark {
     display: block;
 }
 
+/* --- Transitions --- */
 /* Custom progress bar transition */
 #progress-bar-fill {
     transition: width 0.5s ease-in-out;
 }
 
-/* Custom scrollbar for aesthetics (Light Mode) */
+/* --- Custom Scrollbar --- */
+/* Light Mode Scrollbar */
 ::-webkit-scrollbar {
     width: 8px;
 }
@@ -48,7 +56,7 @@ body.dark {
     background: #94a3b8;
 }
 
-/* Custom scrollbar for aesthetics (Dark Mode) */
+/* NEW: Dark Mode Scrollbar */
 html.dark ::-webkit-scrollbar-track {
     background: #1e293b; /* slate-800 */
 }
