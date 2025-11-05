@@ -13,6 +13,8 @@
     
     <link rel="stylesheet" href="style.css">
 
+    <script src="https://unpkg.com/lucide@latest"></script>
+
     <script>
         // Use 'class' strategy for dark mode
         tailwind.config = {
@@ -25,20 +27,16 @@
     <header class="bg-white dark:bg-slate-800 shadow-md sticky top-0 z-50 border-b border-slate-200 dark:border-slate-700">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div class="flex flex-wrap justify-between items-center">
-                <h1 class="text-2xl font-bold text-indigo-700 dark:text-indigo-400">GRE 333 Learning System</h1>
-                <nav class="flex items-center space-x-2 sm:space-x-4 mt-2 sm:mt-0">
-                    <button id="main-menu-button" class="text-sm font-medium text-indigo-600 dark:text-indigo-300 hover:text-indigo-800 dark:hover:text-indigo-200 transition-colors">Main Menu</button>
-                    <button id="dictionary-button" class="text-sm font-medium text-indigo-600 dark:text-indigo-300 hover:text-indigo-800 dark:hover:text-indigo-200 transition-colors">Dictionary</button>
-                    <button id="stats-button" class="text-sm font-medium text-indigo-600 dark:text-indigo-300 hover:text-indigo-800 dark:hover:text-indigo-200 transition-colors">Stats</button>
-                    <button id="about-button" class="text-sm font-medium text-indigo-600 dark:text-indigo-300 hover:text-indigo-800 dark:hover:text-indigo-200 transition-colors">About</button>
+                <h1 class="text-2xl font-bold text-indigo-700 dark:text-indigo-400 flex items-center"><i data-lucide="graduation-cap" class="w-7 h-7 mr-2"></i>GRE 333 Learning System</h1>
+                <nav class="flex items-center space-x-1 sm:space-x-2 mt-2 sm:mt-0">
+                    <button id="main-menu-button" class="px-3 py-2 flex items-center text-sm font-medium text-indigo-600 dark:text-indigo-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md transition-colors"><i data-lucide="home" class="w-4 h-4 mr-1.5"></i>Main Menu</button>
+                    <button id="dictionary-button" class="px-3 py-2 flex items-center text-sm font-medium text-indigo-600 dark:text-indigo-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md transition-colors"><i data-lucide="book-open" class="w-4 h-4 mr-1.5"></i>Dictionary</button>
+                    <button id="stats-button" class="px-3 py-2 flex items-center text-sm font-medium text-indigo-600 dark:text-indigo-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md transition-colors"><i data-lucide="bar-chart-3" class="w-4 h-4 mr-1.5"></i>Stats</button>
+                    <button id="about-button" class="px-3 py-2 flex items-center text-sm font-medium text-indigo-600 dark:text-indigo-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md transition-colors"><i data-lucide="info" class="w-4 h-4 mr-1.5"></i>About</button>
                     
                     <button id="dark-mode-toggle" class="p-2 rounded-full text-indigo-600 dark:text-indigo-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" aria-label="Toggle dark mode">
-                        <svg id="dark-icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-                            <path fill-rule="evenodd" d="M9.528 1.718a.75.75 0 0 1 .162.819A8.97 8.97 0 0 0 9 6a9 9 0 0 0 9 9 8.97 8.97 0 0 0 3.463-.69.75.75 0 0 1 .981.162l.01.01a.75.75 0 0 1-.372.845A10.438 10.438 0 0 1 12 21a10.5 10.5 0 0 1-10.5-10.5 10.438 10.438 0 0 1 3.29-7.77.75.75 0 0 1 .845-.372l.01.01Z" clip-rule="evenodd" />
-                        </svg>
-                        <svg id="dark-icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 hidden">
-                            <path d="M12 2.25a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75ZM7.5 12a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0Zm12.75 0a.75.75 0 0 1-.75.75h-2.25a.75.75 0 0 1 0-1.5h2.25a.75.75 0 0 1 .75.75ZM12 18a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0v-2.25A.75.75 0 0 1 12 18ZM18.75 12a.75.75 0 0 1-.75.75h-2.25a.75.75 0 0 1 0-1.5h2.25a.75.75 0 0 1 .75.75ZM4.5 12a.75.75 0 0 1 .75-.75h2.25a.75.75 0 0 1 0 1.5H5.25a.75.75 0 0 1-.75-.75ZM12 4.5a.75.75 0 0 1-.75-.75V1.5a.75.75 0 0 1 1.5 0V3.75A.75.75 0 0 1 12 4.5ZM5.03 16.97a.75.75 0 0 1 0 1.06l-1.59 1.59a.75.75 0 0 1-1.06-1.06l1.59-1.59a.75.75 0 0 1 1.06 0Zm10.94-10.94a.75.75 0 0 1 1.06 0l1.59 1.59a.75.75 0 1 1-1.06 1.06l-1.59-1.59a.75.75 0 0 1 0-1.06ZM18.97 16.97a.75.75 0 0 1 1.06 1.06l-1.59 1.59a.75.75 0 1 1-1.06-1.06l1.59-1.59ZM5.03 7.03a.75.75 0 0 1 1.06 0l1.59 1.59a.75.75 0 0 1-1.06 1.06L5.03 8.09a.75.75 0 0 1 0-1.06ZM16.97 18.97a.75.75 0 0 1 0 1.06l-1.59 1.59a.75.75 0 1 1-1.06-1.06l1.59-1.59a.75.75 0 0 1 1.06 0Z" />
-                        </svg>
+                        <i id="dark-icon-moon" data-lucide="moon" class="w-6 h-6"></i>
+                        <i id="dark-icon-sun" data-lucide="sun" class="w-6 h-6 hidden"></i>
                     </button>
                 </nav>
             </div>
@@ -81,14 +79,14 @@
                 </div>
 
                 <div class="space-y-4">
-                    <button id="start-learning-button" class="w-full max-w-xs mx-auto bg-indigo-600 text-white text-xl font-bold py-4 rounded-lg shadow-lg hover:bg-indigo-700 transition-transform transform hover:scale-105 duration-200">
-                        Begin Lesson 1
+                    <button id="start-learning-button" class="w-full max-w-xs mx-auto bg-indigo-600 text-white text-xl font-bold py-4 rounded-lg shadow-lg hover:bg-indigo-700 transition-transform transform hover:scale-105 duration-200 flex items-center justify-center">
+                        <i data-lucide="play-circle" class="w-6 h-6 mr-2"></i><span id="start-learning-text">Begin Lesson 1</span>
                     </button>
-                    <button id="review-mastered-button" class="w-full max-w-xs mx-auto bg-green-600 text-white text-lg font-bold py-3 rounded-lg shadow-lg hover:bg-green-700 transition-transform transform hover:scale-105 duration-200" style="display: none;">
-                        Review Mastered Words (0)
+                    <button id="review-mastered-button" class="w-full max-w-xs mx-auto bg-green-600 text-white text-lg font-bold py-3 rounded-lg shadow-lg hover:bg-green-700 transition-transform transform hover:scale-105 duration-200 flex items-center justify-center" style="display: none;">
+                        <i data-lucide="history" class="w-5 h-5 mr-2"></i><span id="review-mastered-text">Review Mastered Words (0)</span>
                     </button>
-                    <button id="daily-random-test-button" class="w-full max-w-xs mx-auto bg-sky-600 text-white text-lg font-bold py-3 rounded-lg shadow-lg hover:bg-sky-700 transition-transform transform hover:scale-105 duration-200">
-                        Daily Random Test (20)
+                    <button id="daily-random-test-button" class="w-full max-w-xs mx-auto bg-sky-600 text-white text-lg font-bold py-3 rounded-lg shadow-lg hover:bg-sky-700 transition-transform transform hover:scale-105 duration-200 flex items-center justify-center">
+                        <i data-lucide="shuffle" class="w-5 h-5 mr-2"></i>Daily Random Test (20)
                     </button>
                 </div>
 
@@ -99,7 +97,7 @@
         </section>
 
         <section id="learn-section" class="app-section">
-            <h2 id="learn-header" class="text-3xl font-bold mb-6 text-indigo-800 dark:text-indigo-300 text-center">Learning Set: Words 1-10</h2>
+            <h2 id="learn-header" class="text-3xl font-bold mb-6 text-indigo-800 dark:text-indigo-300 text-center flex items-center justify-center"><i data-lucide="notebook-tabs" class="w-8 h-8 mr-3"></i>Learning Set: Words 1-10</h2>
             <div id="learn-container" class="space-y-4">
                 </div>
             <button id="start-test-button" class="mt-8 w-full bg-green-600 text-white text-xl font-bold py-4 rounded-lg shadow-lg hover:bg-green-700 transition-transform transform hover:scale-105 duration-200">
@@ -139,7 +137,7 @@
 
         <section id="results-section" class="app-section">
             <div class="max-w-xl mx-auto bg-white dark:bg-slate-800 p-8 sm:p-12 rounded-lg shadow-xl text-center">
-                <h2 id="results-header" class="text-4xl font-bold mb-4 text-indigo-700 dark:text-indigo-300">Lesson 1 Complete!</h2>
+                <h2 id="results-header" class="text-4xl font-bold mb-4 text-indigo-700 dark:text-indigo-300 flex items-center justify-center"><i data-lucide="award" class="w-10 h-10 mr-3"></i>Lesson 1 Complete!</h2>
                 
                 <div class="my-8">
                     <p class="text-2xl text-slate-700 dark:text-slate-300">Your Score:</p>
@@ -148,7 +146,7 @@
                 </div>
 
                 <div id="words-to-review-container" class="text-left mt-10">
-                    <h3 class="text-2xl font-semibold text-red-700 dark:text-red-400 mb-4 text-center">Words to Review</h3>
+                    <h3 class="text-2xl font-semibold text-red-700 dark:text-red-400 mb-4 text-center flex items-center justify-center"><i data-lucide="alert-triangle" class="w-6 h-6 mr-2"></i>Words to Review</h3>
                     <p class="text-center text-slate-600 dark:text-slate-400 mb-4">Focus on these words you missed. The correct answers are shown.</p>
                     <div id="words-to-review-list" class="space-y-4">
                         </div>
@@ -161,11 +159,11 @@
         </section>
 
         <section id="dictionary-section" class="app-section">
-            <h2 class="text-3xl font-bold text-indigo-800 dark:text-indigo-300 mb-6">Word Dictionary (1-333)</h2>
+            <h2 class="text-3xl font-bold text-indigo-800 dark:text-indigo-300 mb-6 flex items-center justify-center"><i data-lucide="book-open-check" class="w-8 h-8 mr-3"></i>Word Dictionary (1-333)</h2>
             
             <input id="search-bar" type="text" placeholder="Type to search for a word (e.g., Abate)" class="w-full p-4 text-lg bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500 mb-6 dark:placeholder-slate-400">
             
-            <div id="dictionary-list-container" class="space-y-4">
+            <div id="dictionary-list-container" class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 </div>
         </section>
 
@@ -176,7 +174,7 @@
                         <path class="fill-indigo-500 dark:fill-indigo-400" d="M38.1,-63.3C50.2,-57.4,61.4,-49.5,69,-39.1C76.6,-28.7,80.6,-15.8,79.5,-3.6C78.4,8.6,72.2,20.2,64.8,30.3C57.4,40.4,48.8,49,38.8,56.7C28.8,64.4,17.4,71.2,5.2,73.1C-7,75,-20.1,72,-32.1,66.8C-44.1,61.6,-55,54.2,-63.5,44.7C-72,35.2,-78.1,23.6,-79.8,11.1C-81.5,-1.3,-78.8,-14.6,-72.2,-25.9C-65.6,-37.2,-55.1,-46.5,-44.2,-53.4C-33.3,-60.2,-22,-64.6,-10.5,-67.6C1.1,-70.6,12.6,-71.2,24.8,-68.9C37,-66.6,49.2,-62.3,58.1,-54.9L58.1,-54.9C57.1,-54.3,38.1,-63.3,38.1,-63.3Z" transform="translate(100 100) scale(1.2)" />
                       </svg>
                 </div>
-                <h2 class="text-3xl font-bold text-indigo-800 dark:text-indigo-300 mb-6 text-center">About This App</h2>
+                <h2 class="text-3xl font-bold text-indigo-800 dark:text-indigo-300 mb-6 text-center flex items-center justify-center"><i data-lucide="info" class="w-8 h-8 mr-3"></i>About This App</h2>
                 <div class="space-y-4 text-slate-700 dark:text-slate-300">
                   <p class="text-lg">This application is built to help students master the 333 essential GRE vocabulary words using proven cognitive science principles.</p>
                   
@@ -203,7 +201,7 @@
 
         <section id="stats-section" class="app-section">
             <div class="bg-white dark:bg-slate-800 p-8 sm:p-12 rounded-lg shadow-xl max-w-4xl mx-auto">
-                <h2 class="text-3xl font-bold text-indigo-800 dark:text-indigo-300 mb-6 text-center">Your Progress Dashboard</h2>
+                <h2 class="text-3xl font-bold text-indigo-800 dark:text-indigo-300 mb-6 text-center flex items-center justify-center"><i data-lucide="layout-dashboard" class="w-8 h-8 mr-3"></i>Your Progress Dashboard</h2>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
