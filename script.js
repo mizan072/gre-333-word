@@ -40,7 +40,10 @@ const darkIconSun = document.getElementById('dark-icon-sun');
 
 // --- NEW: Welcome Screen Buttons ---
 const startLearningButton = document.getElementById('start-learning-button');
+const startLearningText = document.getElementById('start-learning-text');
 const reviewMasteredButton = document.getElementById('review-mastered-button');
+const reviewMasteredButtonText = document.getElementById('review-mastered-text');
+const dailyRandomTestButton = document.getElementById('daily-random-test-button');
 const resetProgressButton = document.getElementById('reset-progress-button');
 
 // Learn
@@ -70,6 +73,10 @@ const continueButton = document.getElementById('continue-button');
 // --- NEW: Dictionary ---
 const searchBar = document.getElementById('search-bar');
 const dictionaryListContainer = document.getElementById('dictionary-list-container');
+
+// --- Footer Buttons ---
+const footerMenuButton = document.getElementById('footer-menu-button');
+const footerAboutButton = document.getElementById('footer-about-button');
 
 
 // --- 4. CORE FUNCTIONS ---
@@ -114,8 +121,8 @@ function updateMainProgress() {
 
     // --- NEW: Update review button ---
     if (totalMasteredCount > 0) {
-        reviewMasteredButton.textContent = `Review Mastered Words (${totalMasteredCount})`;
-        reviewMasteredButton.style.display = 'block';
+        reviewMasteredButtonText.textContent = `Review Mastered Words (${totalMasteredCount})`;
+        reviewMasteredButton.style.display = 'flex';
     } else {
         reviewMasteredButton.style.display = 'none';
     }
@@ -132,11 +139,11 @@ function loadWelcome() {
     const endWord = Math.min(startWord + WORDS_PER_CHUNK - 1, vocabList.length);
     
     if (startWord > vocabList.length) {
-        startLearningButton.textContent = "Congratulations! You've completed all lessons!";
+        startLearningText.textContent = "Congratulations! You've completed all lessons!";
         startLearningButton.disabled = true;
         startLearningButton.classList.add('bg-green-700', 'opacity-70');
     } else {
-        startLearningButton.textContent = `Begin Lesson ${nextChunkIndex + 1} (Words ${startWord}-${endWord})`;
+        startLearningText.textContent = `Begin Lesson ${nextChunkIndex + 1} (Words ${startWord}-${endWord})`;
         startLearningButton.disabled = false;
         startLearningButton.classList.remove('bg-green-700', 'opacity-70');
     }
@@ -165,10 +172,7 @@ function loadLearnSection(chunkIndex) {
             <div class="flex justify-between items-center mb-1">
                 <h4 class="text-2xl font-bold text-indigo-800 dark:text-indigo-300">${word.id}. ${word.word}</h4>
                 <button class="speak-button p-2 rounded-full text-indigo-600 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-slate-700 active:bg-indigo-200 dark:active:bg-slate-600 transition-colors" data-word="${word.word}" aria-label="Pronounce word">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-                      <path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3Z" />
-                      <path d="M17 11a1 1 0 0 1 1 1v.5a6 6 0 0 1-12 0V12a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v.5a3 3 0 0 0 6 0V12a1 1 0 0 1 1-1h1Z" />
-                    </svg>
+                    <i data-lucide="volume-2" class="w-6 h-6"></i>
                 </button>
             </div>
             <p class="lang-bn text-xl text-slate-700 dark:text-slate-300 mb-2">${word.bengali}</p>
@@ -392,14 +396,11 @@ function showQuizComplete() {
         missedWords.forEach(word => {
             // --- UPDATED: Added dark mode classes ---
             html += `
-            <div class="bg-red-50 dark:bg-slate-700 p-4 rounded-lg border border-red-200 dark:border-red-700">
+            <div class="word-review-card bg-red-50 dark:bg-slate-700 p-4 rounded-lg border border-red-200 dark:border-red-700 transition-transform duration-150">
                 <div class="flex justify-between items-center mb-1">
                     <h4 class="text-xl font-bold text-red-800 dark:text-red-300">${word.word}</h4>
                     <button class="speak-button p-2 rounded-full text-red-700 dark:text-red-300 hover:bg-red-100 dark:hover:bg-slate-600" data-word="${word.word}" aria-label="Pronounce word">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-                          <path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3Z" />
-                          <path d="M17 11a1 1 0 0 1 1 1v.5a6 6 0 0 1-12 0V12a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v.5a3 3 0 0 0 6 0V12a1 1 0 0 1 1-1h1Z" />
-                        </svg>
+                        <i data-lucide="volume-2" class="w-6 h-6"></i>
                     </button>
                 </div>
                 <p class="lang-bn text-lg text-slate-700 dark:text-slate-300 mb-1">${word.bengali}</p>
@@ -490,14 +491,11 @@ function loadDictionary() {
     vocabList.forEach(word => {
         // --- UPDATED: Use data-word for search and added dark mode classes ---
         html += `
-        <div class="dictionary-word-card bg-white dark:bg-slate-800 p-5 rounded-lg shadow-md border border-slate-200 dark:border-slate-700" data-word="${word.word.toLowerCase()} ${word.bengali} ${word.english.toLowerCase()}">
+        <div class="dictionary-word-card bg-white dark:bg-slate-800 p-4 rounded-lg shadow-md border border-slate-200 dark:border-slate-700 transition-shadow hover:shadow-lg" data-word="${word.word.toLowerCase()} ${word.bengali} ${word.english.toLowerCase()}">
             <div class="flex justify-between items-center mb-1">
-                <h4 class="text-2xl font-bold text-indigo-800 dark:text-indigo-300">${word.id}. ${word.word}</h4>
+                <h4 class="text-xl font-bold text-indigo-800 dark:text-indigo-300">${word.id}. ${word.word}</h4>
                 <button class="speak-button p-2 rounded-full text-indigo-600 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-slate-700" data-word="${word.word}" aria-label="Pronounce word">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-                      <path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3Z" />
-                      <path d="M17 11a1 1 0 0 1 1 1v.5a6 6 0 0 1-12 0V12a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v.5a3 3 0 0 0 6 0V12a1 1 0 0 1 1-1h1Z" />
-                    </svg>
+                    <i data-lucide="volume-2" class="w-6 h-6"></i>
                 </button>
             </div>
             <p class="lang-bn text-xl text-slate-700 dark:text-slate-300 mb-2">${word.bengali}</p>
@@ -506,6 +504,7 @@ function loadDictionary() {
         `;
     });
     dictionaryListContainer.innerHTML = html;
+    lucide.createIcons();
 }
 
 /**
@@ -581,6 +580,12 @@ function startReviewMode() {
         return;
     }
     wordsInCurrentChunk = reviewWords;
+    startTest();
+}
+
+function startDailyRandomTest() {
+    const shuffled = [...vocabList].sort(() => 0.5 - Math.random());
+    wordsInCurrentChunk = shuffled.slice(0, 20);
     startTest();
 }
 
@@ -824,6 +829,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         loadProgress(); // This now handles the initial load and calls loadWelcome()
         loadDictionary(); // Pre-load the dictionary in the background
 
+        lucide.createIcons();
+
         // --- Navigation ---
         mainMenuButton.addEventListener('click', loadWelcome);
         dictionaryButton.addEventListener('click', () => showSection('dictionary'));
@@ -831,12 +838,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         aboutButton.addEventListener('click', () => showSection('about'));
         darkModeToggle.addEventListener('click', toggleDarkMode);
 
+        // --- Footer Navigation ---
+        footerMenuButton.addEventListener('click', loadWelcome);
+        footerAboutButton.addEventListener('click', () => showSection('about'));
+
         // --- Welcome Screen ---
         startLearningButton.addEventListener('click', () => {
             const nextChunkIndex = Math.floor(totalMasteredCount / WORDS_PER_CHUNK);
             loadLearnSection(nextChunkIndex);
         });
         reviewMasteredButton.addEventListener('click', startReviewMode);
+        dailyRandomTestButton.addEventListener('click', startDailyRandomTest);
         resetProgressButton.addEventListener('click', resetProgress);
 
         // --- Learn Section ---
