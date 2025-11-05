@@ -12,48 +12,76 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="style.css">
-</head>
-<body class="bg-slate-100 text-slate-800 min-h-screen">
 
-    <header class="bg-white shadow-md sticky top-0 z-50">
+    <script>
+        // Use 'class' strategy for dark mode
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+</head>
+<body class="bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 min-h-screen">
+
+    <header class="bg-white dark:bg-slate-800 shadow-md sticky top-0 z-50 border-b border-slate-200 dark:border-slate-700">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div class="flex justify-between items-center mb-2">
-                <h1 class="text-2xl font-bold text-indigo-700">GRE 333 Learning System</h1>
-                <button id="main-menu-button" class="text-sm font-medium text-indigo-600 hover:text-indigo-800 transition-colors">Main Menu</button>
+            <div class="flex justify-between items-center">
+                <h1 class="text-2xl font-bold text-indigo-700 dark:text-indigo-400">GRE 333 Learning System</h1>
+                <nav class="flex items-center space-x-2 sm:space-x-4">
+                    <button id="main-menu-button" class="text-sm font-medium text-indigo-600 dark:text-indigo-300 hover:text-indigo-800 dark:hover:text-indigo-200 transition-colors">Main Menu</button>
+                    <button id="dictionary-button" class="text-sm font-medium text-indigo-600 dark:text-indigo-300 hover:text-indigo-800 dark:hover:text-indigo-200 transition-colors">Dictionary</button>
+                    <button id="dark-mode-toggle" class="p-2 rounded-full text-indigo-600 dark:text-indigo-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" aria-label="Toggle dark mode">
+                        <svg id="dark-icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                            <path fill-rule="evenodd" d="M9.528 1.718a.75.75 0 0 1 .162.819A8.97 8.97 0 0 0 9 6a9 9 0 0 0 9 9 8.97 8.97 0 0 0 3.463-.69.75.75 0 0 1 .981.162l.01.01a.75.75 0 0 1-.372.845A10.438 10.438 0 0 1 12 21a10.5 10.5 0 0 1-10.5-10.5 10.438 10.438 0 0 1 3.29-7.77.75.75 0 0 1 .845-.372l.01.01Z" clip-rule="evenodd" />
+                        </svg>
+                        <svg id="dark-icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 hidden">
+                            <path d="M12 2.25a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75ZM7.5 12a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0Zm12.75 0a.75.75 0 0 1-.75.75h-2.25a.75.75 0 0 1 0-1.5h2.25a.75.75 0 0 1 .75.75ZM12 18a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0v-2.25A.75.75 0 0 1 12 18ZM18.75 12a.75.75 0 0 1-.75.75h-2.25a.75.75 0 0 1 0-1.5h2.25a.75.75 0 0 1 .75.75ZM4.5 12a.75.75 0 0 1 .75-.75h2.25a.75.75 0 0 1 0 1.5H5.25a.75.75 0 0 1-.75-.75ZM12 4.5a.75.75 0 0 1-.75-.75V1.5a.75.75 0 0 1 1.5 0V3.75A.75.75 0 0 1 12 4.5ZM5.03 16.97a.75.75 0 0 1 0 1.06l-1.59 1.59a.75.75 0 0 1-1.06-1.06l1.59-1.59a.75.75 0 0 1 1.06 0Zm10.94-10.94a.75.75 0 0 1 1.06 0l1.59 1.59a.75.75 0 1 1-1.06 1.06l-1.59-1.59a.75.75 0 0 1 0-1.06ZM18.97 16.97a.75.75 0 0 1 1.06 1.06l-1.59 1.59a.75.75 0 1 1-1.06-1.06l1.59-1.59ZM5.03 7.03a.75.75 0 0 1 1.06 0l1.59 1.59a.75.75 0 0 1-1.06 1.06L5.03 8.09a.75.75 0 0 1 0-1.06ZM16.97 18.97a.75.75 0 0 1 0 1.06l-1.59 1.59a.75.75 0 1 1-1.06-1.06l1.59-1.59a.75.75 0 0 1 1.06 0Z" />
+                        </svg>
+                    </button>
+                </nav>
             </div>
-            <div class="w-full bg-slate-200 rounded-full h-3.5">
+            <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-3.5 mt-4">
                 <div id="progress-bar-fill" class="bg-green-600 h-3.5 rounded-full" style="width: 0%"></div>
             </div>
-            <p id="progress-bar-text" class="text-sm text-slate-600 mt-1 text-center font-medium">Mastered: 0 of 333 words</p>
+            <p id="progress-bar-text" class="text-sm text-slate-600 dark:text-slate-400 mt-1 text-center font-medium">Loading progress...</p>
         </div>
     </header>
 
     <main class="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8">
 
         <section id="welcome-section" class="app-section">
-            <div class="bg-white p-8 rounded-lg shadow-xl text-center">
-                <h2 class="text-3xl font-bold mb-4 text-indigo-800">Welcome, Student!</h2>
-                <p class="text-lg text-slate-700 mb-6 max-w-2xl mx-auto">
+            <div class="bg-white dark:bg-slate-800 p-8 rounded-lg shadow-xl text-center">
+                <h2 class="text-3xl font-bold mb-4 text-indigo-800 dark:text-indigo-300">Welcome, Student!</h2>
+                <p class="text-lg text-slate-700 dark:text-slate-300 mb-6 max-w-2xl mx-auto">
                     Reading a list is not learning. We will master this 333-word vocabulary using a proven, psychological method.
                 </p>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
-                    <div class="bg-slate-50 p-6 rounded-lg border border-slate-200">
-                        <h3 class="text-xl font-semibold text-indigo-700 mb-2">Step 1: Learn in Chunks</h3>
-                        <p class="text-slate-600">You will be presented with 10 words at a time. Focus on understanding each word, its Bengali meaning, and its English synonym.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left mb-10">
+                    <div class="bg-slate-50 dark:bg-slate-700 p-6 rounded-lg border border-slate-200 dark:border-slate-600">
+                        <h3 class="text-xl font-semibold text-indigo-700 dark:text-indigo-300 mb-2">Step 1: Learn in Chunks</h3>
+                        <p class="text-slate-600 dark:text-slate-300">You will be presented with 10 words at a time. Focus on understanding each word, its Bengali meaning, and its English synonym.</p>
                     </div>
-                    <div class="bg-slate-50 p-6 rounded-lg border border-slate-200">
-                        <h3 class="text-xl font-semibold text-indigo-700 mb-2">Step 2: Active Recall</h3>
-                        <p class="text-slate-600">Immediately after reviewing the 10 words, you will be tested on them. This active recall is the *most* effective way to build strong, long-term memory.</p>
+                    <div class="bg-slate-50 dark:bg-slate-700 p-6 rounded-lg border border-slate-200 dark:border-slate-600">
+                        <h3 class="text-xl font-semibold text-indigo-700 dark:text-indigo-300 mb-2">Step 2: Active Recall</h3>
+                        <p class="text-slate-600 dark:text-slate-300">Immediately after reviewing the 10 words, you will be tested on them. This active recall is the *most* effective way to build strong, long-term memory.</p>
                     </div>
                 </div>
-                <button id="start-learning-button" class="mt-10 w-full max-w-xs mx-auto bg-indigo-600 text-white text-xl font-bold py-4 rounded-lg shadow-lg hover:bg-indigo-700 transition-transform transform hover:scale-105 duration-200">
-                    Begin Lesson 1 (Words 1-10)
+
+                <div class="space-y-4">
+                    <button id="start-learning-button" class="w-full max-w-xs mx-auto bg-indigo-600 text-white text-xl font-bold py-4 rounded-lg shadow-lg hover:bg-indigo-700 transition-transform transform hover:scale-105 duration-200">
+                        Begin Lesson 1
+                    </button>
+                    <button id="review-mastered-button" class="w-full max-w-xs mx-auto bg-green-600 text-white text-lg font-bold py-3 rounded-lg shadow-lg hover:bg-green-700 transition-transform transform hover:scale-105 duration-200" style="display: none;">
+                        Review Mastered Words (0)
+                    </button>
+                </div>
+
+                <button id="reset-progress-button" class="mt-10 text-sm text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 transition-colors">
+                    Reset All Progress
                 </button>
             </div>
         </section>
 
         <section id="learn-section" class="app-section">
-            <h2 id="learn-header" class="text-3xl font-bold mb-6 text-indigo-800 text-center">Learning Set: Words 1-10</h2>
+            <h2 id="learn-header" class="text-3xl font-bold mb-6 text-indigo-800 dark:text-indigo-300 text-center">Learning Set: Words 1-10</h2>
             <div id="learn-container" class="space-y-4">
                 </div>
             <button id="start-test-button" class="mt-8 w-full bg-green-600 text-white text-xl font-bold py-4 rounded-lg shadow-lg hover:bg-green-700 transition-transform transform hover:scale-105 duration-200">
@@ -63,28 +91,28 @@
 
         <section id="test-section" class="app-section">
             <div class="max-w-2xl mx-auto">
-                <div class="bg-white p-4 rounded-lg shadow mb-6">
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-lg shadow mb-6">
                     <div class="flex justify-between items-center mb-2">
-                        <span id="quiz-progress-text" class="text-lg font-medium text-slate-700">Question 1 of 10</span>
+                        <span id="quiz-progress-text" class="text-lg font-medium text-slate-700 dark:text-slate-300">Question 1 of 10</span>
                     </div>
-                    <div class="w-full bg-slate-200 rounded-full h-2.5">
+                    <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2.5">
                         <div id="quiz-progress-bar" class="bg-indigo-600 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-lg shadow-xl min-h-[30rem]">
+                <div class="bg-white dark:bg-slate-800 rounded-lg shadow-xl min-h-[30rem]">
                     <div class="p-8 sm:p-12 min-h-[12rem] flex items-center justify-center">
-                        <h3 id="quiz-question" class="text-3xl sm:text-4xl font-bold text-center text-slate-800"></h3>
-                        <p id="quiz-question-bengali" class="lang-bn text-2xl sm:text-3xl font-bold text-center text-slate-800"></p>
+                        <h3 id="quiz-question" class="text-3xl sm:text-4xl font-bold text-center text-slate-800 dark:text-slate-100"></h3>
+                        <p id="quiz-question-bengali" class="lang-bn text-2xl sm:text-3xl font-bold text-center text-slate-800 dark:text-slate-100"></p>
                     </div>
 
-                    <div id="quiz-options-container" class="p-6 bg-slate-50 rounded-b-lg grid grid-cols-1 gap-4">
+                    <div id="quiz-options-container" class="p-6 bg-slate-50 dark:bg-slate-800 rounded-b-lg grid grid-cols-1 gap-4">
                         </div>
                 </div>
 
                 <div id="quiz-feedback-container" class="mt-6 text-center" style="display: none;">
                     <p id="quiz-feedback-text" class="text-2xl font-semibold"></p>
-                    <p id="quiz-feedback-correct-answer" class="text-lg text-slate-600 mt-2"></p>
+                    <p id="quiz-feedback-correct-answer" class="text-lg text-slate-600 dark:text-slate-400 mt-2"></p>
                     <button id="next-question-button" class="mt-4 w-full bg-indigo-700 text-white text-lg font-bold py-3 rounded-lg shadow hover:bg-indigo-800 transition-colors duration-200">
                         Next
                     </button>
@@ -93,18 +121,18 @@
         </section>
 
         <section id="results-section" class="app-section">
-            <div class="max-w-xl mx-auto bg-white p-8 sm:p-12 rounded-lg shadow-xl text-center">
-                <h2 id="results-header" class="text-4xl font-bold mb-4 text-indigo-700">Lesson 1 Complete!</h2>
+            <div class="max-w-xl mx-auto bg-white dark:bg-slate-800 p-8 sm:p-12 rounded-lg shadow-xl text-center">
+                <h2 id="results-header" class="text-4xl font-bold mb-4 text-indigo-700 dark:text-indigo-300">Lesson 1 Complete!</h2>
                 
                 <div class="my-8">
-                    <p class="text-2xl text-slate-700">Your Score:</p>
+                    <p class="text-2xl text-slate-700 dark:text-slate-300">Your Score:</p>
                     <p id="final-score-text" class="text-7xl font-bold text-green-600 my-4">8 / 10</p>
-                    <p id="final-percentage-text" class="text-3xl text-slate-500">(80%)</p>
+                    <p id="final-percentage-text" class="text-3xl text-slate-500 dark:text-slate-400">(80%)</p>
                 </div>
 
                 <div id="words-to-review-container" class="text-left mt-10">
-                    <h3 class="text-2xl font-semibold text-red-700 mb-4 text-center">Words to Review</h3>
-                    <p class="text-center text-slate-600 mb-4">Focus on these words you missed. The correct answers are shown.</p>
+                    <h3 class="text-2xl font-semibold text-red-700 dark:text-red-400 mb-4 text-center">Words to Review</h3>
+                    <p class="text-center text-slate-600 dark:text-slate-400 mb-4">Focus on these words you missed. The correct answers are shown.</p>
                     <div id="words-to-review-list" class="space-y-4">
                         </div>
                 </div>
@@ -113,6 +141,15 @@
                     Continue to Lesson 2 (Words 11-20)
                 </button>
             </div>
+        </section>
+
+        <section id="dictionary-section" class="app-section">
+            <h2 class="text-3xl font-bold text-indigo-800 dark:text-indigo-300 mb-6">Word Dictionary (1-333)</h2>
+            
+            <input id="search-bar" type="text" placeholder="Type to search for a word (e.g., Abate)" class="w-full p-4 text-lg bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500 mb-6 dark:placeholder-slate-400">
+            
+            <div id="dictionary-list-container" class="space-y-4">
+                </div>
         </section>
 
     </main>
