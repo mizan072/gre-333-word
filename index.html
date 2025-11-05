@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRE 333 Learning System</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/lucide-dev@latest/dist/lucide.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+
+    <style type="text/tailwindcss">
+        /* Navigation */
+        .nav-link {
+            @apply px-4 py-2 rounded-lg text-sm md:text-base font-medium text-gray-600 hover:bg-gray-200 transition-colors;
+        }
+        .nav-link.active {
+            @apply bg-blue-600 text-white hover:bg-blue-700;
+        }
+
+        /* Flip Card additions */
+        .flip-card-inner {
+            @apply rounded-xl;
+        }
+        .flip-card-front, .flip-card-back {
+            @apply rounded-xl bg-white p-6 flex items-center justify-center;
+        }
+        .flip-card-back {
+            @apply flex-col items-start;
+        }
+
+        /* Modal */
+        .modal {
+            @apply fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 transition-opacity duration-300;
+        }
+        .modal-content {
+            @apply bg-white rounded-lg shadow-xl p-6 md:p-8 w-full max-w-lg transform transition-all duration-300 scale-95;
+        }
+        .modal.hidden {
+            @apply opacity-0 pointer-events-none;
+        }
+        .modal.hidden .modal-content {
+            @apply scale-95;
+        }
+        .modal:not(.hidden) {
+            @apply opacity-100;
+        }
+        .modal:not(.hidden) .modal-content {
+            @apply scale-100;
+        }
+
+        /* Toast Notification */
+        #toast {
+            @apply fixed bottom-5 right-5 bg-gray-900 text-white px-5 py-3 rounded-lg shadow-lg transition-all duration-300 transform translate-y-16 opacity-0;
+        }
+        #toast.show {
+            @apply translate-y-0 opacity-100;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans antialiased">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+
+        <header class="mb-6">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">GRE 333 Learning System</h1>
+            <p class="text-gray-600 text-lg">Master the 333 high-frequency GRE words.</p>
+        </header>
+
+        <div id="statsContainer" class="mb-6 p-4 bg-white rounded-lg shadow-sm flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+            </div>
+
+        <nav class="mb-6 bg-white rounded-lg shadow-sm p-2 flex justify-center space-x-2 md:space-x-4">
+            <button class="nav-link active" data-target="welcome">Welcome</button>
+            <button class="nav-link" data-target="full-list">Full List</button>
+            <button class="nav-link" data-target="practice">Practice</button>
+        </nav>
+
+        <main id="contentContainer" class="bg-white rounded-lg shadow-sm p-4 md:p-8 min-h-[400px]">
+            </main>
+
+    </div>
+
+    <div id="wordModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="modal-content" id="modal-content">
+            </div>
+    </div>
+    
+    <div id="toast" role="alert">
+        </div>
+
+
+    <script src="script.js" defer></script>
+
+</body>
+</html>
