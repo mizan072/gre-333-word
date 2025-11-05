@@ -22,7 +22,15 @@
         .nav-link.active {
             @apply bg-blue-600 text-white hover:bg-blue-700;
         }
-
+        .pagination-btn {
+            @apply px-3 py-2 rounded-md text-sm font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors;
+        }
+        .pagination-btn.active {
+            @apply bg-blue-600 text-white hover:bg-blue-700;
+        }
+        .pagination-btn.disabled {
+            @apply opacity-50 cursor-not-allowed;
+        }
         /* Flip Card additions */
         .flip-card-inner {
             @apply rounded-xl;
@@ -101,7 +109,7 @@
     <div id="toast" role="alert">
     </div>
 
-    <script src="script.js" defer></script>
+    <script src="script.js"></script>
     <script>
       // A small script to re-trigger lucide icons in the footer after initial load
       document.addEventListener('DOMContentLoaded', () => {
