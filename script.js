@@ -1,4 +1,3 @@
-
 // --- 1. VOCABULARY DATA ---
 const vocabList = [
              { "id": 1, "word": "Abate", "bengali": "দূর করা, হ্রাস পাওয়া, কমা, প্রশমিত করা", "english": "subside, or moderate", "mastered": false },
@@ -320,7 +319,7 @@ const vocabList = [
             { "id": 317, "word": "Tortuous", "bengali": "কুটিল", "english": "winding; full of curves", "mastered": false },
             { "id": 318, "word": "Tractable", "bengali": "সহজে টানা যায় এমন", "english": "docile; easily managed", "mastered": false },
             { "id": 319, "word": "Transgression", "bengali": "পাপ", "english": "violation of a law; sin", "mastered": false },
-            { "id": 20, "word": "Truculence", "bengali": "নিষ্ঠুরতা", "english": "aggressiveness; ferocity", "mastered": false },
+            { "id": 320, "word": "Truculence", "bengali": "নিষ্ঠুরতা", "english": "aggressiveness; ferocity", "mastered": false },
             { "id": 321, "word": "Vacillate", "bengali": "আন্দোলিত হওয়া, দোলায়মান হওয়া", "english": "waver; fluctuate", "mastered": false },
             { "id": 322, "word": "Venerate", "bengali": "শ্রদ্ধা করা", "english": "revere", "mastered": false },
             { "id": 323, "word": "Veracious", "bengali": "সত্যবাদী, সত্যনিষ্ঠ", "english": "truthful", "mastered": false },
@@ -343,14 +342,11 @@ let masteredCount = 0;
 let currentFilter = 'all'; // 'all', 'mastered', 'unmastered'
 let practiceList = [];
 let currentPracticeIndex = 0;
+let currentPage = 1;
+const wordsPerPage = 10;
 
 // DOM Elements
-const contentContainer = document.getElementById('contentContainer');
-const statsContainer = document.getElementById('statsContainer');
-const navLinks = document.querySelectorAll('.nav-link');
-const modal = document.getElementById('wordModal');
-const modalContent = document.getElementById('modal-content');
-const toast = document.getElementById('toast');
+let contentContainer, statsContainer, navLinks, modal, modalContent, toast;
 
 // --- 3. CORE FUNCTIONS ---
 
@@ -451,7 +447,7 @@ function toggleMastered(wordId, fromPractice = false) {
 
         // Re-render the list if we're on the list page
         if (document.getElementById('word-list-container')) {
-            renderWordList(currentFilter);
+            renderWordList(currentFilter, currentPage);
         }
 
         // If toggled from practice, update the card's state
@@ -497,6 +493,127 @@ function showModal(word) {
         modal.classList.add('hidden');
     });
 }
+function getIncorrectOptions(correctWord, allWords, count = 3) {
+    const incorrectOptions = [];
+    const allButCorrect = allWords.filter(w => w.id !== correctWord.id);
+
+    while (incorrectOptions.length < count && allButCorrect.length > 0) {
+        const randomIndex = Math.floor(Math.random() * allButCorrect.length);
+        const randomWord = allButCorrect.splice(randomIndex, 1)[0];
+        incorrectOptions.push(randomWord);
+    }
+
+    return incorrectOptions;
+}
+
+function loadTest(words) {
+    const testHtml = words.map((word, index) => {
+        const correctAnswer = word;
+        const incorrectOptions = getIncorrectOptions(correctAnswer, vocabList);
+        const options = [correctAnswer, ...incorrectOptions].sort(() => Math.random() - 0.5);
+
+        return `
+            <div class="mb-6">
+                <p class="font-semibold text-lg mb-2">${index + 1}. What is the meaning of "${word.word}"?</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    ${options.map(option => `
+                        <label class="block p-3 rounded-lg border border-gray-200 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="question-${index}" value="${option.id}" class="mr-2">
+                            ${option.bengali}
+                        </label>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    contentContainer.innerHTML = `
+        <h2 class="text-2xl font-bold text-center mb-6">Test Your Knowledge</h2>
+        <form id="test-form">
+            ${testHtml}
+            <div class="text-center mt-6">
+                <button type="submit" class="bg-blue-600 text-white font-medium px-6 py-3 rounded-lg hover:bg-blue-700">Submit Answers</button>
+            </div>
+        </form>
+    `;
+
+    document.getElementById('test-form').addEventListener('submit', e => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        let score = 0;
+        let resultsHtml = '';
+
+        words.forEach((word, index) => {
+            const selectedOptionId = parseInt(formData.get(`question-${index}`));
+            const isCorrect = selectedOptionId === word.id;
+
+            if (isCorrect) {
+                score++;
+                resultsHtml += `
+                    <li class="flex items-center text-green-700 bg-green-50 p-3 rounded-lg">
+                        <i data-lucide="check-circle" class="w-5 h-5 mr-3 flex-shrink-0"></i>
+                        <span><strong>${word.word}:</strong> ${word.bengali}</span>
+                    </li>`;
+            } else {
+                 const selectedAnswer = vocabList.find(w => w.id === selectedOptionId);
+                 const incorrectAnswerText = selectedAnswer ? selectedAnswer.bengali : 'No answer selected';
+                 resultsHtml += `
+                    <li class="bg-red-50 p-3 rounded-lg">
+                        <div class="flex items-center text-red-700">
+                            <i data-lucide="x-circle" class="w-5 h-5 mr-3 flex-shrink-0"></i>
+                            <span><strong>${word.word}:</strong> Your answer: ${incorrectAnswerText}</span>
+                        </div>
+                        <div class="mt-1 pl-8 text-green-700">
+                            <strong>Correct answer:</strong> ${word.bengali}
+                        </div>
+                     </li>`;
+            }
+        });
+
+        const percentage = (score / words.length) * 100;
+        let feedbackMessage = '';
+        if (percentage === 100) {
+            feedbackMessage = '<p class="text-lg text-green-600">Excellent! Perfect score!</p>';
+        } else if (percentage >= 70) {
+            feedbackMessage = '<p class="text-lg text-blue-600">Great job! Keep practicing.</p>';
+        } else {
+            feedbackMessage = '<p class="text-lg text-orange-600">Good try! Review the answers and try again.</p>';
+        }
+
+        contentContainer.innerHTML = `
+            <div class="text-center">
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">Test Results</h2>
+                <p class="text-5xl font-bold text-blue-600 my-4">${score} / ${words.length}</p>
+                ${feedbackMessage}
+            </div>
+
+            <div class="my-6">
+                <div class="bg-gray-200 rounded-full h-4 overflow-hidden">
+                    <div class="bg-gradient-to-r from-blue-400 to-blue-600 h-4 rounded-full" style="width: ${percentage}%"></div>
+                </div>
+            </div>
+
+            <h3 class="text-xl font-semibold mb-4">Review Your Answers</h3>
+            <ul class="space-y-3 mb-6">${resultsHtml}</ul>
+
+            <div class="flex justify-center space-x-4">
+                <button id="retry-test" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors shadow-sm flex items-center">
+                    <i data-lucide="refresh-cw" class="w-4 h-4 mr-2"></i>
+                    Retry Test
+                </button>
+                <button id="back-to-list" class="bg-gray-200 text-gray-800 px-6 py-3 rounded-lg hover:bg-gray-300 transition-colors shadow-sm">Back to List</button>
+            </div>
+        `;
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+
+        document.getElementById('back-to-list').addEventListener('click', () => {
+            loadFullList();
+        });
+        document.getElementById('retry-test').addEventListener('click', () => {
+            loadTest(words);
+        });
+    });
+}
 
 // Close modal on outside click
 modal.addEventListener('click', (e) => {
@@ -505,11 +622,52 @@ modal.addEventListener('click', (e) => {
     }
 });
 
+function renderPagination(totalPages, currentPage, filter) {
+    if (totalPages <= 1) return '';
+
+    let paginationHtml = '<div class="flex justify-center items-center space-x-2 mt-6">';
+
+    // Previous Button
+    paginationHtml += `
+        <button class="pagination-btn ${currentPage === 1 ? 'disabled' : ''}" data-page="${currentPage - 1}" data-filter="${filter}" ${currentPage === 1 ? 'disabled' : ''}>
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+        </button>
+    `;
+
+    // Page Numbers
+    for (let i = 1; i <= totalPages; i++) {
+        if (i === currentPage) {
+            paginationHtml += `<button class="pagination-btn active" data-page="${i}" data-filter="${filter}">${i}</button>`;
+        } else if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+            paginationHtml += `<button class="pagination-btn" data-page="${i}" data-filter="${filter}">${i}</button>`;
+        } else if (i === currentPage - 2 || i === currentPage + 2) {
+            paginationHtml += `<span class="px-4 py-2">...</span>`;
+        }
+    }
+
+    // Next Button
+    paginationHtml += `
+        <button class="pagination-btn ${currentPage === totalPages ? 'disabled' : ''}" data-page="${currentPage + 1}" data-filter="${filter}" ${currentPage === totalPages ? 'disabled' : ''}>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+    `;
+
+    paginationHtml += '</div>';
+     paginationHtml += `
+        <div class="text-center mt-4">
+            <button class="bg-green-600 text-white font-medium px-6 py-3 rounded-lg hover:bg-green-700 transition-colors shadow-sm" id="startTestBtn">
+                Test these 10 words
+            </button>
+        </div>
+    `;
+    return paginationHtml;
+}
 /**
  * Render the full word list
  */
-function renderWordList(filter = 'all') {
+function renderWordList(filter = 'all', page = 1) {
     currentFilter = filter;
+    currentPage = page;
     
     const filteredList = vocabList.filter(word => {
         if (filter === 'mastered') return word.mastered;
@@ -518,8 +676,11 @@ function renderWordList(filter = 'all') {
     });
 
     const totalWords = vocabList.length;
+    const totalPages = Math.ceil(filteredList.length / wordsPerPage);
+    const paginatedList = filteredList.slice((page - 1) * wordsPerPage, page * wordsPerPage);
 
-    const listHtml = filteredList.map(word => `
+
+    const listHtml = paginatedList.map(word => `
         <div class="flex items-center justify-between p-4 border-b border-gray-200 last:border-b-0 hover:bg-gray-50">
             <div>
                 <h3 class="font-semibold text-lg text-gray-800">${word.word}</h3>
@@ -546,6 +707,7 @@ function renderWordList(filter = 'all') {
             <div class="border border-gray-200 rounded-lg overflow-hidden">
                 ${listHtml || '<p class="text-center p-6 text-gray-500">No words match this filter.</p>'}
             </div>
+             ${renderPagination(totalPages, currentPage, currentFilter)}
         </div>
     `;
     
@@ -555,8 +717,24 @@ function renderWordList(filter = 'all') {
     // Add event listeners for new buttons
     contentContainer.querySelectorAll('.filter-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
-            renderWordList(e.currentTarget.dataset.filter);
+            renderWordList(e.currentTarget.dataset.filter, 1);
         });
+    });
+        contentContainer.querySelectorAll('.pagination-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const page = parseInt(e.currentTarget.dataset.page);
+            const filter = e.currentTarget.dataset.filter;
+            renderWordList(filter, page);
+        });
+    });
+    contentContainer.querySelector('#startTestBtn')?.addEventListener('click', () => {
+        const filteredList = vocabList.filter(word => {
+            if (currentFilter === 'mastered') return word.mastered;
+            if (currentFilter === 'unmastered') return !word.mastered;
+            return true;
+        });
+        const testWords = filteredList.slice((currentPage - 1) * wordsPerPage, currentPage * wordsPerPage);
+        loadTest(testWords);
     });
 
     contentContainer.querySelectorAll('.view-details').forEach(btn => {
@@ -612,7 +790,7 @@ function loadWelcome() {
  * Load the Full List page
  */
 function loadFullList() {
-    renderWordList(currentFilter); // Render with the currently active filter
+    renderWordList(currentFilter, 1); // Render with the currently active filter
 }
 
 /**
@@ -790,6 +968,14 @@ function handleNavClick(e) {
 
 // --- 5. INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', () => {
+    // Assign DOM elements inside the listener
+    contentContainer = document.getElementById('contentContainer');
+    statsContainer = document.getElementById('statsContainer');
+    navLinks = document.querySelectorAll('.nav-link');
+    modal = document.getElementById('wordModal');
+    modalContent = document.getElementById('modal-content');
+    toast = document.getElementById('toast');
+
     navLinks.forEach(link => {
         link.addEventListener('click', handleNavClick);
     });
