@@ -1,0 +1,41 @@
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f1f5f9; /* slate-100 */
+}
+
+/* Custom font class for Bengali */
+.lang-bn {
+    font-family: 'Hind Siliguri', sans-serif;
+    font-weight: 500; /* Bolder for clarity */
+}
+
+/* Hide sections by default */
+.app-section {
+    display: none;
+}
+
+/* Show the active section */
+.app-section.active {
+    display: block;
+}
+
+/* Custom progress bar transition */
+#progress-bar-fill {
+    transition: width 0.5s ease-in-out;
+}
+
+/* Custom scrollbar for aesthetics */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1; /* slate-300 */
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8; /* slate-400 */
+}
