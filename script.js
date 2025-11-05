@@ -1,5 +1,5 @@
+
 // --- 1. VOCABULARY DATA ---
-// (Truncated list for brevity)
 const vocabList = [
              { "id": 1, "word": "Abate", "bengali": "দূর করা, হ্রাস পাওয়া, কমা, প্রশমিত করা", "english": "subside, or moderate" },
             { "id": 2, "word": "Aberrant", "bengali": "বিচ্যুত, বিপথগামী", "english": "abnormal, or deviant" },
@@ -789,24 +789,24 @@ function handleNavClick(e) {
 }
 
 // --- 5. INITIALIZATION ---
-// This code runs *after* the DOM is parsed because of the 'defer' attribute
+document.addEventListener('DOMContentLoaded', () => {
+    navLinks.forEach(link => {
+        link.addEventListener('click', handleNavClick);
+    });
 
-navLinks.forEach(link => {
-    link.addEventListener('click', handleNavClick);
+    setupPracticeListeners(); // Setup practice button listeners once
+
+    loadState();    // Load from localStorage
+    loadWelcome();  // Load the initial page
+    updateStats();  // Render stats bar
+
+    // IMPORTANT: Initial call to render icons
+    // We check if 'lucide' is defined, which it should be
+    // because our script is deferred and runs after the lucide script.
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    } else {
+        // Fallback in case lucide fails to load
+        console.error("Lucide icon library did not load.");
+    }
 });
-
-setupPracticeListeners(); // Setup practice button listeners once
-
-loadState();    // Load from localStorage
-loadWelcome();  // Load the initial page
-updateStats();  // Render stats bar
-
-// IMPORTANT: Initial call to render icons
-// We check if 'lucide' is defined, which it should be
-// because our script is deferred and runs after the lucide script.
-if (typeof lucide !== 'undefined') {
-    lucide.createIcons();
-} else {
-    // Fallback in case lucide fails to load
-    console.error("Lucide icon library did not load.");
-}
