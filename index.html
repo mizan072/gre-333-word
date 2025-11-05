@@ -25,18 +25,18 @@
 <body class="bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 min-h-screen flex flex-col">
 
     <header class="bg-white dark:bg-slate-800 shadow-md sticky top-0 z-50 border-b border-slate-200 dark:border-slate-700">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div class="flex flex-wrap justify-between items-center">
-                <h1 class="text-2xl font-bold text-indigo-700 dark:text-indigo-400 flex items-center"><i data-lucide="graduation-cap" class="w-7 h-7 mr-2"></i>GRE 333 Learning System</h1>
-                <nav class="flex items-center space-x-1 sm:space-x-2 mt-2 sm:mt-0">
-                    <button id="main-menu-button" class="px-3 py-2 flex items-center text-sm font-medium text-indigo-600 dark:text-indigo-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md transition-colors"><i data-lucide="home" class="w-4 h-4 mr-1.5"></i>Main Menu</button>
-                    <button id="dictionary-button" class="px-3 py-2 flex items-center text-sm font-medium text-indigo-600 dark:text-indigo-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md transition-colors"><i data-lucide="book-open" class="w-4 h-4 mr-1.5"></i>Dictionary</button>
-                    <button id="stats-button" class="px-3 py-2 flex items-center text-sm font-medium text-indigo-600 dark:text-indigo-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md transition-colors"><i data-lucide="bar-chart-3" class="w-4 h-4 mr-1.5"></i>Stats</button>
-                    <button id="about-button" class="px-3 py-2 flex items-center text-sm font-medium text-indigo-600 dark:text-indigo-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md transition-colors"><i data-lucide="info" class="w-4 h-4 mr-1.5"></i>About</button>
+        <div class="max-w-5xl mx-auto px-2 sm:px-6 lg:px-8 py-3">
+            <div class="flex flex-wrap justify-center sm:justify-between items-center">
+                <h1 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-400 flex items-center text-center sm:text-left mb-2 sm:mb-0"><i data-lucide="graduation-cap" class="w-6 h-6 sm:w-7 sm:h-7 mr-2"></i>GRE 333 Learning System</h1>
+                <nav class="flex items-center space-x-1 sm:space-x-2">
+                    <button id="main-menu-button" class="px-2 sm:px-3 py-2 flex items-center text-xs sm:text-sm font-medium text-indigo-600 dark:text-indigo-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md transition-colors"><i data-lucide="home" class="w-4 h-4 mr-1 sm:mr-1.5"></i><span class="hidden sm:inline">Main Menu</span></button>
+                    <button id="dictionary-button" class="px-2 sm:px-3 py-2 flex items-center text-xs sm:text-sm font-medium text-indigo-600 dark:text-indigo-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md transition-colors"><i data-lucide="book-open" class="w-4 h-4 mr-1 sm:mr-1.5"></i><span class="hidden sm:inline">Dictionary</span></button>
+                    <button id="stats-button" class="px-2 sm:px-3 py-2 flex items-center text-xs sm:text-sm font-medium text-indigo-600 dark:text-indigo-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md transition-colors"><i data-lucide="bar-chart-3" class="w-4 h-4 mr-1 sm:mr-1.5"></i><span class="hidden sm:inline">Stats</span></button>
+                    <button id="about-button" class="px-2 sm:px-3 py-2 flex items-center text-xs sm:text-sm font-medium text-indigo-600 dark:text-indigo-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md transition-colors"><i data-lucide="info" class="w-4 h-4 mr-1 sm:mr-1.5"></i><span class="hidden sm:inline">About</span></button>
                     
                     <button id="dark-mode-toggle" class="p-2 rounded-full text-indigo-600 dark:text-indigo-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" aria-label="Toggle dark mode">
-                        <i id="dark-icon-moon" data-lucide="moon" class="w-6 h-6"></i>
-                        <i id="dark-icon-sun" data-lucide="sun" class="w-6 h-6 hidden"></i>
+                        <i id="dark-icon-moon" data-lucide="moon" class="w-5 h-5 sm:w-6 sm:h-6"></i>
+                        <i id="dark-icon-sun" data-lucide="sun" class="w-5 h-5 sm:w-6 sm:h-6 hidden"></i>
                     </button>
                 </nav>
             </div>
@@ -48,33 +48,33 @@
         </div>
     </header>
 
-    <main class="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8 flex-grow w-full">
+    <main class="max-w-5xl mx-auto p-2 sm:p-6 lg:p-8 flex-grow w-full">
 
         <section id="welcome-section" class="app-section">
-            <div class="bg-white dark:bg-slate-800 p-8 rounded-lg shadow-xl text-center">
-                <div class="max-w-xs mx-auto mb-6">
+            <div class="bg-white dark:bg-slate-800 p-4 sm:p-8 rounded-lg shadow-xl text-center">
+                <div class="max-w-xs mx-auto mb-4 sm:mb-6">
                     <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                         <path class="fill-indigo-500 dark:fill-indigo-400" d="M38.1,-63.3C50.2,-57.4,61.4,-49.5,69,-39.1C76.6,-28.7,80.6,-15.8,79.5,-3.6C78.4,8.6,72.2,20.2,64.8,30.3C57.4,40.4,48.8,49,38.8,56.7C28.8,64.4,17.4,71.2,5.2,73.1C-7,75,-20.1,72,-32.1,66.8C-44.1,61.6,-55,54.2,-63.5,44.7C-72,35.2,-78.1,23.6,-79.8,11.1C-81.5,-1.3,-78.8,-14.6,-72.2,-25.9C-65.6,-37.2,-55.1,-46.5,-44.2,-53.4C-33.3,-60.2,-22,-64.6,-10.5,-67.6C1.1,-70.6,12.6,-71.2,24.8,-68.9C37,-66.6,49.2,-62.3,58.1,-54.9L58.1,-54.9C57.1,-54.3,38.1,-63.3,38.1,-63.3Z" transform="translate(100 100) scale(1.2)" />
                       </svg>
                 </div>
-                <h2 class="text-3xl font-bold mb-4 text-indigo-800 dark:text-indigo-300 text-center">Welcome, Student!</h2>
-                <p class="text-lg text-slate-700 dark:text-slate-300 mb-6 max-w-2xl mx-auto">
+                <h2 class="text-2xl sm:text-3xl font-bold mb-4 text-indigo-800 dark:text-indigo-300 text-center">Welcome, Student!</h2>
+                <p class="text-base sm:text-lg text-slate-700 dark:text-slate-300 mb-6 max-w-2xl mx-auto">
                     Reading a list is not learning. We will master this 333-word vocabulary using a proven, psychological method.
                 </p>
 
                 <!-- --- NEW: Current Streak Display --- -->
                 <div id="main-menu-streak-display" class="mb-8 text-center" style="display: none;">
-                    <span class="text-2xl font-bold text-green-600 dark:text-green-400">🔥 Current Streak: <span id="main-menu-streak-count">0</span> Days!</span>
+                    <span class="text-xl sm:text-2xl font-bold text-green-600 dark:text-green-400">🔥 Current Streak: <span id="main-menu-streak-count">0</span> Days!</span>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left mb-10">
-                    <div class="bg-slate-50 dark:bg-slate-700 p-6 rounded-lg border border-slate-200 dark:border-slate-600">
-                        <h3 class="text-xl font-semibold text-indigo-700 dark:text-indigo-300 mb-2">Step 1: Learn in Chunks</h3>
-                        <p class="text-slate-600 dark:text-slate-300">You will be presented with 10 words at a time. Focus on understanding each word, its Bengali meaning, and its English synonym.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 text-left mb-10">
+                    <div class="bg-slate-50 dark:bg-slate-700 p-4 sm:p-6 rounded-lg border border-slate-200 dark:border-slate-600">
+                        <h3 class="text-lg sm:text-xl font-semibold text-indigo-700 dark:text-indigo-300 mb-2">Step 1: Learn in Chunks</h3>
+                        <p class="text-sm sm:text-base text-slate-600 dark:text-slate-300">You will be presented with 10 words at a time. Focus on understanding each word, its Bengali meaning, and its English synonym.</p>
                     </div>
-                    <div class="bg-slate-50 dark:bg-slate-700 p-6 rounded-lg border border-slate-200 dark:border-slate-600">
-                        <h3 class="text-xl font-semibold text-indigo-700 dark:text-indigo-300 mb-2">Step 2: Active Recall</h3>
-                        <p class="text-slate-600 dark:text-slate-300">Immediately after reviewing the 10 words, you will be tested on them. This active recall is the *most* effective way to build strong, long-term memory.</p>
+                    <div class="bg-slate-50 dark:bg-slate-700 p-4 sm:p-6 rounded-lg border border-slate-200 dark:border-slate-600">
+                        <h3 class="text-lg sm:text-xl font-semibold text-indigo-700 dark:text-indigo-300 mb-2">Step 2: Active Recall</h3>
+                        <p class="text-sm sm:text-base text-slate-600 dark:text-slate-300">Immediately after reviewing the 10 words, you will be tested on them. This active recall is the *most* effective way to build strong, long-term memory.</p>
                     </div>
                 </div>
 
@@ -116,12 +116,12 @@
                     </div>
                 </div>
 
-                <div class="bg-white dark:bg-slate-800 rounded-lg shadow-xl min-h-[30rem]">
-                    <div class="p-8 sm:p-12 min-h-[12rem] flex items-center justify-center">
-                        <h3 id="quiz-question" class="text-3xl sm:text-4xl font-bold text-center text-slate-800 dark:text-slate-100"></h3>
-                        <p id="quiz-question-bengali" class="lang-bn text-2xl sm:text-3xl font-bold text-center text-slate-800 dark:text-slate-100"></p>
+                <div class="bg-white dark:bg-slate-800 rounded-lg shadow-xl min-h-[20rem] sm:min-h-[30rem]">
+                    <div class="p-6 sm:p-12 min-h-[10rem] sm:min-h-[12rem] flex items-center justify-center">
+                        <h3 id="quiz-question" class="text-2xl sm:text-4xl font-bold text-center text-slate-800 dark:text-slate-100"></h3>
+                        <p id="quiz-question-bengali" class="lang-bn text-xl sm:text-3xl font-bold text-center text-slate-800 dark:text-slate-100"></p>
                     </div>
-                    <div id="quiz-options-container" class="p-6 bg-slate-50 dark:bg-slate-800 rounded-b-lg grid grid-cols-1 gap-4">
+                    <div id="quiz-options-container" class="p-4 sm:p-6 bg-slate-50 dark:bg-slate-800 rounded-b-lg grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                         </div>
                 </div>
 
@@ -200,19 +200,19 @@
         </section>
 
         <section id="stats-section" class="app-section">
-            <div class="bg-white dark:bg-slate-800 p-8 sm:p-12 rounded-lg shadow-xl max-w-4xl mx-auto">
-                <h2 class="text-3xl font-bold text-indigo-800 dark:text-indigo-300 mb-6 text-center flex items-center justify-center"><i data-lucide="layout-dashboard" class="w-8 h-8 mr-3"></i>Your Progress Dashboard</h2>
+            <div class="bg-white dark:bg-slate-800 p-4 sm:p-12 rounded-lg shadow-xl max-w-4xl mx-auto">
+                <h2 class="text-2xl sm:text-3xl font-bold text-indigo-800 dark:text-indigo-300 mb-6 text-center flex items-center justify-center"><i data-lucide="layout-dashboard" class="w-7 h-7 sm:w-8 sm:h-8 mr-3"></i>Your Progress Dashboard</h2>
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
 
                     <!-- Left Column: Streak and Difficult Words -->
-                    <div class="lg:col-span-1 space-y-8">
+                    <div class="lg:col-span-1 space-y-6 sm:space-y-8">
                         <!-- Study Streak -->
-                        <div class="bg-slate-50 dark:bg-slate-700 p-6 rounded-lg border border-slate-200 dark:border-slate-600">
-                            <h3 class="text-xl font-semibold text-indigo-700 dark:text-indigo-300 mb-4 text-center">Study Streak</h3>
+                        <div class="bg-slate-50 dark:bg-slate-700 p-4 sm:p-6 rounded-lg border border-slate-200 dark:border-slate-600">
+                            <h3 class="text-lg sm:text-xl font-semibold text-indigo-700 dark:text-indigo-300 mb-4 text-center">Study Streak</h3>
                             <div id="streak-display" class="text-center">
-                                <p class="text-6xl font-bold text-green-600">5</p>
-                                <p class="text-slate-600 dark:text-slate-400">Day Streak</p>
+                                <p class="text-5xl sm:text-6xl font-bold text-green-600">5</p>
+                                <p class="text-sm sm:text-base text-slate-600 dark:text-slate-400">Day Streak</p>
                             </div>
                             <div id="calendar-container" class="mt-4">
                                 <!-- Calendar will be generated here -->
@@ -220,8 +220,8 @@
                         </div>
 
                         <!-- Difficult Words -->
-                        <div class="bg-slate-50 dark:bg-slate-700 p-6 rounded-lg border border-slate-200 dark:border-slate-600">
-                            <h3 class="text-xl font-semibold text-red-700 dark:text-red-400 mb-4 text-center">Top 5 Difficult Words</h3>
+                        <div class="bg-slate-50 dark:bg-slate-700 p-4 sm:p-6 rounded-lg border border-slate-200 dark:border-slate-600">
+                            <h3 class="text-lg sm:text-xl font-semibold text-red-700 dark:text-red-400 mb-4 text-center">Top 5 Difficult Words</h3>
                             <div id="difficult-words-list" class="space-y-3">
                                 <!-- Difficult words will be listed here -->
                             </div>
@@ -229,9 +229,9 @@
                     </div>
 
                     <!-- Right Column: Mastery Breakdown -->
-                    <div class="lg:col-span-2 bg-slate-50 dark:bg-slate-700 p-6 rounded-lg border border-slate-200 dark:border-slate-600 flex flex-col justify-center items-center">
-                        <h3 class="text-xl font-semibold text-indigo-700 dark:text-indigo-300 mb-4 text-center">Mastery Breakdown</h3>
-                        <div class="w-full max-w-sm mx-auto">
+                    <div class="lg:col-span-2 bg-slate-50 dark:bg-slate-700 p-4 sm:p-6 rounded-lg border border-slate-200 dark:border-slate-600 flex flex-col justify-center items-center">
+                        <h3 class="text-lg sm:text-xl font-semibold text-indigo-700 dark:text-indigo-300 mb-4 text-center">Mastery Breakdown</h3>
+                        <div class="w-full max-w-xs sm:max-w-sm mx-auto">
                             <canvas id="mastery-chart"></canvas>
                         </div>
                     </div>
