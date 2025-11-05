@@ -1,57 +1,41 @@
-// --- 1. VOCABULARY DATA ---
-const vocabList = [
-    { "id": 1, "word": "Abate", "bengali": "দূর করা, হ্রাস পাওয়া, কমা, প্রশমিত করা", "english": "subside, or moderate" },
-    { "id": 2, "word": "Aberrant", "bengali": "বিচ্যুত, বিপথগামী", "english": "abnormal, or deviant" },
-    { "id": 3, "word": "Abeyance", "bengali": "মুলতবি অবস্থা, সাময়িক অক্রিয়তা", "english": "suspended action" },
-    { "id": 4, "word": "Abscond", "bengali": "পলাতক হওয়া, আত্মগোপন করিয়া থাকা", "english": "depart secretly and hide" },
-    { "id": 5, "word": "Abstemious", "bengali": "সংযমী, মিতাচারী", "english": "sparing in eating and drinking; temperate" },
-    { "id": 6, "word": "Admonish", "bengali": "সতর্ক করা, সাবধান করে দেওয়া", "english": "warn; reprove" },
-    { "id": 7, "word": "Adulterate", "bengali": "বিশুদ্ধতা নষ্ট করা, ভেজালমিশ্রিত, ব্যভিচা", "english": "make impure by adding inferior or tainted substances" },
-    { "id": 8, "word": "Aesthetic", "bengali": "নান্দনিক, সৌন্দর্যবোধ সংক্রান্ত", "english": "artistic; dealing with or capable of appreciating the beautiful" },
-    { "id": 9, "word": "Aggregate", "bengali": "সমষ্টিগত, একত্র করা", "english": "gather; accumulate" },
-    { "id": 10, "word": "Alacrity", "bengali": "উৎসাহ, সানন্দ, ব্যগ্রতা, উদ্দীপনা", "english": "cheerful promptness; eagerness" },
-    // ... (Your other 323 words) ...
-    { "id": 333, "word": "Zealot", "bengali": "অতি গোঁড়া লোক, ধর্মান্ধ", "english": "fanatic; person who shows excessive zeal" }
-];
-
-// --- 2. GLOBAL STATE ---
+// --- 1. GLOBAL STATE & CONSTANTS ---
 const WORDS_PER_CHUNK = 10;
-const DAILY_TEST_COUNT = 20; // --- NEW ---
-const SAVE_KEY = 'gre333Progress'; 
-const DARK_MODE_KEY = 'gre333DarkMode'; 
-let currentChunkIndex = 0; 
+const SAVE_KEY_PROGRESS = 'gre333Progress';
+const SAVE_KEY_WORDS = 'gre333Words';
+const DARK_MODE_KEY = 'gre333DarkMode';
+
+let vocabList = []; // To be loaded from JSON
+let words = []; // Holds word objects with SRS data
+let currentChunkIndex = 0;
 let totalMasteredCount = 0;
 let wordsInCurrentChunk = [];
 let currentQuizQuestionIndex = 0;
 let quizScores = { correct: 0, incorrect: 0 };
-let missedWords = []; 
+let missedWords = [];
 let isAnswered = false;
 
 // --- 3. DOM ELEMENTS ---
-const htmlElement = document.documentElement; 
+const htmlElement = document.documentElement;
 const sections = {
     welcome: document.getElementById('welcome-section'),
     learn: document.getElementById('learn-section'),
     test: document.getElementById('test-section'),
     results: document.getElementById('results-section'),
-    dictionary: document.getElementById('dictionary-section'),
-    about: document.getElementById('about-section') // --- NEW ---
+    dictionary: document.getElementById('dictionary-section') // --- NEW ---
 };
 const progressBarFill = document.getElementById('progress-bar-fill');
 const progressBarText = document.getElementById('progress-bar-text');
 
-// Header Buttons
+// --- NEW: Header Buttons ---
 const mainMenuButton = document.getElementById('main-menu-button');
 const dictionaryButton = document.getElementById('dictionary-button');
-const aboutButton = document.getElementById('about-button'); // --- NEW ---
 const darkModeToggle = document.getElementById('dark-mode-toggle');
 const darkIconMoon = document.getElementById('dark-icon-moon');
 const darkIconSun = document.getElementById('dark-icon-sun');
 
-// Welcome Screen Buttons
+// --- NEW: Welcome Screen Buttons ---
 const startLearningButton = document.getElementById('start-learning-button');
 const reviewMasteredButton = document.getElementById('review-mastered-button');
-const dailyRandomTestButton = document.getElementById('daily-random-test-button'); // --- NEW ---
 const resetProgressButton = document.getElementById('reset-progress-button');
 
 // Learn
@@ -78,20 +62,16 @@ const wordsToReviewContainer = document.getElementById('words-to-review-containe
 const wordsToReviewList = document.getElementById('words-to-review-list');
 const continueButton = document.getElementById('continue-button');
 
-// Dictionary
+// --- NEW: Dictionary ---
 const searchBar = document.getElementById('search-bar');
 const dictionaryListContainer = document.getElementById('dictionary-list-container');
-
-// --- NEW: Footer Buttons ---
-const footerMenuButton = document.getElementById('footer-menu-button');
-const footerAboutButton = document.getElementById('footer-about-button');
 
 
 // --- 4. CORE FUNCTIONS ---
 
 /**
  * Switches the visible section
- * @param {string} sectionName - 'welcome', 'learn', 'test', 'results', 'dictionary', 'about'
+ * @param {string} sectionName - 'welcome', 'learn', 'test', 'results', 'dictionary'
  */
 function showSection(sectionName) {
     Object.values(sections).forEach(section => {
@@ -99,7 +79,7 @@ function showSection(sectionName) {
     });
     if (sections[sectionName]) {
         sections[sectionName].classList.add('active');
-        window.scrollTo(0, 0); 
+        window.scrollTo(0, 0); // Scroll to top on section change
     }
 }
 
@@ -127,6 +107,7 @@ function updateMainProgress() {
     progressBarFill.style.width = `${percentage}%`;
     progressBarText.textContent = `Mastered: ${totalMasteredCount} of 333 words`;
 
+    // --- NEW: Update review button ---
     if (totalMasteredCount > 0) {
         reviewMasteredButton.textContent = `Review Mastered Words (${totalMasteredCount})`;
         reviewMasteredButton.style.display = 'block';
@@ -171,6 +152,7 @@ function loadLearnSection(chunkIndex) {
     
     let html = '';
     wordsInCurrentChunk.forEach(word => {
+        // --- UPDATED: Added dark mode classes ---
         html += `
         <div class="bg-white dark:bg-slate-800 p-5 rounded-lg shadow-md border border-slate-200 dark:border-slate-700">
             <div class="flex justify-between items-center mb-1">
@@ -290,6 +272,7 @@ function createOptionButton(text, isCorrect) {
     const button = document.createElement('button');
     button.dataset.correct = isCorrect;
     button.innerHTML = `<span class="font-medium">${text}</span>`;
+    // --- UPDATED: Added dark mode classes ---
     button.className = "quiz-option-button w-full text-left p-4 bg-white dark:bg-slate-700 border-2 border-slate-200 dark:border-slate-600 rounded-lg shadow-sm hover:bg-slate-50 dark:hover:bg-slate-600 transition-all duration-150 text-lg dark:text-slate-100";
     
     button.addEventListener('click', () => checkAnswer(button));
@@ -307,6 +290,7 @@ function checkAnswer(selectedButton) {
     const isCorrect = selectedButton.dataset.correct === 'true';
     const allButtons = quizOptionsContainer.querySelectorAll('button');
     const currentWord = wordsInCurrentChunk[currentQuizQuestionIndex];
+    const wordInMasterList = words.find(w => w.id === currentWord.id);
 
     allButtons.forEach(button => {
         button.disabled = true;
@@ -322,17 +306,21 @@ function checkAnswer(selectedButton) {
         feedbackText.textContent = "Correct!";
         feedbackText.className = "text-2xl font-semibold text-green-600 dark:text-green-400";
         feedbackCorrectAnswer.textContent = '';
+        if (wordInMasterList) {
+            wordInMasterList.strength = Math.min(12, wordInMasterList.strength + 1); // Cap strength
+            wordInMasterList.lastReviewed = new Date().toISOString();
+        }
     } else {
         quizScores.incorrect++;
-        missedWords.push(currentWord); 
-        
+        missedWords.push(currentWord);
         selectedButton.classList.remove('bg-white', 'dark:bg-slate-700', 'border-slate-200', 'dark:border-slate-600');
         selectedButton.classList.add('bg-red-100', 'dark:bg-red-900', 'border-red-500', 'dark:border-red-600', 'ring-2', 'ring-red-400');
-        
         feedbackText.textContent = "Incorrect";
         feedbackText.className = "text-2xl font-semibold text-red-600 dark:text-red-400";
-        
         feedbackCorrectAnswer.textContent = `Correct: ${currentWord.word} (${currentWord.english})`;
+        if (wordInMasterList) {
+            wordInMasterList.strength = Math.max(0, wordInMasterList.strength - 2); // Penalize
+        }
     }
 
     currentQuizQuestionIndex++;
@@ -340,8 +328,9 @@ function checkAnswer(selectedButton) {
     feedbackContainer.style.display = 'block';
 }
 
+
 /**
- * Updates the quiz progress bar and text
+ * Updates the (10-question) quiz progress bar
  */
 function updateQuizStats() {
     const total = wordsInCurrentChunk.length;
@@ -358,27 +347,17 @@ function showQuizComplete() {
     const total = wordsInCurrentChunk.length;
     const correct = quizScores.correct;
     const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
-    
-    // --- UPDATED: Check for review mode or daily test ---
-    // A "lesson" is only when the chunk size is the default.
-    const isLesson = wordsInCurrentChunk.length === WORDS_PER_CHUNK;
-    
-    if (isLesson) {
-        if (percentage >= 80) { // If they pass
-            totalMasteredCount = (currentChunkIndex + 1) * WORDS_PER_CHUNK;
-        }
-        totalMasteredCount = Math.min(totalMasteredCount, vocabList.length);
-        localStorage.setItem(SAVE_KEY, totalMasteredCount);
-        updateMainProgress();
-    }
-    
-    // --- Update Results Card Header ---
-    if (isLesson) {
-        resultsHeader.textContent = `Lesson ${currentChunkIndex + 1} Complete!`;
-    } else {
-        resultsHeader.textContent = `Test Complete!`;
-    }
 
+    // --- NEW: Save the entire words array with updated strengths ---
+    localStorage.setItem(SAVE_KEY_WORDS, JSON.stringify(words));
+    
+    // --- Recalculate mastered count and update progress ---
+    totalMasteredCount = words.filter(word => word.strength >= 10).length;
+    updateMainProgress();
+    
+    // --- Update Results Card ---
+    const isReview = wordsInCurrentChunk.length > WORDS_PER_CHUNK;
+    resultsHeader.textContent = isReview ? `Review Complete!` : `Lesson ${currentChunkIndex + 1} Complete!`;
     finalScoreText.textContent = `${correct} / ${total}`;
     finalPercentageText.textContent = `(${percentage}%)`;
 
@@ -394,6 +373,7 @@ function showQuizComplete() {
     if (missedWords.length > 0) {
         let html = '';
         missedWords.forEach(word => {
+            // --- UPDATED: Added dark mode classes ---
             html += `
             <div class="bg-red-50 dark:bg-slate-700 p-4 rounded-lg border border-red-200 dark:border-red-700">
                 <div class="flex justify-between items-center mb-1">
@@ -418,8 +398,8 @@ function showQuizComplete() {
     }
     
     // --- Configure Continue Button ---
-    if (!isLesson) {
-        // If it was a review or daily test, button just goes to main menu.
+    // If it was a review, button just goes to main menu.
+    if (isReview) {
         continueButton.textContent = "Return to Main Menu";
         continueButton.onclick = () => loadWelcome();
     } else {
@@ -449,24 +429,48 @@ function showQuizComplete() {
 // --- 5. NEW FUNCTIONS ---
 
 /**
- * Loads saved progress from localStorage
+ * --- NEW: Loads saved progress from localStorage
  */
 function loadProgress() {
-    const savedProgress = localStorage.getItem(SAVE_KEY);
-    if (savedProgress) {
-        totalMasteredCount = parseInt(savedProgress, 10);
+    const savedWords = localStorage.getItem(SAVE_KEY_WORDS);
+
+    if (savedWords) {
+        words = JSON.parse(savedWords);
+        // Ensure data integrity if vocabList changes
+        if (words.length !== vocabList.length) {
+            initializeWords();
+        }
     } else {
-        totalMasteredCount = 0;
+        initializeWords();
     }
-    loadWelcome(); 
+
+    // Recalculate mastered count based on strength
+    totalMasteredCount = words.filter(word => word.strength >= 10).length; // Define 'mastered' as strength >= 10
+
+    loadWelcome();
 }
 
 /**
- * Loads and populates the dictionary section
+ * --- NEW: Initializes the words array with SRS data for the first time
+ */
+function initializeWords() {
+    words = vocabList.map(v => ({
+        id: v.id,
+        strength: 0, // 0: unseen, 1-10: learning, >10: mastered
+        lastReviewed: null,
+        // We can keep the original data here too for easy access
+        ...v
+    }));
+    localStorage.setItem(SAVE_KEY_WORDS, JSON.stringify(words));
+}
+
+/**
+ * --- NEW: Loads and populates the dictionary section
  */
 function loadDictionary() {
     let html = '';
     vocabList.forEach(word => {
+        // --- UPDATED: Use data-word for search and added dark mode classes ---
         html += `
         <div class="dictionary-word-card bg-white dark:bg-slate-800 p-5 rounded-lg shadow-md border border-slate-200 dark:border-slate-700" data-word="${word.word.toLowerCase()} ${word.bengali} ${word.english.toLowerCase()}">
             <div class="flex justify-between items-center mb-1">
@@ -487,7 +491,7 @@ function loadDictionary() {
 }
 
 /**
- * Filters the dictionary list based on search bar input
+ * --- NEW: Filters the dictionary list based on search bar input
  */
 function filterDictionary() {
     const searchTerm = searchBar.value.toLowerCase();
@@ -504,7 +508,7 @@ function filterDictionary() {
 }
 
 /**
- * Toggles dark mode
+ * --- NEW: Toggles dark mode
  */
 function toggleDarkMode() {
     htmlElement.classList.toggle('dark');
@@ -514,7 +518,7 @@ function toggleDarkMode() {
 }
 
 /**
- * Updates the dark mode icons
+ * --- NEW: Updates the dark mode icons
  * @param {boolean} isDarkMode
  */
 function updateDarkModeIcons(isDarkMode) {
@@ -528,7 +532,7 @@ function updateDarkModeIcons(isDarkMode) {
 }
 
 /**
- * Loads saved dark mode state
+ * --- NEW: Loads saved dark mode state
  */
 function loadDarkModeState() {
     const isDarkMode = localStorage.getItem(DARK_MODE_KEY) === 'true';
@@ -539,12 +543,23 @@ function loadDarkModeState() {
 }
 
 /**
- * Starts the review mode
+ * --- NEW: Starts the review mode
  */
 function startReviewMode() {
-    const reviewWords = vocabList.slice(0, totalMasteredCount);
+    // --- NEW SRS LOGIC ---
+    // Sort words by strength (lowest first), then by last reviewed (oldest first)
+    const sortedWords = [...words].sort((a, b) => {
+        if (a.strength !== b.strength) {
+            return a.strength - b.strength;
+        }
+        return new Date(a.lastReviewed) - new Date(b.lastReviewed);
+    });
+
+    // Take the 20 weakest words for review
+    const reviewWords = sortedWords.slice(0, 20);
+
     if (reviewWords.length === 0) {
-        alert("You haven't mastered any words yet!");
+        alert("No words available for review.");
         return;
     }
     wordsInCurrentChunk = reviewWords;
@@ -552,24 +567,12 @@ function startReviewMode() {
 }
 
 /**
- * --- NEW: Starts the daily random test ---
- */
-function startDailyRandomTest() {
-    const shuffledList = [...vocabList]; // Create a copy
-    shuffleArray(shuffledList); // Shuffle the copy
-    
-    // Get the first N words
-    wordsInCurrentChunk = shuffledList.slice(0, DAILY_TEST_COUNT); 
-    
-    startTest();
-}
-
-/**
- * Resets all saved progress
+ * --- NEW: Resets all saved progress
  */
 function resetProgress() {
     if (confirm("Are you sure you want to reset all your progress? This cannot be undone.")) {
-        localStorage.removeItem(SAVE_KEY);
+        localStorage.removeItem(SAVE_KEY_WORDS);
+        initializeWords(); // Re-initialize the words array
         totalMasteredCount = 0;
         loadWelcome();
     }
@@ -577,48 +580,54 @@ function resetProgress() {
 
 
 // --- 6. EVENT LISTENERS ---
-document.addEventListener('DOMContentLoaded', () => {
-    // Initial Load
-    loadDarkModeState();
-    loadProgress(); 
-    loadDictionary(); 
-    
-    // --- UPDATED: Navigation ---
-    mainMenuButton.addEventListener('click', loadWelcome);
-    dictionaryButton.addEventListener('click', () => showSection('dictionary'));
-    aboutButton.addEventListener('click', () => showSection('about')); // --- NEW ---
-    darkModeToggle.addEventListener('click', toggleDarkMode);
-
-    // --- Welcome Screen ---
-    startLearningButton.addEventListener('click', () => {
-        const nextChunkIndex = Math.floor(totalMasteredCount / WORDS_PER_CHUNK);
-        loadLearnSection(nextChunkIndex);
-    });
-    reviewMasteredButton.addEventListener('click', startReviewMode);
-    dailyRandomTestButton.addEventListener('click', startDailyRandomTest); // --- NEW ---
-    resetProgressButton.addEventListener('click', resetProgress);
-
-    // --- Learn Section ---
-    startTestButton.addEventListener('click', startTest);
-    
-    // --- Test Section ---
-    nextQuestionButton.addEventListener('click', loadQuestion);
-
-    // --- Dictionary ---
-    searchBar.addEventListener('input', filterDictionary);
-
-    // --- NEW: Footer ---
-    footerMenuButton.addEventListener('click', loadWelcome);
-    footerAboutButton.addEventListener('click', () => showSection('about'));
-
-    // --- Global: Event Delegation for Speak Buttons ---
-    document.body.addEventListener('click', function(event) {
-        const speakButton = event.target.closest('.speak-button');
-        if (speakButton) {
-            const wordToSpeak = speakButton.dataset.word;
-            if (wordToSpeak) {
-                speakWord(wordToSpeak);
-            }
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        const response = await fetch('vocabulary.json');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
-    });
+        vocabList = await response.json();
+
+        // --- UPDATED: Initial Load ---
+        loadDarkModeState();
+        loadProgress(); // This now handles the initial load and calls loadWelcome()
+        loadDictionary(); // Pre-load the dictionary in the background
+
+        // --- Navigation ---
+        mainMenuButton.addEventListener('click', loadWelcome);
+        dictionaryButton.addEventListener('click', () => showSection('dictionary'));
+        darkModeToggle.addEventListener('click', toggleDarkMode);
+
+        // --- Welcome Screen ---
+        startLearningButton.addEventListener('click', () => {
+            const nextChunkIndex = Math.floor(totalMasteredCount / WORDS_PER_CHUNK);
+            loadLearnSection(nextChunkIndex);
+        });
+        reviewMasteredButton.addEventListener('click', startReviewMode);
+        resetProgressButton.addEventListener('click', resetProgress);
+
+        // --- Learn Section ---
+        startTestButton.addEventListener('click', startTest);
+
+        // --- Test Section ---
+        nextQuestionButton.addEventListener('click', loadQuestion);
+
+        // --- Dictionary ---
+        searchBar.addEventListener('input', filterDictionary);
+
+        // --- Global: Event Delegation for Speak Buttons ---
+        document.body.addEventListener('click', function(event) {
+            const speakButton = event.target.closest('.speak-button');
+            if (speakButton) {
+                const wordToSpeak = speakButton.dataset.word;
+                if (wordToSpeak) {
+                    speakWord(wordToSpeak);
+                }
+            }
+        });
+    } catch (error) {
+        console.error("Failed to load vocabulary:", error);
+        // Display an error message to the user
+        document.body.innerHTML = '<div class="text-red-500 text-center p-8">Failed to load vocabulary data. Please try refreshing the page.</div>';
+    }
 });
