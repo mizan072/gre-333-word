@@ -1,5 +1,4 @@
 // --- 1. VOCABULARY DATA ---
-// I have manually parsed and cleaned the data from your PDF.
 const vocabList = [
     { "id": 1, "word": "Abate", "bengali": "দূর করা, হ্রাস পাওয়া, কমা, প্রশমিত করা", "english": "subside, or moderate" },
     { "id": 2, "word": "Aberrant", "bengali": "বিচ্যুত, বিপথগামী", "english": "abnormal, or deviant" },
@@ -326,7 +325,7 @@ const vocabList = [
     { "id": 323, "word": "Veracious", "bengali": "সত্যবাদী, সত্যনিষ্ঠ", "english": "truthful" },
     { "id": 324, "word": "Verbose", "bengali": "শব্দবহুল, শব্দভারাক্রান্ত", "english": "wordy" },
     { "id": 325, "word": "Viable", "bengali": "টেকসই", "english": "practical or workable" },
-    { "id": 26, "word": "Viscous", "bengali": "আঠালো চচ্চটে", "english": "sticky, gluey" },
+    { "id": 326, "word": "Viscous", "bengali": "আঠালো চচ্চটে", "english": "sticky, gluey" },
     { "id": 327, "word": "Vituperative", "bengali": "গালাগালিপূর্ণ, নিন্দাপূর্ণ", "english": "abusive; scolding" },
     { "id": 328, "word": "Volatile", "bengali": "পরিবর্তনশীল", "english": "changeable; explosive; evaporation rapidly" },
     { "id": 329, "word": "Warranted", "bengali": "নিশ্চয় করিয়া বলা", "english": "justified; authorized" },
@@ -338,27 +337,44 @@ const vocabList = [
 
 // --- 2. GLOBAL STATE ---
 const WORDS_PER_CHUNK = 10;
-let currentChunkIndex = 0; // 0 = words 1-10, 1 = words 11-20
+const SAVE_KEY = 'gre333Progress'; // --- NEW ---
+const DARK_MODE_KEY = 'gre333DarkMode'; // --- NEW ---
+let currentChunkIndex = 0; 
 let totalMasteredCount = 0;
 let wordsInCurrentChunk = [];
 let currentQuizQuestionIndex = 0;
 let quizScores = { correct: 0, incorrect: 0 };
-let missedWords = []; // For corrective feedback
+let missedWords = []; 
 let isAnswered = false;
 
 // --- 3. DOM ELEMENTS ---
+const htmlElement = document.documentElement; // --- NEW ---
 const sections = {
     welcome: document.getElementById('welcome-section'),
     learn: document.getElementById('learn-section'),
     test: document.getElementById('test-section'),
-    results: document.getElementById('results-section')
+    results: document.getElementById('results-section'),
+    dictionary: document.getElementById('dictionary-section') // --- NEW ---
 };
 const progressBarFill = document.getElementById('progress-bar-fill');
 const progressBarText = document.getElementById('progress-bar-text');
 
+// --- NEW: Header Buttons ---
+const mainMenuButton = document.getElementById('main-menu-button');
+const dictionaryButton = document.getElementById('dictionary-button');
+const darkModeToggle = document.getElementById('dark-mode-toggle');
+const darkIconMoon = document.getElementById('dark-icon-moon');
+const darkIconSun = document.getElementById('dark-icon-sun');
+
+// --- NEW: Welcome Screen Buttons ---
+const startLearningButton = document.getElementById('start-learning-button');
+const reviewMasteredButton = document.getElementById('review-mastered-button');
+const resetProgressButton = document.getElementById('reset-progress-button');
+
 // Learn
 const learnHeader = document.getElementById('learn-header');
 const learnContainer = document.getElementById('learn-container');
+const startTestButton = document.getElementById('start-test-button');
 
 // Test
 const quizProgressText = document.getElementById('quiz-progress-text');
@@ -379,12 +395,16 @@ const wordsToReviewContainer = document.getElementById('words-to-review-containe
 const wordsToReviewList = document.getElementById('words-to-review-list');
 const continueButton = document.getElementById('continue-button');
 
+// --- NEW: Dictionary ---
+const searchBar = document.getElementById('search-bar');
+const dictionaryListContainer = document.getElementById('dictionary-list-container');
+
 
 // --- 4. CORE FUNCTIONS ---
 
 /**
  * Switches the visible section
- * @param {string} sectionName - 'welcome', 'learn', 'test', 'results'
+ * @param {string} sectionName - 'welcome', 'learn', 'test', 'results', 'dictionary'
  */
 function showSection(sectionName) {
     Object.values(sections).forEach(section => {
@@ -397,32 +417,36 @@ function showSection(sectionName) {
 }
 
 /**
- * NEW: Pronounces the given word using Web Speech API
+ * Pronounces the given word using Web Speech API
  * @param {string} word - The word to speak
  */
 function speakWord(word) {
     if ('speechSynthesis' in window) {
-        // Cancel any previous speech to avoid overlap
         window.speechSynthesis.cancel();
-        
         const utterance = new SpeechSynthesisUtterance(word);
-        utterance.lang = 'en-US'; // Force US English pronunciation
-        utterance.rate = 0.9;     // Speak slightly slower for clarity
+        utterance.lang = 'en-US'; 
+        utterance.rate = 0.9;   
         window.speechSynthesis.speak(utterance);
     } else {
-        // Handle browsers that don't support this
         console.warn("Browser does not support Speech Synthesis.");
-        // We can't use alert(), so we'll just log to console.
     }
 }
 
 /**
- * Updates the main progress bar
+ * Updates the main progress bar and review button
  */
 function updateMainProgress() {
     const percentage = (totalMasteredCount / vocabList.length) * 100;
     progressBarFill.style.width = `${percentage}%`;
     progressBarText.textContent = `Mastered: ${totalMasteredCount} of 333 words`;
+
+    // --- NEW: Update review button ---
+    if (totalMasteredCount > 0) {
+        reviewMasteredButton.textContent = `Review Mastered Words (${totalMasteredCount})`;
+        reviewMasteredButton.style.display = 'block';
+    } else {
+        reviewMasteredButton.style.display = 'none';
+    }
 }
 
 /**
@@ -434,15 +458,14 @@ function loadWelcome() {
     const startWord = (nextChunkIndex * WORDS_PER_CHUNK) + 1;
     const endWord = Math.min(startWord + WORDS_PER_CHUNK - 1, vocabList.length);
     
-    const startButton = document.getElementById('start-learning-button');
     if (startWord > vocabList.length) {
-        startButton.textContent = "Congratulations! You've completed all lessons!";
-        startButton.disabled = true;
-        startButton.classList.add('bg-green-700', 'opacity-70');
+        startLearningButton.textContent = "Congratulations! You've completed all lessons!";
+        startLearningButton.disabled = true;
+        startLearningButton.classList.add('bg-green-700', 'opacity-70');
     } else {
-        startButton.textContent = `Begin Lesson ${nextChunkIndex + 1} (Words ${startWord}-${endWord})`;
-        startButton.disabled = false;
-        startButton.classList.remove('bg-green-700', 'opacity-70');
+        startLearningButton.textContent = `Begin Lesson ${nextChunkIndex + 1} (Words ${startWord}-${endWord})`;
+        startLearningButton.disabled = false;
+        startLearningButton.classList.remove('bg-green-700', 'opacity-70');
     }
     
     showSection('welcome');
@@ -462,20 +485,20 @@ function loadLearnSection(chunkIndex) {
     
     let html = '';
     wordsInCurrentChunk.forEach(word => {
-        // UPDATED CARD: Added speak button
+        // --- UPDATED: Added dark mode classes ---
         html += `
-        <div class="bg-white p-5 rounded-lg shadow-md border border-slate-200">
+        <div class="bg-white dark:bg-slate-800 p-5 rounded-lg shadow-md border border-slate-200 dark:border-slate-700">
             <div class="flex justify-between items-center mb-1">
-                <h4 class="text-2xl font-bold text-indigo-800">${word.id}. ${word.word}</h4>
-                <button class="speak-button p-2 rounded-full text-indigo-600 hover:bg-indigo-100 active:bg-indigo-200 transition-colors" data-word="${word.word}" aria-label="Pronounce word">
+                <h4 class="text-2xl font-bold text-indigo-800 dark:text-indigo-300">${word.id}. ${word.word}</h4>
+                <button class="speak-button p-2 rounded-full text-indigo-600 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-slate-700 active:bg-indigo-200 dark:active:bg-slate-600 transition-colors" data-word="${word.word}" aria-label="Pronounce word">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                       <path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3Z" />
                       <path d="M17 11a1 1 0 0 1 1 1v.5a6 6 0 0 1-12 0V12a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v.5a3 3 0 0 0 6 0V12a1 1 0 0 1 1-1h1Z" />
                     </svg>
                 </button>
             </div>
-            <p class="lang-bn text-xl text-slate-700 mb-2">${word.bengali}</p>
-            <p class="text-md text-slate-500 italic">${word.english}</p>
+            <p class="lang-bn text-xl text-slate-700 dark:text-slate-300 mb-2">${word.bengali}</p>
+            <p class="text-md text-slate-500 dark:text-slate-400 italic">${word.english}</p>
         </div>
         `;
     });
@@ -495,7 +518,7 @@ function shuffleArray(array) {
 }
 
 /**
- * Starts the quiz for the current chunk
+ * Starts the quiz for the current chunk (or review)
  */
 function startTest() {
     shuffleArray(wordsInCurrentChunk);
@@ -525,7 +548,6 @@ function loadQuestion() {
     
     const currentWord = wordsInCurrentChunk[currentQuizQuestionIndex];
     
-    // Randomly pick a quiz type: (Word -> Def) or (Def -> Word)
     const quizType = Math.random() > 0.5 ? 'word-to-def' : 'def-to-word';
     
     let question = '';
@@ -534,7 +556,6 @@ function loadQuestion() {
     let options = [];
 
     if (quizType === 'word-to-def') {
-        // 50/50 chance of showing English word or Bengali word
         if (Math.random() > 0.5) {
             question = currentWord.word;
         } else {
@@ -549,32 +570,23 @@ function loadQuestion() {
         options.push(currentWord);
     }
 
-    // Get 3 random wrong answers FROM THE CURRENT CHUNK
-    while (options.length < 4 && options.length < wordsInCurrentChunk.length) {
-        const randomWord = wordsInCurrentChunk[Math.floor(Math.random() * wordsInCurrentChunk.length)];
-        if (randomWord.id !== currentWord.id && !options.some(opt => opt.id === randomWord.id)) {
-            options.push(randomWord);
-        }
-    }
-    
-    // If chunk is < 4, fill with randoms from full list
+    // Get 3 random wrong answers
+    let fullWordListForOptions = wordsInCurrentChunk.length > 4 ? wordsInCurrentChunk : vocabList;
     while (options.length < 4) {
-         const randomWord = vocabList[Math.floor(Math.random() * vocabList.length)];
-         if (!options.some(opt => opt.id === randomWord.id)) {
+        const randomWord = fullWordListForOptions[Math.floor(Math.random() * fullWordListForOptions.length)];
+        if (!options.some(opt => opt.id === randomWord.id)) {
             options.push(randomWord);
         }
     }
 
     shuffleArray(options);
     
-    // Set question text
     if (questionIsBengali) {
         quizQuestionBengali.textContent = question;
     } else {
         quizQuestion.textContent = question;
     }
     
-    // Create option buttons
     options.forEach(option => {
         let text = (quizType === 'word-to-def') ? option.english : option.word;
         let isCorrect = (text === correctAnswer);
@@ -592,11 +604,9 @@ function loadQuestion() {
 function createOptionButton(text, isCorrect) {
     const button = document.createElement('button');
     button.dataset.correct = isCorrect;
-    
-    let buttonHTML = `<span class="font-medium">${text}</span>`;
-    
-    button.innerHTML = buttonHTML;
-    button.className = "quiz-option-button w-full text-left p-4 bg-white border-2 border-slate-200 rounded-lg shadow-sm hover:bg-slate-50 hover:border-indigo-300 transition-all duration-150 text-lg";
+    button.innerHTML = `<span class="font-medium">${text}</span>`;
+    // --- UPDATED: Added dark mode classes ---
+    button.className = "quiz-option-button w-full text-left p-4 bg-white dark:bg-slate-700 border-2 border-slate-200 dark:border-slate-600 rounded-lg shadow-sm hover:bg-slate-50 dark:hover:bg-slate-600 transition-all duration-150 text-lg dark:text-slate-100";
     
     button.addEventListener('click', () => checkAnswer(button));
     quizOptionsContainer.appendChild(button);
@@ -618,25 +628,27 @@ function checkAnswer(selectedButton) {
         button.disabled = true;
         const correct = button.dataset.correct === 'true';
         if (correct) {
-            button.classList.remove('bg-white', 'border-slate-200');
-            button.classList.add('bg-green-100', 'border-green-500', 'ring-2', 'ring-green-400');
+            // --- UPDATED: Added dark mode classes ---
+            button.classList.remove('bg-white', 'dark:bg-slate-700', 'border-slate-200', 'dark:border-slate-600');
+            button.classList.add('bg-green-100', 'dark:bg-green-900', 'border-green-500', 'dark:border-green-600', 'ring-2', 'ring-green-400');
         }
     });
 
     if (isCorrect) {
         quizScores.correct++;
         feedbackText.textContent = "Correct!";
-        feedbackText.className = "text-2xl font-semibold text-green-600";
+        feedbackText.className = "text-2xl font-semibold text-green-600 dark:text-green-400";
         feedbackCorrectAnswer.textContent = '';
     } else {
         quizScores.incorrect++;
-        missedWords.push(currentWord); // Add to review list
+        missedWords.push(currentWord); 
         
-        selectedButton.classList.remove('bg-white', 'border-slate-200');
-        selectedButton.classList.add('bg-red-100', 'border-red-500', 'ring-2', 'ring-red-400');
+        // --- UPDATED: Added dark mode classes ---
+        selectedButton.classList.remove('bg-white', 'dark:bg-slate-700', 'border-slate-200', 'dark:border-slate-600');
+        selectedButton.classList.add('bg-red-100', 'dark:bg-red-900', 'border-red-500', 'dark:border-red-600', 'ring-2', 'ring-red-400');
         
         feedbackText.textContent = "Incorrect";
-        feedbackText.className = "text-2xl font-semibold text-red-600";
+        feedbackText.className = "text-2xl font-semibold text-red-600 dark:text-red-400";
         
         feedbackCorrectAnswer.textContent = `Correct: ${currentWord.word} (${currentWord.english})`;
     }
@@ -654,7 +666,7 @@ function updateQuizStats() {
     const progress = currentQuizQuestionIndex;
     
     quizProgressText.textContent = `Question ${Math.min(progress + 1, total)} of ${total}`;
-    quizProgressBar.style.width = `${((progress) / total) * 100}%`; // Progress *before* answering
+    quizProgressBar.style.width = `${((progress) / total) * 100}%`; 
 }
 
 /**
@@ -665,59 +677,50 @@ function showQuizComplete() {
     const correct = quizScores.correct;
     const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
     
-    // Update *total* mastered count *only* with the new words they got right
-    // This logic assumes you "master" a word by getting it right once.
-    // We need to adjust this to track *which* words are mastered.
-    // For now, let's just update the count based on this quiz.
-    
-    // A better logic:
-    // Calculate how many words from this chunk are *newly* mastered.
-    // This is complex. Let's stick to the simpler logic for now:
-    // totalMasteredCount = (currentChunkIndex * WORDS_PER_CHUNK) + correct;
-    // No, that's wrong. Let's just track the total *score*.
-    // Let's assume for now `totalMasteredCount` is just the *next word to learn*.
-    
-    if (percentage >= 80) { // If they pass (e.g., 8/10)
-        totalMasteredCount = (currentChunkIndex + 1) * WORDS_PER_CHUNK;
-    } else {
-        // They don't advance. totalMasteredCount stays the same.
+    // --- UPDATED: Save progress IF this was a lesson (not a review) ---
+    const isReview = wordsInCurrentChunk.length > WORDS_PER_CHUNK;
+    if (!isReview) {
+        if (percentage >= 80) { // If they pass
+            totalMasteredCount = (currentChunkIndex + 1) * WORDS_PER_CHUNK;
+        }
+        totalMasteredCount = Math.min(totalMasteredCount, vocabList.length);
+        
+        // --- NEW: Save to localStorage ---
+        localStorage.setItem(SAVE_KEY, totalMasteredCount);
+        updateMainProgress();
     }
-    // Clamp to max
-    totalMasteredCount = Math.min(totalMasteredCount, vocabList.length);
-    updateMainProgress();
     
     // --- Update Results Card ---
-    resultsHeader.textContent = `Lesson ${currentChunkIndex + 1} Complete!`;
+    resultsHeader.textContent = isReview ? `Review Complete!` : `Lesson ${currentChunkIndex + 1} Complete!`;
     finalScoreText.textContent = `${correct} / ${total}`;
     finalPercentageText.textContent = `(${percentage}%)`;
 
-    // Adjust score color
     if (percentage >= 80) {
-        finalScoreText.className = "text-7xl font-bold text-green-600 my-4";
+        finalScoreText.className = "text-7xl font-bold text-green-600 dark:text-green-400 my-4";
     } else if (percentage >= 50) {
-        finalScoreText.className = "text-7xl font-bold text-yellow-600 my-4";
+        finalScoreText.className = "text-7xl font-bold text-yellow-600 dark:text-yellow-400 my-4";
     } else {
-        finalScoreText.className = "text-7xl font-bold text-red-600 my-4";
+        finalScoreText.className = "text-7xl font-bold text-red-600 dark:text-red-400 my-4";
     }
 
     // --- Populate Corrective Feedback ---
     if (missedWords.length > 0) {
         let html = '';
         missedWords.forEach(word => {
-            // UPDATED CARD: Added speak button to review
+            // --- UPDATED: Added dark mode classes ---
             html += `
-            <div class="bg-red-50 p-4 rounded-lg border border-red-200">
+            <div class="bg-red-50 dark:bg-slate-700 p-4 rounded-lg border border-red-200 dark:border-red-700">
                 <div class="flex justify-between items-center mb-1">
-                    <h4 class="text-xl font-bold text-red-800">${word.word}</h4>
-                    <button class="speak-button p-2 rounded-full text-red-700 hover:bg-red-100 active:bg-red-200 transition-colors" data-word="${word.word}" aria-label="Pronounce word">
+                    <h4 class="text-xl font-bold text-red-800 dark:text-red-300">${word.word}</h4>
+                    <button class="speak-button p-2 rounded-full text-red-700 dark:text-red-300 hover:bg-red-100 dark:hover:bg-slate-600" data-word="${word.word}" aria-label="Pronounce word">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                           <path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3Z" />
                           <path d="M17 11a1 1 0 0 1 1 1v.5a6 6 0 0 1-12 0V12a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v.5a3 3 0 0 0 6 0V12a1 1 0 0 1 1-1h1Z" />
                         </svg>
                     </button>
                 </div>
-                <p class="lang-bn text-lg text-slate-700 mb-1">${word.bengali}</p>
-                <p class="text-md text-slate-500 italic">${word.english}</p>
+                <p class="lang-bn text-lg text-slate-700 dark:text-slate-300 mb-1">${word.bengali}</p>
+                <p class="text-md text-slate-500 dark:text-slate-400 italic">${word.english}</p>
             </div>
             `;
         });
@@ -729,63 +732,190 @@ function showQuizComplete() {
     }
     
     // --- Configure Continue Button ---
-    let nextChunkIndex = currentChunkIndex;
-    
-    if (percentage < 80) {
-        // Failed the test, repeat this lesson.
-        continueButton.textContent = `Retry Lesson ${currentChunkIndex + 1}`;
-        continueButton.onclick = () => loadLearnSection(currentChunkIndex);
+    // If it was a review, button just goes to main menu.
+    if (isReview) {
+        continueButton.textContent = "Return to Main Menu";
+        continueButton.onclick = () => loadWelcome();
     } else {
-        // Passed the test, advance to next lesson.
-        nextChunkIndex = currentChunkIndex + 1;
-        const nextStartWord = nextChunkIndex * WORDS_PER_CHUNK;
-
-        if (nextStartWord >= vocabList.length) {
-            continueButton.textContent = "All Lessons Complete! Return to Menu";
-            continueButton.onclick = () => loadWelcome();
+        // Original lesson logic
+        let nextChunkIndex = currentChunkIndex;
+        if (percentage < 80) {
+            continueButton.textContent = `Retry Lesson ${currentChunkIndex + 1}`;
+            continueButton.onclick = () => loadLearnSection(currentChunkIndex);
         } else {
-            const nextEndWord = Math.min(nextStartWord + WORDS_PER_CHUNK, vocabList.length);
-            continueButton.textContent = `Continue to Lesson ${nextChunkIndex + 1} (Words ${nextStartWord + 1}-${nextEndWord})`;
-            continueButton.onclick = () => loadLearnSection(nextChunkIndex);
+            nextChunkIndex = currentChunkIndex + 1;
+            const nextStartWord = nextChunkIndex * WORDS_PER_CHUNK;
+
+            if (nextStartWord >= vocabList.length) {
+                continueButton.textContent = "All Lessons Complete! Return to Menu";
+                continueButton.onclick = () => loadWelcome();
+            } else {
+                const nextEndWord = Math.min(nextStartWord + WORDS_PER_CHUNK, vocabList.length);
+                continueButton.textContent = `Continue to Lesson ${nextChunkIndex + 1} (Words ${nextStartWord + 1}-${nextEndWord})`;
+                continueButton.onclick = () => loadLearnSection(nextChunkIndex);
+            }
         }
     }
     
     showSection('results');
 }
 
+// --- 5. NEW FUNCTIONS ---
 
-// --- 5. EVENT LISTENERS ---
-// We wrap this in DOMContentLoaded to make sure all the
-// HTML elements exist before we try to find them.
+/**
+ * --- NEW: Loads saved progress from localStorage
+ */
+function loadProgress() {
+    const savedProgress = localStorage.getItem(SAVE_KEY);
+    if (savedProgress) {
+        totalMasteredCount = parseInt(savedProgress, 10);
+    } else {
+        totalMasteredCount = 0;
+    }
+    // This will call updateMainProgress and show the correct screen
+    loadWelcome(); 
+}
+
+/**
+ * --- NEW: Loads and populates the dictionary section
+ */
+function loadDictionary() {
+    let html = '';
+    vocabList.forEach(word => {
+        // --- UPDATED: Use data-word for search and added dark mode classes ---
+        html += `
+        <div class="dictionary-word-card bg-white dark:bg-slate-800 p-5 rounded-lg shadow-md border border-slate-200 dark:border-slate-700" data-word="${word.word.toLowerCase()} ${word.bengali} ${word.english.toLowerCase()}">
+            <div class="flex justify-between items-center mb-1">
+                <h4 class="text-2xl font-bold text-indigo-800 dark:text-indigo-300">${word.id}. ${word.word}</h4>
+                <button class="speak-button p-2 rounded-full text-indigo-600 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-slate-700" data-word="${word.word}" aria-label="Pronounce word">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                      <path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3Z" />
+                      <path d="M17 11a1 1 0 0 1 1 1v.5a6 6 0 0 1-12 0V12a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v.5a3 3 0 0 0 6 0V12a1 1 0 0 1 1-1h1Z" />
+                    </svg>
+                </button>
+            </div>
+            <p class="lang-bn text-xl text-slate-700 dark:text-slate-300 mb-2">${word.bengali}</p>
+            <p class="text-md text-slate-500 dark:text-slate-400 italic">${word.english}</p>
+        </div>
+        `;
+    });
+    dictionaryListContainer.innerHTML = html;
+}
+
+/**
+ * --- NEW: Filters the dictionary list based on search bar input
+ */
+function filterDictionary() {
+    const searchTerm = searchBar.value.toLowerCase();
+    const allWords = dictionaryListContainer.querySelectorAll('.dictionary-word-card');
+    
+    allWords.forEach(card => {
+        const wordText = card.dataset.word;
+        if (wordText.includes(searchTerm)) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+
+/**
+ * --- NEW: Toggles dark mode
+ */
+function toggleDarkMode() {
+    htmlElement.classList.toggle('dark');
+    const isDarkMode = htmlElement.classList.contains('dark');
+    localStorage.setItem(DARK_MODE_KEY, isDarkMode);
+    updateDarkModeIcons(isDarkMode);
+}
+
+/**
+ * --- NEW: Updates the dark mode icons
+ * @param {boolean} isDarkMode
+ */
+function updateDarkModeIcons(isDarkMode) {
+    if (isDarkMode) {
+        darkIconMoon.classList.add('hidden');
+        darkIconSun.classList.remove('hidden');
+    } else {
+        darkIconMoon.classList.remove('hidden');
+        darkIconSun.classList.add('hidden');
+    }
+}
+
+/**
+ * --- NEW: Loads saved dark mode state
+ */
+function loadDarkModeState() {
+    const isDarkMode = localStorage.getItem(DARK_MODE_KEY) === 'true';
+    if (isDarkMode) {
+        htmlElement.classList.add('dark');
+    }
+    updateDarkModeIcons(isDarkMode);
+}
+
+/**
+ * --- NEW: Starts the review mode
+ */
+function startReviewMode() {
+    const reviewWords = vocabList.slice(0, totalMasteredCount);
+    if (reviewWords.length === 0) {
+        alert("You haven't mastered any words yet!");
+        return;
+    }
+    wordsInCurrentChunk = reviewWords;
+    startTest();
+}
+
+/**
+ * --- NEW: Resets all saved progress
+ */
+function resetProgress() {
+    if (confirm("Are you sure you want to reset all your progress? This cannot be undone.")) {
+        localStorage.removeItem(SAVE_KEY);
+        totalMasteredCount = 0;
+        loadWelcome();
+    }
+}
+
+
+// --- 6. EVENT LISTENERS ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Main Navigation
-    document.getElementById('start-learning-button').addEventListener('click', () => {
+    // --- UPDATED: Initial Load ---
+    loadDarkModeState();
+    loadProgress(); // This now handles the initial load and calls loadWelcome()
+    loadDictionary(); // Pre-load the dictionary in the background
+    
+    // --- Navigation ---
+    mainMenuButton.addEventListener('click', loadWelcome);
+    dictionaryButton.addEventListener('click', () => showSection('dictionary'));
+    darkModeToggle.addEventListener('click', toggleDarkMode);
+
+    // --- Welcome Screen ---
+    startLearningButton.addEventListener('click', () => {
         const nextChunkIndex = Math.floor(totalMasteredCount / WORDS_PER_CHUNK);
         loadLearnSection(nextChunkIndex);
     });
-    document.getElementById('main-menu-button').addEventListener('click', loadWelcome);
+    reviewMasteredButton.addEventListener('click', startReviewMode);
+    resetProgressButton.addEventListener('click', resetProgress);
 
-    // Learn Section
-    document.getElementById('start-test-button').addEventListener('click', startTest);
+    // --- Learn Section ---
+    startTestButton.addEventListener('click', startTest);
     
-    // Test Section
+    // --- Test Section ---
     nextQuestionButton.addEventListener('click', loadQuestion);
 
-    // --- NEW: Event Delegation for Speak Buttons ---
-    // This single listener handles all speak buttons in the app
+    // --- Dictionary ---
+    searchBar.addEventListener('input', filterDictionary);
+
+    // --- Global: Event Delegation for Speak Buttons ---
     document.body.addEventListener('click', function(event) {
-        // Find the closest parent button with the 'speak-button' class
         const speakButton = event.target.closest('.speak-button');
-        
         if (speakButton) {
-            // Get the word from the 'data-word' attribute
             const wordToSpeak = speakButton.dataset.word;
             if (wordToSpeak) {
                 speakWord(wordToSpeak);
             }
         }
     });
-
-    // Initial Load
-    loadWelcome();
 });
