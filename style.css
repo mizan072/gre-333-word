@@ -1,86 +1,92 @@
-/* --- Global Body & Font --- */
+/* --- GLOBAL STYLES --- */
 body {
     font-family: 'Inter', sans-serif;
-    /* Tailwind's bg-slate-100 */
-    background-color: #f1f5f9; 
-    /* NEW: These are part of the sticky footer layout */
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
 }
 
-/* Tailwind's dark:bg-slate-900 */
-body.dark {
-    background-color: #0f172a;
-}
-
-/* Custom font class for Bengali */
+/* --- Bengali Font --- */
 .lang-bn {
     font-family: 'Hind Siliguri', sans-serif;
-    font-weight: 500; /* Bolder for clarity */
 }
 
-/* --- Section Navigation --- */
-/* Hide sections by default */
+/* --- APP SECTIONS --- */
 .app-section {
     display: none;
 }
-
-/* Show the active section */
 .app-section.active {
     display: block;
 }
 
-/* --- Transitions --- */
-/* Custom progress bar transition */
-#progress-bar-fill {
-    transition: width 0.5s ease-in-out;
+/* --- QUIZ BUTTON FEEDBACK --- */
+.quiz-option-button.correct {
+    background-color: #dcfce7; /* green-100 */
+    border-color: #4ade80; /* green-400 */
 }
-.fade-in-card {
-    opacity: 0;
-    transform: translateY(20px);
-    animation: fadeIn 0.5s ease-out forwards;
+.dark .quiz-option-button.correct {
+    background-color: #166534; /* green-800 */
+    border-color: #22c55e; /* green-500 */
 }
 
+.quiz-option-button.incorrect {
+    background-color: #fee2e2; /* red-100 */
+    border-color: #f87171; /* red-400 */
+}
+.dark .quiz-option-button.incorrect {
+    background-color: #991b1b; /* red-800 */
+    border-color: #ef4444; /* red-500 */
+}
+
+/* --- NEW: STAGGERED FADE-IN ANIMATION --- */
 @keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
     to {
         opacity: 1;
         transform: translateY(0);
     }
 }
 
-
-/* --- Custom Scrollbar --- */
-/* Light Mode Scrollbar */
-::-webkit-scrollbar {
-    width: 8px;
+.fade-in-card {
+    animation: fadeIn 0.5s ease-out forwards;
+    opacity: 0; /* Start hidden */
 }
-::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 10px;
+/* --- Custom Styles for Learning Section --- */
+.learn-bengali-meaning {
+    font-weight: 500;
+    position: relative;
+    padding-left: 1.25rem;
 }
-::-webkit-scrollbar-thumb {
-    /* slate-300 */
-    background: #cbd5e1; 
-    border-radius: 10px;
+.learn-bengali-meaning::before {
+    content: 'Meaning:';
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #4b5563; /* slate-600 */
+    position: absolute;
+    left: 0;
+    top: -1.2rem;
 }
-::-webkit-scrollbar-thumb:hover {
-    /* slate-400 */
-    background: #94a3b8;
+.dark .learn-bengali-meaning::before {
+    color: #94a3b8; /* slate-400 */
 }
-
-/* NEW: Dark Mode Scrollbar */
-html.dark ::-webkit-scrollbar-track {
-    background: #1e293b; /* slate-800 */
+.learn-english-synonym {
+    position: relative;
+    padding-left: 1.25rem;
+    font-style: italic;
 }
-html.dark ::-webkit-scrollbar-thumb {
-    background: #475569; /* slate-600 */
+.learn-english-synonym::before {
+    content: 'Synonym:';
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #4b5563; /* slate-600 */
+    position: absolute;
+    left: 0;
+    top: -1.2rem;
 }
-html.dark ::-webkit-scrollbar-thumb:hover {
-    background: #64748b; /* slate-500 */
-}
-
-.word-review-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+.dark .learn-english-synonym::before {
+    color: #94a3b8; /* slate-400 */
 }
