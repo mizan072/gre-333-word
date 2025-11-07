@@ -51,42 +51,34 @@ body {
     animation: fadeIn 0.5s ease-out forwards;
     opacity: 0; /* Start hidden */
 }
-/* --- Custom Styles for Learning Section --- */
-.learn-bengali-meaning {
-    font-weight: 500;
-    position: relative;
-    padding-left: 1.25rem;
+
+/* --- NEW: Professional Definition Styling --- */
+.definition-block {
+    border-left: 3px solid #4f46e5; /* indigo-600 */
+    padding-left: 1rem;
 }
-.learn-bengali-meaning::before {
-    content: 'Meaning:';
-    font-family: 'Inter', sans-serif;
+
+.dark .definition-block {
+    border-left-color: #818cf8; /* indigo-400 */
+}
+
+.definition-title {
     font-size: 0.8rem;
-    font-weight: 700;
+    font-weight: 600;
     text-transform: uppercase;
-    color: #4b5563; /* slate-600 */
-    position: absolute;
-    left: 0;
-    top: -1.2rem;
+    color: #475569; /* slate-600 */
+    margin-bottom: 0.25rem;
+    letter-spacing: 0.05em;
 }
-.dark .learn-bengali-meaning::before {
+
+.dark .definition-title {
     color: #94a3b8; /* slate-400 */
 }
-.learn-english-synonym {
-    position: relative;
-    padding-left: 1.25rem;
-    font-style: italic;
+
+.definition-content {
+    color: #1e293b; /* slate-800 */
 }
-.learn-english-synonym::before {
-    content: 'Synonym:';
-    font-family: 'Inter', sans-serif;
-    font-size: 0.8rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    color: #4b5563; /* slate-600 */
-    position: absolute;
-    left: 0;
-    top: -1.2rem;
-}
-.dark .learn-english-synonym::before {
-    color: #94a3b8; /* slate-400 */
+
+.dark .definition-content {
+    color: #e2e8f0; /* slate-200 */
 }

@@ -169,17 +169,29 @@ function loadLearnSection(chunkIndex) {
         card.className = "bg-white dark:bg-slate-800 p-5 rounded-lg shadow-md border border-slate-200 dark:border-slate-700 fade-in-card";
         card.style.animationDelay = `${index * 100}ms`;
         card.innerHTML = `
-            <div class="flex justify-between items-center mb-2">
-                <h4 class="text-2xl font-bold text-indigo-800 dark:text-indigo-300">${word.id}. ${word.word}</h4>
+            <div class="flex justify-between items-start mb-3">
+                <div>
+                    <h4 class="text-2xl font-bold text-indigo-800 dark:text-indigo-300">${word.id}. ${word.word}</h4>
+                </div>
                 <button class="speak-button p-2 rounded-full text-indigo-600 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-slate-700 active:bg-indigo-200 dark:active:bg-slate-600 transition-colors" data-word="${word.word}" aria-label="Pronounce word">
                     <i data-lucide="volume-2" class="w-6 h-6"></i>
                 </button>
             </div>
-            <p class="learn-bengali-meaning lang-bn text-2xl text-slate-800 dark:text-slate-200 mb-3">${word.bengali}</p>
-            <p class="learn-english-synonym text-lg text-slate-600 dark:text-slate-400">${word.english}</p>
+            <div class="space-y-4">
+                <div class="definition-block">
+                    <p class="definition-title">Meaning</p>
+                    <p class="lang-bn definition-content text-xl">${word.bengali}</p>
+                </div>
+                <div class="definition-block">
+                    <p class="definition-title">Synonym</p>
+                    <p class="definition-content text-lg">${word.english}</p>
+                </div>
+            </div>
         `;
         learnContainer.appendChild(card);
     });
+
+    lucide.createIcons();
     showSection('learn');
 }
 
