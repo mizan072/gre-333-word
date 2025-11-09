@@ -684,10 +684,11 @@ function renderDifficultWords() {
     const sortedWords = [...words]
         .filter(word => word.missedCount > 0)
         .sort((a, b) => b.missedCount - a.missedCount)
-        .slice(0, 5);
+        .slice(0, 20);
 
     if (sortedWords.length === 0) {
         difficultWordsList.innerHTML = `<p class="text-slate-500 dark:text-slate-400 text-center italic">No missed words yet. Keep practicing!</p>`;
+        document.getElementById('create-test-button').style.display = 'none';
         return;
     }
 
@@ -699,10 +700,30 @@ function renderDifficultWords() {
                     <span class="font-semibold text-slate-800 dark:text-slate-200">${word.word}</span>
                     <span class="text-sm text-red-500 dark:text-red-400 font-bold">${word.missedCount} missed</span>
                 </div>
+                <p class="lang-bn text-slate-600 dark:text-slate-400">${word.bengali}</p>
+                <p class="text-sm text-slate-500 dark:text-slate-500 italic">${word.english}</p>
+                 <button class="speak-button p-2 rounded-full text-indigo-600 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-slate-700 active:bg-indigo-200 dark:active:bg-slate-600 transition-colors" data-word="${word.word}" aria-label="Pronounce word">
+                    <i data-lucide="volume-2" class="w-5 h-5"></i>
+                </button>
             </div>
         `;
     });
     difficultWordsList.innerHTML = html;
+    lucide.createIcons();
+    document.getElementById('create-test-button').style.display = 'flex';
+}
+function createDifficultWordsTest() {
+    const difficultWords = [...words]
+        .filter(word => word.missedCount > 0)
+        .sort((a, b) => b.missedCount - a.missedCount)
+        .slice(0, 20);
+
+    if (difficultWords.length > 0) {
+        wordsInCurrentChunk = difficultWords;
+        startTest();
+    } else {
+        alert("No difficult words to create a test from. Keep practicing!");
+    }
 }
 function calculateStudyStreak() {
     const studyHistory = JSON.parse(localStorage.getItem('studyHistory') || '[]');
@@ -862,6 +883,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         reviewMasteredButton.addEventListener('click', startReviewMode);
         dailyRandomTestButton.addEventListener('click', startDailyRandomTest);
         resetProgressButton.addEventListener('click', resetProgress);
+        document.getElementById('create-test-button').addEventListener('click', createDifficultWordsTest);
+
 
         // --- Learn Section ---
         startTestButton.addEventListener('click', startTest);
