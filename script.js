@@ -15,6 +15,9 @@ let quizScores = { correct: 0, incorrect: 0 };
 let missedWords = [];
 let isAnswered = false;
 let masteryChart = null;
+let currentMode = 'gre'; // 'gre' or 'previous'
+let previousVocabChunkIndex = 0;
+
 
 // --- 3. DOM ELEMENTS ---
 const htmlElement = document.documentElement;
@@ -161,11 +164,19 @@ function loadWelcome() {
  * Loads the Learn section for a specific chunk
  * @param {number} chunkIndex - The index of the chunk (0 = words 1-10)
  */
-function loadLearnSection(chunkIndex) {
-    currentChunkIndex = chunkIndex;
+function loadLearnSection(chunkIndex, mode = 'gre') {
+    currentMode = mode;
+    let vocabSource = (mode === 'gre') ? vocabList : previousVocabList;
+
+    if (mode === 'gre') {
+        currentChunkIndex = chunkIndex;
+    } else {
+        previousVocabChunkIndex = chunkIndex;
+    }
+
     const start = chunkIndex * WORDS_PER_CHUNK;
-    const end = Math.min(start + WORDS_PER_CHUNK, vocabList.length);
-    wordsInCurrentChunk = vocabList.slice(start, end);
+    const end = Math.min(start + WORDS_PER_CHUNK, vocabSource.length);
+    wordsInCurrentChunk = vocabSource.slice(start, end);
 
     learnHeader.textContent = `Learning Set: Words ${start + 1}-${end}`;
     
@@ -174,6 +185,13 @@ function loadLearnSection(chunkIndex) {
         const card = document.createElement('div');
         card.className = "bg-white dark:bg-slate-800 p-5 rounded-lg shadow-md border border-slate-200 dark:border-slate-700 fade-in-card";
         card.style.animationDelay = `${index * 100}ms`;
+        const synonymHTML = word.english ? `
+            <div class="definition-block">
+                <p class="definition-title">Synonym</p>
+                <p class="definition-content text-lg">${word.english}</p>
+            </div>
+        ` : '';
+
         card.innerHTML = `
             <div class="flex justify-between items-start mb-3">
                 <div>
@@ -188,10 +206,7 @@ function loadLearnSection(chunkIndex) {
                     <p class="definition-title">Meaning</p>
                     <p class="lang-bn definition-content text-xl">${word.bengali}</p>
                 </div>
-                <div class="definition-block">
-                    <p class="definition-title">Synonym</p>
-                    <p class="definition-content text-lg">${word.english}</p>
-                </div>
+                ${synonymHTML}
             </div>
         `;
         learnContainer.appendChild(card);
@@ -243,34 +258,60 @@ function loadQuestion() {
     
     const currentWord = wordsInCurrentChunk[currentQuizQuestionIndex];
     
-    const quizType = Math.random() > 0.5 ? 'word-to-def' : 'def-to-word';
-    
+    // Determine if the word has a synonym, which dictates quiz type
+    const hasSynonym = currentWord.english && currentWord.english.trim() !== '';
+
+    // If no synonym, force a word-to-Bengali or Bengali-to-word quiz.
+    // Otherwise, choose randomly between synonym-based and meaning-based.
+    const quizType = !hasSynonym
+        ? (Math.random() > 0.5 ? 'word-to-bengali' : 'bengali-to-word')
+        : (Math.random() > 0.5 ? 'word-to-def' : 'def-to-word');
+
     let question = '';
     let questionIsBengali = false;
     let correctAnswer = '';
     let options = [];
+    let optionSourceKey = '';
 
-    if (quizType === 'word-to-def') {
-        if (Math.random() > 0.5) {
+    switch (quizType) {
+        case 'word-to-bengali':
             question = currentWord.word;
-        } else {
+            correctAnswer = currentWord.bengali;
+            optionSourceKey = 'bengali';
+            options.push(currentWord);
+            break;
+        case 'bengali-to-word':
             question = currentWord.bengali;
             questionIsBengali = true;
-        }
-        correctAnswer = currentWord.english;
-        options.push(currentWord);
-    } else { // def-to-word
-        question = currentWord.english;
-        correctAnswer = currentWord.word;
-        options.push(currentWord);
+            correctAnswer = currentWord.word;
+            optionSourceKey = 'word';
+            options.push(currentWord);
+            break;
+        case 'word-to-def': // Synonym based
+            question = currentWord.word;
+            correctAnswer = currentWord.english;
+            optionSourceKey = 'english';
+            options.push(currentWord);
+            break;
+        case 'def-to-word': // Synonym based
+            question = currentWord.english;
+            correctAnswer = currentWord.word;
+            optionSourceKey = 'word';
+            options.push(currentWord);
+            break;
     }
 
     // Get 3 random wrong answers
-    let fullWordListForOptions = wordsInCurrentChunk.length > 4 ? wordsInCurrentChunk : vocabList;
+    let vocabSource = (currentMode === 'gre') ? vocabList : previousVocabList;
+    let fullWordListForOptions = wordsInCurrentChunk.length > 4 ? wordsInCurrentChunk : vocabSource;
     while (options.length < 4) {
         const randomWord = fullWordListForOptions[Math.floor(Math.random() * fullWordListForOptions.length)];
-        if (!options.some(opt => opt.id === randomWord.id)) {
-            options.push(randomWord);
+        // Ensure the random word is not the same as the correct one and has the required property
+        if (randomWord.id !== currentWord.id && randomWord[optionSourceKey]) {
+            // Also ensure the option text is unique
+            if (!options.some(opt => opt[optionSourceKey] === randomWord[optionSourceKey])) {
+                options.push(randomWord);
+            }
         }
     }
 
@@ -283,7 +324,7 @@ function loadQuestion() {
     }
     
     options.forEach(option => {
-        let text = (quizType === 'word-to-def') ? option.english : option.word;
+        let text = option[optionSourceKey];
         let isCorrect = (text === correctAnswer);
         createOptionButton(text, isCorrect);
     });
@@ -345,7 +386,8 @@ function checkAnswer(selectedButton) {
         selectedButton.classList.add('bg-red-100', 'dark:bg-red-900', 'border-red-500', 'dark:border-red-600', 'ring-2', 'ring-red-400');
         feedbackText.textContent = "Incorrect";
         feedbackText.className = "text-2xl font-semibold text-red-600 dark:text-red-400";
-        feedbackCorrectAnswer.textContent = `Correct: ${currentWord.word} (${currentWord.english})`;
+        const correctAnswerText = currentWord.english ? `Correct: ${currentWord.word} (${currentWord.english})` : `Correct: ${currentWord.word} (${currentWord.bengali})`;
+        feedbackCorrectAnswer.textContent = correctAnswerText;
         if (wordInMasterList) {
             wordInMasterList.strength = Math.max(0, wordInMasterList.strength - 2); // Penalize
             wordInMasterList.missedCount = (wordInMasterList.missedCount || 0) + 1; // --- NEW ---
@@ -412,6 +454,7 @@ function showQuizComplete() {
     if (missedWords.length > 0) {
         let html = '';
         missedWords.forEach(word => {
+            const synonymHTML = word.english ? `<p class="text-md text-slate-500 dark:text-slate-400 italic">${word.english}</p>` : '';
             // --- UPDATED: Added dark mode classes ---
             html += `
             <div class="word-review-card bg-red-50 dark:bg-slate-700 p-4 rounded-lg border border-red-200 dark:border-red-700 transition-transform duration-150">
@@ -422,7 +465,7 @@ function showQuizComplete() {
                     </button>
                 </div>
                 <p class="lang-bn text-lg text-slate-700 dark:text-slate-300 mb-1">${word.bengali}</p>
-                <p class="text-md text-slate-500 dark:text-slate-400 italic">${word.english}</p>
+                ${synonymHTML}
             </div>
             `;
         });
@@ -434,28 +477,42 @@ function showQuizComplete() {
     }
     
     // --- Configure Continue Button ---
-    // If it was a review, button just goes to main menu.
-    if (isReview) {
-        continueButton.textContent = "Return to Main Menu";
-        continueButton.onclick = () => loadWelcome();
-    } else {
-        // Original lesson logic
-        let nextChunkIndex = currentChunkIndex;
-        if (percentage < 80) {
-            continueButton.textContent = `Retry Lesson ${currentChunkIndex + 1}`;
-            continueButton.onclick = () => loadLearnSection(currentChunkIndex);
+    if (currentMode === 'gre') {
+        // If it was a review, button just goes to main menu.
+        if (isReview) {
+            continueButton.textContent = "Return to Main Menu";
+            continueButton.onclick = () => loadWelcome();
         } else {
-            nextChunkIndex = currentChunkIndex + 1;
-            const nextStartWord = nextChunkIndex * WORDS_PER_CHUNK;
-
-            if (nextStartWord >= vocabList.length) {
-                continueButton.textContent = "All Lessons Complete! Return to Menu";
-                continueButton.onclick = () => loadWelcome();
+            // Original lesson logic
+            let nextChunkIndex = currentChunkIndex;
+            if (percentage < 80) {
+                continueButton.textContent = `Retry Lesson ${currentChunkIndex + 1}`;
+                continueButton.onclick = () => loadLearnSection(currentChunkIndex);
             } else {
-                const nextEndWord = Math.min(nextStartWord + WORDS_PER_CHUNK, vocabList.length);
-                continueButton.textContent = `Continue to Lesson ${nextChunkIndex + 1} (Words ${nextStartWord + 1}-${nextEndWord})`;
-                continueButton.onclick = () => loadLearnSection(nextChunkIndex);
+                nextChunkIndex = currentChunkIndex + 1;
+                const nextStartWord = nextChunkIndex * WORDS_PER_CHUNK;
+
+                if (nextStartWord >= vocabList.length) {
+                    continueButton.textContent = "All Lessons Complete! Return to Menu";
+                    continueButton.onclick = () => loadWelcome();
+                } else {
+                    const nextEndWord = Math.min(nextStartWord + WORDS_PER_CHUNK, vocabList.length);
+                    continueButton.textContent = `Continue to Lesson ${nextChunkIndex + 1} (Words ${nextStartWord + 1}-${nextEndWord})`;
+                    continueButton.onclick = () => loadLearnSection(nextChunkIndex);
+                }
             }
+        }
+    } else { // currentMode is 'previous'
+        let nextChunkIndex = previousVocabChunkIndex + 1;
+        const nextStartWord = nextChunkIndex * WORDS_PER_CHUNK;
+
+        if (nextStartWord >= previousVocabList.length) {
+            continueButton.textContent = "All Previous Vocabulary Lessons Complete! Return to Menu";
+            continueButton.onclick = () => loadWelcome();
+        } else {
+            const nextEndWord = Math.min(nextStartWord + WORDS_PER_CHUNK, previousVocabList.length);
+            continueButton.textContent = `Continue to Next Lesson (Words ${nextStartWord + 1}-${nextEndWord})`;
+            continueButton.onclick = () => loadLearnSection(nextChunkIndex, 'previous');
         }
     }
     
@@ -506,10 +563,13 @@ function initializeWords() {
  */
 function loadDictionary() {
     let html = '';
-    vocabList.forEach(word => {
+    const allVocab = [...vocabList, ...previousVocabList];
+    allVocab.forEach(word => {
+        const synonymHTML = word.english ? `<p class="text-md text-slate-500 dark:text-slate-400 italic">${word.english}</p>` : '';
+        const searchData = `${word.word.toLowerCase()} ${word.bengali} ${word.english ? word.english.toLowerCase() : ''}`;
         // --- UPDATED: Use data-word for search and added dark mode classes ---
         html += `
-        <div class="dictionary-word-card bg-white dark:bg-slate-800 p-4 rounded-lg shadow-md border border-slate-200 dark:border-slate-700 transition-shadow hover:shadow-lg" data-word="${word.word.toLowerCase()} ${word.bengali} ${word.english.toLowerCase()}">
+        <div class="dictionary-word-card bg-white dark:bg-slate-800 p-4 rounded-lg shadow-md border border-slate-200 dark:border-slate-700 transition-shadow hover:shadow-lg" data-word="${searchData}">
             <div class="flex justify-between items-center mb-1">
                 <h4 class="text-xl font-bold text-indigo-800 dark:text-indigo-300">${word.id}. ${word.word}</h4>
                 <button class="speak-button p-2 rounded-full text-indigo-600 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-slate-700" data-word="${word.word}" aria-label="Pronounce word">
@@ -517,7 +577,7 @@ function loadDictionary() {
                 </button>
             </div>
             <p class="lang-bn text-xl text-slate-700 dark:text-slate-300 mb-2">${word.bengali}</p>
-            <p class="text-md text-slate-500 dark:text-slate-400 italic">${word.english}</p>
+            ${synonymHTML}
         </div>
         `;
     });
@@ -608,8 +668,7 @@ function startDailyRandomTest() {
 }
 
 function startPreviousVocabularyTest() {
-    wordsInCurrentChunk = previousVocabList;
-    startTest();
+    loadLearnSection(0, 'previous');
 }
 
 /**
@@ -705,6 +764,7 @@ function renderDifficultWords() {
 
     let html = '';
     sortedWords.forEach(word => {
+        const synonymHTML = word.english ? `<p class="text-sm text-slate-500 dark:text-slate-500 italic">${word.english}</p>` : '';
         html += `
             <div class="bg-white dark:bg-slate-800 p-3 rounded-md shadow-sm border border-slate-200 dark:border-slate-600">
                 <div class="flex justify-between items-center">
@@ -712,7 +772,7 @@ function renderDifficultWords() {
                     <span class="text-sm text-red-500 dark:text-red-400 font-bold">${word.missedCount} missed</span>
                 </div>
                 <p class="lang-bn text-slate-600 dark:text-slate-400">${word.bengali}</p>
-                <p class="text-sm text-slate-500 dark:text-slate-500 italic">${word.english}</p>
+                ${synonymHTML}
                  <button class="speak-button p-2 rounded-full text-indigo-600 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-slate-700 active:bg-indigo-200 dark:active:bg-slate-600 transition-colors" data-word="${word.word}" aria-label="Pronounce word">
                     <i data-lucide="volume-2" class="w-5 h-5"></i>
                 </button>
