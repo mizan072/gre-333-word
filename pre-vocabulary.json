@@ -1,0 +1,2489 @@
+[
+    {
+        "id": 1,
+        "word": "Fortuitous",
+        "bengali": "আকস্মিক"
+    },
+    {
+        "id": 2,
+        "word": "Inherent",
+        "bengali": "স্বাভাবিক"
+    },
+    {
+        "id": 3,
+        "word": "Legible",
+        "bengali": "সহজপাঠ্য"
+    },
+    {
+        "id": 4,
+        "word": "Indelible",
+        "bengali": "অমোচোনীয়"
+    },
+    {
+        "id": 5,
+        "word": "Endurable",
+        "bengali": "সহনীয়/টেকসই"
+    },
+    {
+        "id": 6,
+        "word": "Gregarious",
+        "bengali": "মিশুক /সামাজিক"
+    },
+    {
+        "id": 7,
+        "word": "Introverted",
+        "bengali": "অন্তর্মুখী ব্যক্তি (আত্মকেন্দ্রিক চিন্তা চেতনা)"
+    },
+    {
+        "id": 8,
+        "word": "Alleviate",
+        "bengali": "উপশম করা"
+    },
+    {
+        "id": 9,
+        "word": "Aggravate",
+        "bengali": "অধিক গুরুতর/ শোচনীয় করে তোলা"
+    },
+    {
+        "id": 10,
+        "word": "Elevate",
+        "bengali": "উত্তোলন করা, উন্নীত করা"
+    },
+    {
+        "id": 11,
+        "word": "Desultory",
+        "bengali": "নিয়মশৃংখলাহীন"
+    },
+    {
+        "id": 12,
+        "word": "Methodical",
+        "bengali": "সুশৃংখল"
+    },
+    {
+        "id": 13,
+        "word": "Integral",
+        "bengali": "অপরিহার্য অংশ"
+    },
+    {
+        "id": 14,
+        "word": "Dissipate",
+        "bengali": "দূর করা/অপচয় করা"
+    },
+    {
+        "id": 15,
+        "word": "Exempt",
+        "bengali": "রেহাই/অব্যহতি দেয়া"
+    },
+    {
+        "id": 16,
+        "word": "Obliged",
+        "bengali": "বাধিত বা ঋণী হয়েছে এমন"
+    },
+    {
+        "id": 17,
+        "word": "Steadfast",
+        "bengali": "অবিচলিত"
+    },
+    {
+        "id": 18,
+        "word": "Valiant",
+        "bengali": "সাহসী"
+    },
+    {
+        "id": 19,
+        "word": "Repute",
+        "bengali": "সুখ্যাতি"
+    },
+    {
+        "id": 20,
+        "word": "Susceptible",
+        "bengali": "স্পর্শকাতর"
+    },
+    {
+        "id": 21,
+        "word": "Opaque",
+        "bengali": "অস্বচ্ছ"
+    },
+    {
+        "id": 22,
+        "word": "Tepid",
+        "bengali": "অল্প গরম বা কুসুম গরম"
+    },
+    {
+        "id": 23,
+        "word": "Seething",
+        "bengali": "ফুটে উপচে পড়া এমন"
+    },
+    {
+        "id": 24,
+        "word": "Intimate",
+        "bengali": "অন্তরঙ্গ"
+    },
+    {
+        "id": 25,
+        "word": "Turbid",
+        "bengali": "ঘোলাটে"
+    },
+    {
+        "id": 26,
+        "word": "Swollen",
+        "bengali": "ফোলা বা ফুলে যাওয়া"
+    },
+    {
+        "id": 27,
+        "word": "Accretion",
+        "bengali": "সংযোজনের মাধ্যমে বৃদ্ধি"
+    },
+    {
+        "id": 28,
+        "word": "Procession",
+        "bengali": "মিছিল বা শোভাযাত্রা"
+    },
+    {
+        "id": 29,
+        "word": "Applaud",
+        "bengali": "প্রশংসা"
+    },
+    {
+        "id": 30,
+        "word": "Evasion",
+        "bengali": "এড়িয়ে যাওয়া"
+    },
+    {
+        "id": 31,
+        "word": "Transmit",
+        "bengali": "প্রেরণ বা হস্তান্তর করা"
+    },
+    {
+        "id": 32,
+        "word": "Obscure",
+        "bengali": "অন্ধকার"
+    },
+    {
+        "id": 33,
+        "word": "Withhold",
+        "bengali": "পেছনে টেনে রাখা বা আটকিয়ে রাখা"
+    },
+    {
+        "id": 34,
+        "word": "Generous",
+        "bengali": "উদার"
+    },
+    {
+        "id": 35,
+        "word": "Craven",
+        "bengali": "কাপুরুষ"
+    },
+    {
+        "id": 36,
+        "word": "Ulterior",
+        "bengali": "গোপন বা অপ্রকাশিত"
+    },
+    {
+        "id": 37,
+        "word": "Stated",
+        "bengali": "প্রকাশিত হওয়া"
+    },
+    {
+        "id": 38,
+        "word": "Rampage",
+        "bengali": "উত্তেজিত অবস্থা"
+    },
+    {
+        "id": 39,
+        "word": "Strident",
+        "bengali": "কর্কশ"
+    },
+    {
+        "id": 40,
+        "word": "Euphonious",
+        "bengali": "সুমধুর"
+    },
+    {
+        "id": 41,
+        "word": "Laconic",
+        "bengali": "স্বল্পভাষী"
+    },
+    {
+        "id": 42,
+        "word": "Verbose",
+        "bengali": "বাক্সর্বস্ব"
+    },
+    {
+        "id": 43,
+        "word": "Wicked",
+        "bengali": "দুশ্চরিত্র"
+    },
+    {
+        "id": 44,
+        "word": "Bureaucrat",
+        "bengali": "সরকারী কর্মকর্তা"
+    },
+    {
+        "id": 45,
+        "word": "Reinstate",
+        "bengali": "পুনর্বহাল করা"
+    },
+    {
+        "id": 46,
+        "word": "Indict",
+        "bengali": "অভিযুক্ত করা"
+    },
+    {
+        "id": 47,
+        "word": "Scam",
+        "bengali": "জালিয়াতি করা"
+    },
+    {
+        "id": 48,
+        "word": "Extempore",
+        "bengali": "পূর্বপ্রস্তুতি ছাড়া কোন বক্তব্য দেয়া"
+    },
+    {
+        "id": 49,
+        "word": "Elocution",
+        "bengali": "বাচনভঙ্গি"
+    },
+    {
+        "id": 50,
+        "word": "Cupid",
+        "bengali": "ধনসম্পত্তির জন্য লোভাতুর"
+    },
+    {
+        "id": 51,
+        "word": "Sneer",
+        "bengali": "বিদ্রূপ করা"
+    },
+    {
+        "id": 52,
+        "word": "Cynic",
+        "bengali": "যে সর্বদা অপরের ভুল ধরে"
+    },
+    {
+        "id": 53,
+        "word": "Tipped",
+        "bengali": "একপাশ বা প্রান্তে উঠানো"
+    },
+    {
+        "id": 54,
+        "word": "Sparkle",
+        "bengali": "জ্বলজ্বল করা"
+    },
+    {
+        "id": 55,
+        "word": "Lethargic",
+        "bengali": "অলস"
+    },
+    {
+        "id": 56,
+        "word": "Distasteful",
+        "bengali": "অপছন্দনীয়"
+    },
+    {
+        "id": 57,
+        "word": "Fragrance",
+        "bengali": "সুগন্ধী"
+    },
+    {
+        "id": 58,
+        "word": "Restless",
+        "bengali": "অস্থির"
+    },
+    {
+        "id": 59,
+        "word": "Crone",
+        "bengali": "বিগত যৌবনা (ঘৃণা অর্থে)"
+    },
+    {
+        "id": 60,
+        "word": "Kleptomania",
+        "bengali": "চৌর্য উন্মাদ"
+    },
+    {
+        "id": 61,
+        "word": "Anemometer",
+        "bengali": "বাতাসের বেগ নির্ণায়ক যন্ত্র"
+    },
+    {
+        "id": 62,
+        "word": "Jaunt",
+        "bengali": "লঘু প্রমোদ ভ্রমণ"
+    },
+    {
+        "id": 63,
+        "word": "Voyage",
+        "bengali": "সমুদ্র যাত্রা"
+    },
+    {
+        "id": 64,
+        "word": "Philatelist",
+        "bengali": "ডাকটিকেট সংগ্রহকারী"
+    },
+    {
+        "id": 65,
+        "word": "Vendor",
+        "bengali": "বিক্রেতা"
+    },
+    {
+        "id": 66,
+        "word": "Philanthropist",
+        "bengali": "মানবহিতৈষী ব্যক্তি (বিশ্বপ্রেমিক)"
+    },
+    {
+        "id": 67,
+        "word": "Misanthrope",
+        "bengali": "মানববিদ্বেষ"
+    },
+    {
+        "id": 68,
+        "word": "Highbrow",
+        "bengali": "বড়াইকারী"
+    },
+    {
+        "id": 69,
+        "word": "Aristocrat",
+        "bengali": "অভিজাত"
+    },
+    {
+        "id": 70,
+        "word": "Expand",
+        "bengali": "আয়তনে বৃদ্ধি করা"
+    },
+    {
+        "id": 71,
+        "word": "Proliferate",
+        "bengali": "সংখ্যায় বৃদ্ধি পাওয়া"
+    },
+    {
+        "id": 72,
+        "word": "Deflect",
+        "bengali": "ঘুরে যাওয়া"
+    },
+    {
+        "id": 73,
+        "word": "Cynical",
+        "bengali": "নৈরাশ্যবাদী"
+    },
+    {
+        "id": 74,
+        "word": "Traitor",
+        "bengali": "বিশ্বাসঘাতক"
+    },
+    {
+        "id": 75,
+        "word": "Unequivocal",
+        "bengali": "সুস্পষ্ট"
+    },
+    {
+        "id": 76,
+        "word": "Gloss",
+        "bengali": "উজ্জ্বল তল"
+    },
+    {
+        "id": 77,
+        "word": "Barrier",
+        "bengali": "প্রতিবন্ধক"
+    },
+    {
+        "id": 78,
+        "word": "Agile",
+        "bengali": "তৎপর"
+    },
+    {
+        "id": 79,
+        "word": "Frisky",
+        "bengali": "চঞ্চল"
+    },
+    {
+        "id": 80,
+        "word": "Parallelism",
+        "bengali": "সমান্তরাল"
+    },
+    {
+        "id": 81,
+        "word": "Obliquity",
+        "bengali": "বক্রতা"
+    },
+    {
+        "id": 82,
+        "word": "Divergent",
+        "bengali": "বিপথগামী/ভিন্নমুখী"
+    },
+    {
+        "id": 83,
+        "word": "Disparity",
+        "bengali": "বৈসাদৃশ্য"
+    },
+    {
+        "id": 84,
+        "word": "Contrast",
+        "bengali": "বৈপরিত্য"
+    },
+    {
+        "id": 85,
+        "word": "Debonair",
+        "bengali": "সদা হাসি খুশি"
+    },
+    {
+        "id": 86,
+        "word": "Balmy",
+        "bengali": "স্নিগ্ধ"
+    },
+    {
+        "id": 87,
+        "word": "Awkward",
+        "bengali": "বেমানান"
+    },
+    {
+        "id": 88,
+        "word": "Windy",
+        "bengali": "ঝড়ো"
+    },
+    {
+        "id": 89,
+        "word": "Landscape",
+        "bengali": "প্রাকৃতিক ভূ-দৃশ্য"
+    },
+    {
+        "id": 90,
+        "word": "Intellectual",
+        "bengali": "বুদ্ধিবৃত্তিক সংস্কৃতিবান"
+    },
+    {
+        "id": 91,
+        "word": "Lexicographer",
+        "bengali": "অভিধান রচয়িতা"
+    },
+    {
+        "id": 92,
+        "word": "Venerate",
+        "bengali": "সম্মান করা"
+    },
+    {
+        "id": 93,
+        "word": "Severe",
+        "bengali": "প্রকট"
+    },
+    {
+        "id": 94,
+        "word": "Condemn",
+        "bengali": "তিরস্কার"
+    },
+    {
+        "id": 95,
+        "word": "Inculcate",
+        "bengali": "চিত্তনিষ্ঠ"
+    },
+    {
+        "id": 96,
+        "word": "Ascend",
+        "bengali": "আরোহণ করা"
+    },
+    {
+        "id": 97,
+        "word": "Stern",
+        "bengali": "কঠোর"
+    },
+    {
+        "id": 98,
+        "word": "Bend",
+        "bengali": "বাঁকানো"
+    },
+    {
+        "id": 99,
+        "word": "Eulogistic",
+        "bengali": "উচ্চ প্রশংসাযোগ্য"
+    },
+    {
+        "id": 100,
+        "word": "Deleterious",
+        "bengali": "ক্ষতিকর/অনিষ্টকর"
+    },
+    {
+        "id": 101,
+        "word": "Impulsive",
+        "bengali": "আবেগপ্রবণ"
+    },
+    {
+        "id": 102,
+        "word": "Salubrious",
+        "bengali": "স্বাস্থ্যকর"
+    },
+    {
+        "id": 103,
+        "word": "Inclusive",
+        "bengali": "অন্তর্ভুক্তিমূলক"
+    },
+    {
+        "id": 104,
+        "word": "Usurp",
+        "bengali": "জবরদখল"
+    },
+    {
+        "id": 105,
+        "word": "Discordant",
+        "bengali": "শ্রুতিকেটু"
+    },
+    {
+        "id": 106,
+        "word": "Harsh",
+        "bengali": "কর্কশ"
+    },
+    {
+        "id": 107,
+        "word": "Insouciance",
+        "bengali": "ঔদাসীন্য"
+    },
+    {
+        "id": 108,
+        "word": "Composure",
+        "bengali": "ধৈর্য্য"
+    },
+    {
+        "id": 109,
+        "word": "Slumber",
+        "bengali": "তন্দ্রা"
+    },
+    {
+        "id": 110,
+        "word": "Pretentious",
+        "bengali": "দাম্ভিক"
+    },
+    {
+        "id": 111,
+        "word": "Egoistic",
+        "bengali": "স্বার্থপর"
+    },
+    {
+        "id": 112,
+        "word": "Grandiose",
+        "bengali": "জমকালো/সুবিশাল"
+    },
+    {
+        "id": 113,
+        "word": "Indolent/Lethargic",
+        "bengali": "অলস"
+    },
+    {
+        "id": 114,
+        "word": "Disinterested",
+        "bengali": "নির্লিপ্ত"
+    },
+    {
+        "id": 115,
+        "word": "Halcyon",
+        "bengali": "শান্ত/শান্তিপূর্ণ"
+    },
+    {
+        "id": 116,
+        "word": "Motionless",
+        "bengali": "নিশ্চল"
+    },
+    {
+        "id": 117,
+        "word": "Casual",
+        "bengali": "আকস্মিক"
+    },
+    {
+        "id": 118,
+        "word": "Harmonious",
+        "bengali": "সুরেলা"
+    },
+    {
+        "id": 119,
+        "word": "Defame",
+        "bengali": "মানহানি"
+    },
+    {
+        "id": 120,
+        "word": "Accuse",
+        "bengali": "অভিযুক্ত"
+    },
+    {
+        "id": 121,
+        "word": "Obdurate",
+        "bengali": "অনমনীয়"
+    },
+    {
+        "id": 122,
+        "word": "Contrary",
+        "bengali": "বিপরীত"
+    },
+    {
+        "id": 123,
+        "word": "Stubborn",
+        "bengali": "একগুয়ে"
+    },
+    {
+        "id": 124,
+        "word": "Callous",
+        "bengali": "অনুভূতিহীন"
+    },
+    {
+        "id": 125,
+        "word": "Pathetic",
+        "bengali": "করুন/মর্মস্পর্শী"
+    },
+    {
+        "id": 126,
+        "word": "Rise rapidly",
+        "bengali": "দ্রুততার সাথে বৃদ্ধি"
+    },
+    {
+        "id": 127,
+        "word": "Modest",
+        "bengali": "বিনয়ী"
+    },
+    {
+        "id": 128,
+        "word": "Rightfully",
+        "bengali": "বৈধ ভাবে"
+    },
+    {
+        "id": 129,
+        "word": "Abuse",
+        "bengali": "অপব্যবহার"
+    },
+    {
+        "id": 130,
+        "word": "Pithy",
+        "bengali": "সংক্ষিপ্ত"
+    },
+    {
+        "id": 131,
+        "word": "Illusive",
+        "bengali": "মায়াময়"
+    },
+    {
+        "id": 132,
+        "word": "Luminous",
+        "bengali": "উজ্জ্বল"
+    },
+    {
+        "id": 133,
+        "word": "Enigmatic/Puzzling",
+        "bengali": "বিভ্রান্তিকর"
+    },
+    {
+        "id": 134,
+        "word": "Notion",
+        "bengali": "ধারণা"
+    },
+    {
+        "id": 135,
+        "word": "Congenial",
+        "bengali": "বন্ধুভাবাপন্ন"
+    },
+    {
+        "id": 136,
+        "word": "Intrinsic",
+        "bengali": "স্বকীয়/জন্মগত"
+    },
+    {
+        "id": 137,
+        "word": "Reprimand/Rebuke",
+        "bengali": "তিরস্কার"
+    },
+    {
+        "id": 138,
+        "word": "Humble",
+        "bengali": "বিনীত"
+    },
+    {
+        "id": 139,
+        "word": "Obsolete",
+        "bengali": "পুরাতন/অপ্রচলিত"
+    },
+    {
+        "id": 140,
+        "word": "Legitimate",
+        "bengali": "আইনসম্মত"
+    },
+    {
+        "id": 141,
+        "word": "Fragile",
+        "bengali": "দুর্বল"
+    },
+    {
+        "id": 142,
+        "word": "Bona-fide",
+        "bengali": "খাঁটি"
+    },
+    {
+        "id": 143,
+        "word": "Spurious",
+        "bengali": "ভেজাল"
+    },
+    {
+        "id": 144,
+        "word": "Bondage",
+        "bengali": "বন্দিদশা"
+    },
+    {
+        "id": 145,
+        "word": "Debacle",
+        "bengali": "ধ্বংস হওয়া/পতন হয়ে যাওয়া"
+    },
+    {
+        "id": 146,
+        "word": "Occupy",
+        "bengali": "দখলে রাখা"
+    },
+    {
+        "id": 147,
+        "word": "Amalgamate",
+        "bengali": "একসাথে করা"
+    },
+    {
+        "id": 148,
+        "word": "Materialize",
+        "bengali": "দৃষ্টি গোচর হওয়া/বাস্তবে পরিণত হওয়া"
+    },
+    {
+        "id": 149,
+        "word": "Generate",
+        "bengali": "উৎপাদন করা"
+    },
+    {
+        "id": 150,
+        "word": "Equip",
+        "bengali": "প্রস্তুত করা /সজ্জিত করা"
+    },
+    {
+        "id": 151,
+        "word": "Mercury",
+        "bengali": "পারদ/বুধগ্রহ/ দেবরাজের দেবতা"
+    },
+    {
+        "id": 152,
+        "word": "Humidity",
+        "bengali": "আদ্রতা"
+    },
+    {
+        "id": 153,
+        "word": "Entrepreneur",
+        "bengali": "উদ্যোক্তা"
+    },
+    {
+        "id": 154,
+        "word": "Conflict",
+        "bengali": "সংগ্রাম করা"
+    },
+    {
+        "id": 155,
+        "word": "Communism",
+        "bengali": "সাম্যবাদ"
+    },
+    {
+        "id": 156,
+        "word": "Capitalist",
+        "bengali": "পূজিতান্ত্রিক"
+    },
+    {
+        "id": 157,
+        "word": "Conduit",
+        "bengali": "পয়ঃপ্রণালী"
+    },
+    {
+        "id": 158,
+        "word": "Scissors",
+        "bengali": "কাঁচি"
+    },
+    {
+        "id": 159,
+        "word": "Wagon",
+        "bengali": "মালবাহী গাড়ি"
+    },
+    {
+        "id": 160,
+        "word": "Saw",
+        "bengali": "করাত"
+    },
+    {
+        "id": 161,
+        "word": "Exclusion",
+        "bengali": "বর্জন"
+    },
+    {
+        "id": 162,
+        "word": "Condone",
+        "bengali": "উপেক্ষা করা (অপরাধ)"
+    },
+    {
+        "id": 163,
+        "word": "Isolation",
+        "bengali": "বিচ্ছিন্নতা"
+    },
+    {
+        "id": 164,
+.
+        "word": "Discover",
+        "bengali": "আবিষ্কার করা"
+    },
+    {
+        "id": 165,
+        "word": "Suppress",
+        "bengali": "চেপে রাখা"
+    },
+    {
+        "id": 166,
+        "word": "Redirect",
+        "bengali": "পুননির্দেশ"
+    },
+    {
+        "id": 167,
+        "word": "Belittle",
+        "bengali": "ছোট করা"
+    },
+    {
+        "id": 168,
+        "word": "Exhort",
+        "bengali": "উত্সাহিত করা /প্রণোদিত করা/আহ্বান করা"
+    },
+    {
+        "id": 169,
+        "word": "Magnanimous",
+        "bengali": "দয়ালু"
+    },
+    {
+        "id": 170,
+        "word": "Genesis",
+        "bengali": "শুরু"
+    },
+    {
+        "id": 171,
+        "word": "Adapt",
+        "bengali": "খাপ খাওয়ানো"
+    },
+    {
+        "id": 172,
+        "word": "Innovate",
+        "bengali": "আবিষ্কার করা"
+    },
+    {
+        "id": 173,
+        "word": "Ponder",
+        "bengali": "গভীরভাবে চিন্তা করা"
+    },
+    {
+        "id": 174,
+        "word": "Vacillate",
+        "bengali": "দ্বিধা করা"
+    },
+    {
+        "id": 175,
+        "word": "Revert",
+        "bengali": "ফিরে আসা"
+    },
+    {
+        "id": 176,
+        "word": "Upheld",
+        "bengali": "উপরের দিকে নেওয়া"
+    },
+    {
+        "id": 177,
+        "word": "Resist",
+        "bengali": "প্রতিরোধ করা"
+    },
+    {
+        "id": 178,
+        "word": "Publicize",
+        "bengali": "প্রচার করা"
+    },
+    {
+        "id": 179,
+        "word": "Subvert",
+        "bengali": "ক্ষমতা ধ্বংস করা"
+    },
+    {
+        "id": 180,
+        "word": "Refinery",
+        "bengali": "পরিশোধনাগার"
+    },
+    {
+        "id": 181,
+        "word": "Ore",
+        "bengali": "আকরিক"
+    },
+    {
+        "id": 182,
+        "word": "Merchandise",
+        "bengali": "মালপত্র"
+    },
+    {
+        "id": 183,
+        "word": "Mine",
+        "bengali": "খনি"
+    },
+    {
+        "id": 184,
+        "word": "Warehouse",
+        "bengali": "মালপত্র রাখার স্থান"
+    },
+    {
+        "id": 185,
+        "word": "Lumber",
+        "bengali": "খুব কষ্ট করে হাঁটা"
+    },
+    {
+        "id": 186,
+        "word": "Grain",
+        "bengali": "শস্য"
+    },
+    {
+        "id": 187,
+        "word": "Gargantuan",
+        "bengali": "খুব বড়"
+    },
+    {
+        "id": 188,
+        "word": "Tiny in size",
+        "bengali": "খুব ছোট"
+    },
+    {
+        "id": 189,
+        "word": "Irritate",
+        "bengali": "বিরক্ত করা"
+    },
+    {
+        "id": 190,
+        "word": "Amplification",
+        "bengali": "ভাবসম্প্রসারণ করা"
+    },
+    {
+        "id": 191,
+        "word": "Loaf",
+        "bengali": "পাউরুটি"
+    },
+    {
+        "id": 192,
+        "word": "Stale",
+        "bengali": "টাটকা নয় (বাসি)"
+    },
+    {
+        "id": 193,
+        "word": "Butter",
+        "bengali": "মাখন"
+    },
+    {
+        "id": 194,
+        "word": "Forecast",
+        "bengali": "পূর্বাভাস"
+    },
+    {
+        "id": 195,
+        "word": "Override",
+        "bengali": "অগ্রাহ্য করা"
+    },
+    {
+        "id": 196,
+        "word": "Diagnosis",
+        "bengali": "রোগ নির্ণয়"
+    },
+    {
+        "id": 197,
+        "word": "Estimate",
+        "bengali": "হিসাব"
+    },
+    {
+        "id": 198,
+        "word": "Appraisal",
+        "bengali": "কোন কিছুর মূল্য পরিমাপ করা."
+    },
+    {
+        "id": 199,
+        "word": "Trivial",
+        "bengali": "নগণ্য/তুচ্ছ"
+    },
+    {
+        "id": 200,
+        "word": "Fade",
+        "bengali": "বিবর্ণ হওয়া"
+    },
+    {
+        "id": 201,
+        "word": "Inscribe",
+        "bengali": "অন্তর্লিখিত"
+    },
+    {
+        "id": 202,
+        "word": "Epitaph",
+        "bengali": "সমাধিস্তম্ভ লিপি"
+    },
+    {
+        "id": 203,
+        "word": "Epithet",
+        "bengali": "ডাকনাম/উপাধি"
+    },
+    {
+        "id": 204,
+        "word": "Epitome",
+        "bengali": "সংক্ষিপ্ত"
+    },
+    {
+        "id": 205,
+        "word": "Scenic",
+        "bengali": "দৃশ্যময়"
+    },
+    {
+        "id": 206,
+        "word": "Melancholy",
+        "bengali": "দুঃখ"
+    },
+    {
+        "id": 207,
+        "word": "Barren",
+        "bengali": "অনুর্বর"
+    },
+    {
+        "id": 208,
+        "word": "Skepticism",
+        "bengali": "সংশয়বাদ"
+    },
+    {
+        "id": 209,
+        "word": "Audacity",
+        "bengali": "দুঃসাহস"
+    },
+    {
+        "id": 210,
+        "word": "Plausibility",
+        "bengali": "বিশ্বাসযোগ্যতা"
+    },
+    {
+        "id": 211,
+        "word": "Conviction",
+        "bengali": "দৃঢ় বিশ্বাস"
+    },
+    {
+        "id": 212,
+        "word": "Harmony",
+        "bengali": "সাদৃশ্য"
+    },
+    {
+        "id": 213,
+        "word": "Glow",
+        "bengali": "খুশিতে ঝলমল করা"
+    },
+    {
+        "id": 214,
+        "word": "Mild",
+        "bengali": "শান্ত"
+    },
+    {
+        "id": 215,
+        "word": "Untamed",
+        "bengali": "অশান্ত/বন্য"
+    },
+    {
+        "id": 216,
+        "word": "Feeble",
+        "bengali": "দুর্বল"
+    },
+    {
+        "id": 217,
+        "word": "Unruly",
+        "bengali": "অবাধ্য"
+    },
+    {
+        "id": 218,
+        "word": "Compliance",
+        "bengali": "সম্মতি/প্রতিপালন"
+    },
+    {
+        "id": 219,
+        "word": "Adverse",
+        "bengali": "প্রতিকূল"
+    },
+    {
+        "id": 220,
+        "word": "In deep water",
+        "bengali": "বিপদে থাকা"
+    },
+    {
+        "id": 221,
+        "word": "Hostile",
+        "bengali": "প্রতিকূল/ বিরোধী"
+    },
+    {
+        "id": 222,
+        "word": "Brevity",
+        "bengali": "সংক্ষিপ্ত ভাবে"
+    },
+    {
+        "id": 223,
+        "word": "Wallet",
+        "bengali": "মানি ব্যাগ"
+    },
+    {
+        "id": 224,
+        "word": "Tomb",
+        "bengali": "কবর"
+    },
+    {
+        "id": 225,
+        "word": "Flexible",
+        "bengali": "নমনীয়"
+    },
+    {
+        "id": 226,
+        "word": "Obese",
+        "bengali": "মোটা/স্থূলকায়"
+    },
+    {
+        "id": 227,
+        "word": "Tough/Rigid",
+        "bengali": "শক্ত"
+    },
+    {
+        "id": 228,
+        "word": "Breakable",
+        "bengali": "ভঙ্গুর"
+    },
+    {
+        "id": 229,
+        "word": "Complacency",
+        "bengali": "আত্মতৃপ্তি"
+    },
+    {
+        "id": 230,
+        "word": "Conger",
+        "bengali": "সামুদ্রিক বানমাছ"
+    },
+    {
+        "id": 231,
+        "word": "Dispatch",
+        "bengali": "কারো উদ্দেশে কোন কিছু পাঠানো"
+    },
+    {
+        "id": 232,
+        "word": "Postulate",
+        "bengali": "স্বীকার্য"
+    },
+    {
+        "id": 233,
+        "word": "Invisible",
+        "bengali": "অদৃশ্য"
+    },
+    {
+        "id": 234,
+        "word": "Inevitable",
+        "bengali": "অনিবার্য"
+    },
+    {
+        "id": 235,
+        "word": "Inaudible",
+        "bengali": "যা শোনা যায় না"
+    },
+    {
+        "id": 236,
+        "word": "Irresistible",
+        "bengali": "অপ্রতিরোধ্য"
+    },
+    {
+        "id": 237,
+        "word": "Expose/Reveal/Uncover/ Unearth",
+        "bengali": "প্রকাশ করা"
+    },
+    {
+        "id": 238,
+        "word": "Inadvertent/Unintended",
+        "bengali": "অনিচ্ছাকৃত"
+    },
+    {
+        "id": 239,
+        "word": "Intentional /Deliberately",
+        "bengali": "ইচ্ছাকৃতভাবে"
+    },
+    {
+        "id": 240,
+        "word": "Accidental",
+        "bengali": "আকস্মিক"
+    },
+    {
+        "id": 241,
+        "word": "Gratifying",
+        "bengali": "তৃপ্তিদায়ক"
+    },
+    {
+        "id": 242,
+        "word": "Gracious",
+        "bengali": "সদয়"
+    },
+    {
+        "id": 243,
+        "word": "Splendid/Glorious",
+        "bengali": "জমকালো"
+    },
+    {
+        "id": 244,
+        "word": "Disgraceful",
+        "bengali": "বাজে/অসুন্দর"
+    },
+    {
+        "id": 245,
+        "word": "Conceal",
+        "bengali": "গোপন করা"
+    },
+    {
+        "id": 246,
+        "word": "Conciliate",
+        "bengali": "শান্ত করা"
+    },
+    {
+        "id": 247,
+        "word": "Benevolent",
+        "bengali": "হিতৈষী"
+    },
+    {
+        "id": 248,
+        "word": "Curious",
+        "bengali": "অদ্ভুত"
+    },
+    {
+        "id": 249,
+        "word": "Flashy",
+        "bengali": "লোক দেখানো"
+    },
+    {
+        "id": 250,
+        "word": "Velocity",
+        "bengali": "বেগ"
+    },
+    {
+        "id": 251,
+        "word": "Doctrine",
+        "bengali": "মতবাদ"
+    },
+    {
+        "id": 252,
+        "word": "Expound",
+        "bengali": "ব্যাখ্যা করা"
+    },
+    {
+        "id": 253,
+        "word": "Confound",
+        "bengali": "বিভ্রান্ত করা"
+    },
+    {
+        "id": 254,
+        "word": "Perplex",
+        "bengali": "জটিল করা"
+    },
+    {
+        "id": 255,
+        "word": "Multiple",
+        "bengali": "বহুবিধ"
+    },
+    {
+        "id": 256,
+        "word": "Composite",
+        "bengali": "যৌগিক"
+    },
+    {
+        "id": 257,
+        "word": "Barter",
+        "bengali": "বিনিময় করা"
+    },
+    {
+        "id": 258,
+        "word": "Transient",
+        "bengali": "অস্থায়ী"
+    },
+    {
+        "id": 259,
+        "word": "Relevant",
+        "bengali": "প্রাসঙ্গিক"
+    },
+    {
+        "id": 260,
+        "word": "Enlarge",
+        "bengali": "দীর্ঘায়িত করা"
+    },
+    {
+        "id": 261,
+        "word": "Shrink",
+        "bengali": "সংকুচিত করা"
+    },
+    {
+        "id": 262,
+        "word": "Slip",
+        "bengali": "পলায়ন/এড়িয়ে যাওয়া"
+    },
+    {
+        "id": 263,
+        "word": "Pact",
+        "bengali": "চুক্তি"
+    },
+    {
+        "id": 264,
+        "word": "Expand",
+        "bengali": "বিস্তৃত করা"
+    },
+    {
+        "id": 265,
+        "word": "Repercussion",
+        "bengali": "প্রতিক্রিয়া"
+    },
+    {
+        "id": 266,
+        "word": "Aftermath",
+        "bengali": "পরিণাম /ফলাফল"
+    },
+    {
+        "id": 267,
+        "word": "Influence",
+        "bengali": "প্রভাব"
+    },
+    {
+        "id": 268,
+        "word": "Scatter",
+        "bengali": "ছড়িয়ে যাওয়া"
+    },
+    {
+        "id": 269,
+        "word": "Accumulate",
+        "bengali": "একত্রিত করা বা জমানো"
+    },
+    {
+        "id": 270,
+        "word": "Tentative",
+        "bengali": "অনিশ্চিত/দোদুল্যমান"
+    },
+    {
+        "id": 271,
+        "word": "Hyperbolic",
+        "bengali": "অতিরঞ্জিত করে বলা"
+    },
+    {
+        "id": 272,
+        "word": "Argumentative",
+        "bengali": "তর্ক বিতর্ক"
+    },
+    {
+        "id": 273,
+        "word": "Reasoning",
+        "bengali": "যুক্তিতর্ক"
+    },
+    {
+        "id": 274,
+        "word": "Astute",
+        "bengali": "জ্ঞানী/বিচক্ষণ"
+    },
+    {
+        "id": 275,
+        "word": "Cogent",
+        "bengali": "প্রবল/অকাট্য"
+    },
+    {
+        "id": 276,
+        "word": "Deceived",
+        "bengali": "প্রতারিত হওয়া বা করা"
+    },
+    {
+        "id": 277,
+        "word": "Coherent",
+        "bengali": "সামঞ্জস্যপূর্ণ"
+    },
+    {
+        "id": 278,
+        "word": "Ailment",
+        "bengali": "ছোট খাটো অসুস্থতা"
+    },
+    {
+        "id": 279,
+        "word": "Indigent",
+        "bengali": "অত্যন্ত গরীব"
+    },
+    {
+        "id": 280,
+        "word": "Assiduous",
+        "bengali": "অধ্যবসায়ী"
+    },
+    {
+        "id": 281,
+        "word": "Harbinger",
+        "bengali": "অগ্রদূত"
+    },
+    {
+        "id": 282,
+        "word": "Autocrat",
+        "bengali": "একনায়ক/স্বৈরশাসক"
+    },
+    {
+        "id": 283,
+        "word": "Inauspicious",
+        "bengali": "অশুভ /অকল্যাণসূচক"
+    },
+    {
+        "id": 284,
+        "word": "Untenable",
+        "bengali": "টিকিয়ে রাখা যায়না এমন"
+    },
+    {
+        "id": 285,
+        "word": "Defensible",
+        "bengali": "টিকানো বা টিকিয়ে রাখা যায় এমন"
+    },
+    {
+        "id": 286,
+        "word": "Hypothetical",
+        "bengali": "অনুমান কৃত/প্রকল্পিত"
+    },
+    {
+        "id": 287,
+        "word": "Precise",
+        "bengali": "সংক্ষিপ্ত করা"
+    },
+    {
+        "id": 288,
+        "word": "Recidivist",
+        "bengali": "অপরাধপ্রবণ"
+    },
+    {
+        "id": 289,
+        "word": "Depart",
+        "bengali": "স্থান ত্যাগ করা"
+    },
+    {
+        "id": 290,
+        "word": "Recuperative",
+        "bengali": "আরোগ্য হয় এমন/পুনরুদ্ধার হয় এমন"
+    },
+    {
+        "id": 291,
+        "word": "Evasive/Elusive",
+        "bengali": "এড়িয়ে যায় এমন বা ধরা যায়না এমন"
+    },
+    {
+        "id": 292,
+        "word": "Pensive",
+        "bengali": "চিন্তানিমগ্ন"
+    },
+    {
+        "id": 293,
+        "word": "Plethora",
+        "bengali": "আধিক্য বা প্রচুর পরিমাণ"
+    },
+    {
+        "id": 294,
+        "word": "Despair",
+        "bengali": "হতাশ"
+    },
+    {
+        "id": 295,
+        "word": "Aversion",
+        "bengali": "অনিহা"
+    },
+    {
+        "id": 296,
+        "word": "Scarcity",
+        "bengali": "স্বল্প"
+    },
+    {
+        "id": 297,
+        "word": "Put up with",
+        "bengali": "সহ্য করা"
+    },
+    {
+        "id": 298,
+        "word": "Overt",
+        "bengali": "প্রকাশ্য"
+    },
+    {
+        "id": 299,
+        "word": "Erratic",
+        "bengali": "ত্রুটিপূর্ণ/উল্টাপাল্টা"
+    },
+    {
+        "id": 300,
+        "word": "Appall/Dismay",
+        "bengali": "আতঙ্কিত করা, মর্মাহত করা"
+    },
+    {
+        "id": 301,
+        "word": "Dearth",
+        "bengali": "অভাব"
+    },
+    {
+        "id": 302,
+        "word": "Abundance",
+        "bengali": "আধিক্য"
+    },
+    {
+        "id": 303,
+        "word": "Superannuate",
+        "bengali": "কাজ বা ব্যবহারের জন্য অতি প্রাচীন/বয়স উত্তীর্ন"
+    },
+    {
+        "id": 304,
+        "word": "Innate",
+        "bengali": "সহজাত"
+    },
+    {
+        "id": 305,
+        "word": "Solace",
+        "bengali": "সান্ত্বনা"
+    },
+    {
+        "id": 306,
+        "word": "Engross",
+        "bengali": "সবসময় কাজে লেগে থাকা"
+    },
+    {
+        "id": 307,
+        "word": "Garrulous",
+        "bengali": "বাচাল"
+    },
+    {
+        "id": 308,
+        "word": "Punctilious",
+        "bengali": "খুঁটিনাটি ব্যাপারে অতি সতর্ক"
+    },
+    {
+        "id": 309,
+        "word": "Observant",
+        "bengali": "দৃষ্টিশীল, মনোযোগী"
+    },
+    {
+        "id": 310,
+        "word": "Buried",
+        "bengali": "সমাহিত বা কবর দেয়া হয়েছে এমন"
+    },
+    {
+        "id": 311,
+        "word": "Tender",
+        "bengali": "কোমল, পেশা প্রস্তাব"
+    },
+    {
+        "id": 312,
+        "word": "Preamble",
+        "bengali": "প্রস্তাবনা"
+    },
+    {
+        "id": 313,
+        "word": "Commencement",
+        "bengali": "শুরু"
+    },
+    {
+        "id": 314,
+        "word": "Preface",
+        "bengali": "প্রস্তাবনা"
+    },
+    {
+        "id": 315,
+        "word": "Postscript",
+        "bengali": "অতিরিক্ত বা সর্বশেষ তথ্য"
+    },
+    {
+        "id": 316,
+        "word": "Sycophancy",
+        "bengali": "তোষামুদি"
+    },
+    {
+        "id": 317,
+        "word": "Escape",
+        "bengali": "পালিয়ে যাওয়া"
+    },
+    {
+        "id": 318,
+        "word": "Abscond",
+        "bengali": "আত্মগোপন করা"
+    },
+    {
+        "id": 319,
+        "word": "Eternal",
+        "bengali": "চিরন্তন"
+    },
+    {
+        "id": 320,
+        "word": "Exult",
+        "bengali": "অত্যন্ত আনন্দিত"
+    },
+    {
+        "id": 321,
+        "word": "Jubilate",
+        "bengali": "আনন্দ করা"
+    },
+    {
+        "id": 322,
+        "word": "Imprudent",
+        "bengali": "অবিবেচক"
+    },
+    {
+        "id": 323,
+        "word": "Sagacity",
+        "bengali": "প্রখর জ্ঞান"
+    },
+    {
+        "id": 324,
+        "word": "Reverential",
+        "bengali": "শ্রদ্ধামিশ্রিত"
+    },
+    {
+        "id": 325,
+        "word": "Redundant",
+        "bengali": "বাড়তি, অনাবশ্যক"
+    },
+    {
+        "id": 326,
+        "word": "Incautious",
+        "bengali": "অবিবেচক"
+    },
+    {
+        "id": 327,
+        "word": "Synopsis",
+        "bengali": "সারাংশ"
+    },
+    {
+        "id": 328,
+        "word": "Encumber",
+        "bengali": "পথরোধ করা"
+    },
+    {
+        "id": 329,
+        "word": "Recapitulate",
+        "bengali": "আলোচনা করা"
+    },
+    {
+        "id": 330,
+        "word": "Gourmet",
+        "bengali": "পান ও ভোজন রসিক ব্যক্তি"
+    },
+    {
+        "id": 331,
+        "word": "Omnipotent",
+        "bengali": "সর্বশক্তিমান (আল্লাহ)"
+    },
+    {
+        "id": 332,
+        "word": "Asylum",
+        "bengali": "আশ্রয়, নিরপত্তা"
+    },
+    {
+        "id": 333,
+        "word": "Sanatorium",
+        "bengali": "স্বাস্থ্যনিবাস"
+    },
+    {
+        "id": 334,
+        "word": "Impostor",
+        "bengali": "ভন্ড"
+    },
+    {
+        "id": 335,
+        "word": "Mountebank",
+        "bengali": "যে ব্যক্তি চটকদার কথা বলে মানুষকে ঠকানোর চেষ্টা করে"
+    },
+    {
+        "id": 336,
+        "word": "Acrimonious",
+        "bengali": "তিক্ত"
+    },
+    {
+        "id": 337,
+        "word": "Severe",
+        "bengali": "মারাত্মক"
+    },
+    {
+        "id": 338,
+        "word": "Cursive",
+        "bengali": "টানা টানা হাতের লেখা (জড়ানো)"
+    },
+    {
+        "id": 339,
+        "word": "Anomalous",
+        "bengali": "ব্যতিক্রম"
+    },
+    {
+        "id": 340,
+        "word": "Vicious",
+        "bengali": "ঘৃণ্য"
+    },
+    {
+        "id": 341,
+        "word": "Capacious",
+        "bengali": "সুপ্রশস্ত"
+    },
+    {
+        "id": 342,
+        "word": "Intractable",
+        "bengali": "অবাধ্য"
+    },
+    {
+        "id": 343,
+        "word": "Wayward",
+        "bengali": "স্বেচ্ছাচারী"
+    },
+    {
+        "id": 344,
+        "word": "Easygoing",
+        "bengali": "বাধ্য"
+    },
+    {
+        "id": 345,
+        "word": "Bleak",
+        "bengali": "নিরানন্দ, মলিন"
+    },
+    {
+        "id": 346,
+        "word": "Abstinent",
+        "bengali": "সংযমী"
+    },
+    {
+        "id": 347,
+        "word": "Segregate",
+        "bengali": "পৃথক করা"
+    },
+    {
+        "id": 348,
+        "word": "Abolish",
+        "bengali": "বিলুপ্তকরা"
+    },
+    {
+        "id": 349,
+        "word": "Darken",
+        "bengali": "অন্ধকার করা"
+    },
+    {
+        "id": 350,
+        "word": "Compile",
+        "bengali": "একত্র করা"
+    },
+    {
+        "id": 351,
+        "word": "Reclusive",
+        "bengali": "সন্ন্যাসী"
+    },
+    {
+        "id": 352,
+        "word": "Urban",
+        "bengali": "শহুরে"
+    },
+    {
+        "id": 353,
+        "word": "A bone to pick",
+        "bengali": "রাগান্বিত হওয়া"
+    },
+    {
+        "id": 354,
+        "word": "Knotty",
+        "bengali": "ঝামেলাযুক্ত"
+    },
+    {
+        "id": 355,
+        "word": "Errant",
+        "bengali": "ভ্রমণরত"
+    },
+    {
+        "id": 356,
+        "word": "Bucolic",
+        "bengali": "গ্রাম্য"
+    },
+    {
+        "id": 357,
+        "word": "Castigate",
+        "bengali": "নিন্দা করা"
+    },
+    {
+        "id": 358,
+        "word": "Hidebound",
+        "bengali": "সংকীর্ণমনা"
+    },
+    {
+        "id": 359,
+        "word": "Evaluate",
+        "bengali": "মূল্যায়ন করা"
+    },
+    {
+        "id": 360,
+        "word": "Corroborate",
+        "bengali": "দৃঢ় করা"
+    },
+    {
+        "id": 361,
+        "word": "Refute",
+        "bengali": "যুক্তি/তর্ক খন্ডন করা"
+    },
+    {
+        "id": 362,
+        "word": "Contradict",
+        "bengali": "অস্বীকার করা"
+    },
+    {
+        "id": 363,
+        "word": "Contravene",
+        "bengali": "আইন বা রীতি লংঘন করা"
+    },
+    {
+        "id": 364,
+        "word": "Profane",
+        "bengali": "অপবিত্র করা"
+    },
+    {
+        "id": 365,
+        "word": "Vulgarity",
+        "bengali": "অশ্লীলতা"
+    },
+    {
+        "id": 366,
+        "word": "Compensate",
+        "bengali": "ক্ষতিপূরন দেয়া"
+    },
+    {
+        "id": 367,
+        "word": "Deprecate",
+        "bengali": "নিন্দা করা"
+    },
+    {
+        "id": 368,
+        "word": "Enhance",
+        "bengali": "বৃদ্ধি করা"
+    },
+    {
+        "id": 369,
+        "word": "Bait",
+        "bengali": "টোপ"
+    },
+    {
+        "id": 370,
+        "word": "Disparage",
+        "bengali": "কাউকে ছোট /তুচ্ছ করা"
+    },
+    {
+        "id": 371,
+        "word": "Heckle",
+        "bengali": "প্রশ্নবানে জর্জরিত করা"
+    },
+    {
+        "id": 372,
+        "word": "Adequate",
+        "bengali": "পর্যাপ্ত"
+    },
+    {
+        "id": 373,
+        "word": "Muddle",
+        "bengali": "বিহ্বলতা"
+    },
+    {
+        "id": 374,
+        "word": "Abatement",
+        "bengali": "কমানো"
+    },
+    {
+        "id": 375,
+        "word": "Incapacitate",
+        "bengali": "অযোগ্য করা"
+    },
+    {
+        "id": 376,
+        "word": "Stout",
+        "bengali": "শক্তিশালী, নির্ভীক"
+    },
+    {
+        "id": 377,
+        "word": "Hook",
+        "bengali": "ফাঁদ"
+    },
+    {
+        "id": 378,
+        "word": "Crook",
+        "bengali": "বাঁকা"
+    },
+    {
+        "id": 379,
+        "word": "Biased/Partial/Partisan/Prejudiced",
+        "bengali": "পক্ষপাতী"
+    },
+    {
+        "id": 380,
+        "word": "Axle",
+        "bengali": "অক্ষ"
+    },
+    {
+        "id": 381,
+        "word": "Build in",
+        "bengali": "অন্তর্গত"
+    },
+    {
+        "id": 382,
+        "word": "Leaning",
+        "bengali": "ঝোঁক"
+    },
+    {
+        "id": 383,
+        "word": "Yield",
+        "bengali": "বশ্যতা স্বীকার করা"
+    },
+    {
+        "id": 384,
+        "word": "Gloomy",
+        "bengali": "অন্ধকারাচ্ছন্ন"
+    },
+    {
+        "id": 385,
+        "word": "Provincial",
+        "bengali": "সীমাবদ্ধ"
+    },
+    {
+        "id": 386,
+        "word": "Cosmopolitan",
+        "bengali": "সার্বজনীন"
+    },
+    {
+        "id": 387,
+        "word": "Extol",
+        "bengali": "প্রশংসা"
+    },
+    {
+        "id": 388,
+        "word": "Monotonous",
+        "bengali": "একঘেয়ে"
+    },
+    {
+        "id": 389,
+        "word": "Rite",
+        "bengali": "রীতিনীতি, প্রথা"
+    },
+    {
+        "id": 390,
+        "word": "Writ",
+        "bengali": "কোন বিষয় সম্পর্কে কোর্টের লিখিত অর্ডার"
+    },
+    {
+        "id": 391,
+        "word": "Laid back",
+        "bengali": "অলস"
+    },
+    {
+        "id": 392,
+        "word": "Inflated",
+        "bengali": "অত্যধিক"
+    },
+    {
+        "id": 393,
+        "word": "Reasonable",
+        "bengali": "যৌক্তিক"
+    },
+    {
+        "id": 394,
+        "word": "Ingenuous",
+        "bengali": "অকপট"
+    },
+    {
+        "id": 395,
+        "word": "Sophisticated",
+        "bengali": "কৃত্রিম"
+    },
+    {
+        "id": 396,
+        "word": "Exorbitant",
+        "bengali": "অতিরিক্ত"
+    },
+    {
+        "id": 397,
+        "word": "Devious",
+        "bengali": "আঁকাবাঁকা"
+    },
+    {
+        "id": 398,
+        "word": "Cunning",
+        "bengali": "দক্ষ"
+    },
+    {
+        "id": 399,
+        "word": "Debacle",
+        "bengali": "মহাবিপর্যয়"
+    },
+    {
+        "id": 400,
+        "word": "Friction",
+        "bengali": "বিরোধ"
+    },
+    {
+        "id": 401,
+        "word": "Disputation /Argument",
+        "bengali": "বিতর্ক"
+    },
+    {
+        "id": 402,
+        "word": "Counterfeit",
+        "bengali": "ভেজাল, কৃত্রিম"
+    },
+    {
+        "id": 403,
+        "word": "Shaky",
+        "bengali": "দুর্বল"
+    },
+    {
+        "id": 404,
+        "word": "Expedite",
+        "bengali": "অগ্রগতি ত্বরান্বিত করা"
+    },
+    {
+        "id": 405,
+        "word": "Impede",
+        "bengali": "ব্যাহত করা"
+    },
+    {
+        "id": 406,
+        "word": "Torpor/Lassitude/Languor",
+        "bengali": "অলস"
+    },
+    {
+        "id": 407,
+        "word": "Apathetic/Lukewarm",
+        "bengali": "উদাসীন"
+    },
+    {
+        "id": 408,
+        "word": "Rush",
+        "bengali": "দ্রুত ধাবন"
+    },
+    {
+        "id": 409,
+        "word": "Hexagon",
+        "bengali": "ষড়ভূজ"
+    },
+    {
+        "id": 410,
+        "word": "Subtraction",
+        "bengali": "বিয়োগ"
+    },
+    {
+        "id": 411,
+        "word": "Fathom",
+        "bengali": "গভীরতা নির্ণয় করা"
+    },
+    {
+        "id": 412,
+        "word": "Truant",
+        "bengali": "যে ব্যক্তি তার কর্মস্থল হতে পালায়"
+    },
+    {
+        "id": 413,
+        "word": "Malingerer",
+        "bengali": "যে ব্যক্তি কর্তব্য এড়ানোর জন্য অসুস্থতার ভান করে"
+    },
+    {
+        "id": 414,
+        "word": "Hypocrite",
+        "bengali": "ভন্ড"
+    },
+    {
+        "id": 415,
+        "word": "Concubine",
+        "bengali": "উপস্ত্রী"
+    },
+    {
+        "id": 416,
+        "word": "Telepathy",
+        "bengali": "অন্যের চিন্তার অনুভূতি দ্রুত বুঝে নেয়ার ক্ষমতা"
+    },
+    {
+        "id": 417,
+        "word": "Elegy",
+        "bengali": "শোকগাঁথা"
+    },
+    {
+        "id": 418,
+        "word": "Utopia",
+        "bengali": "কল্পরাজ্য"
+    },
+    {
+        "id": 419,
+        "word": "Statesman",
+        "bengali": "কূটনীতিজ্ঞ ব্যক্তি"
+    },
+    {
+        "id": 420,
+        "word": "Demagogue",
+        "bengali": "জননেতা"
+    },
+    {
+        "id": 421,
+        "word": "Dictator",
+        "bengali": "একনায়ক"
+    },
+    {
+        "id": 422,
+        "word": "Martinet",
+        "bengali": "নিয়মনিষ্ঠ"
+    },
+    {
+        "id": 423,
+        "word": "Malign",
+        "bengali": "ক্ষতিকর"
+    },
+    {
+        "id": 424,
+        "word": "Meager/Scanty",
+        "bengali": "স্বল্প"
+    },
+    {
+        "id": 425,
+        "word": "Proportionate",
+        "bengali": "আনুপাতিক"
+    },
+    {
+        "id": 426,
+        "word": "Ancillary",
+        "bengali": "আনুষঙ্গিক"
+    },
+    {
+        "id": 427,
+        "word": "Unstable",
+        "bengali": "অস্থির"
+    },
+    {
+        "id": 428,
+        "word": "Conventional",
+        "bengali": "প্রচলিত"
+    },
+    {
+        "id": 429,
+        "word": "Potty",
+        "bengali": "তুচ্ছ"
+    },
+    {
+        "id": 430,
+        "word": "Reparation",
+        "bengali": "ক্ষতিপূরণ"
+    },
+    {
+        "id": 431,
+        "word": "Decay",
+        "bengali": "ক্ষয় হওয়া"
+    },
+    {
+        "id": 432,
+        "word": "Transmission",
+        "bengali": "ছড়ানো, প্রচার"
+    },
+    {
+        "id": 433,
+        "word": "Frugal/ Parsimonious",
+        "bengali": "মিতব্যয়ী"
+    },
+    {
+        "id": 434,
+        "word": "Bigot",
+        "bengali": "অন্ধ বিশ্বাসী"
+    },
+    {
+        "id": 435,
+        "word": "Indispensable",
+        "bengali": "অপরিহার্য"
+    },
+    {
+        "id": 436,
+        "word": "Inconsiderate",
+        "bengali": "অবিবেচক"
+    },
+    {
+        "id": 437,
+        "word": "Hasty",
+        "bengali": "দ্রুতগতি"
+    },
+    {
+        "id": 438,
+        "word": "Conceited",
+        "bengali": "আত্মভিমানী"
+    },
+    {
+        "id": 439,
+        "word": "Wrath",
+        "bengali": "রাগ"
+    },
+    {
+        "id": 440,
+        "word": "Prompt",
+        "bengali": "দ্রুত"
+    },
+    {
+        "id": 441,
+        "word": "Divine",
+        "bengali": "স্বর্গীয়"
+    },
+    {
+        "id": 442,
+        "word": "Malign",
+        "bengali": "ক্ষতিকর"
+    },
+    {
+        "id": 443,
+        "word": "Meager/Scanty",
+        "bengali": "স্বল্প"
+    },
+    {
+        "id": 444,
+        "word": "Proportionate",
+        "bengali": "আনুপাতিক"
+    },
+    {
+        "id": 445,
+        "word": "Hindrance/Barrier",
+        "bengali": "বাঁধা"
+    },
+    {
+        "id": 446,
+        "word": "Discontented",
+        "bengali": "অসন্তুষ্ট, অতৃপ্ত"
+    },
+    {
+        "id": 447,
+        "word": "Miserable",
+        "bengali": "শোจนীয়"
+    },
+    {
+        "id": 448,
+        "word": "Myopic",
+        "bengali": "ক্ষীনদৃষ্টি/সংকীর্ণমনা4actions."
+    },
+    {
+        "id": 449,
+        "word": "Intolerant",
+        "bengali": "অসহনীয়"
+    },
+    {
+        "id": 450,
+        "word": "Affirm/Assert",
+        "bengali": "দৃঢ়ভাবে কোন কিছু বলা"
+    },
+    {
+        "id": 451,
+        "word": "Deny",
+        "bengali": "দৃঢ়ভাবে কোন কিছু অস্বীকার করা"
+    },
+    {
+        "id": 452,
+        "word": "Panic",
+        "bengali": "ভয় পাওয়া"
+    },
+    {
+        "id": 453,
+        "word": "Abandon/Desert",
+        "bengali": "ছেড়ে যাওয়া"
+    },
+    {
+        "id": 454,
+        "word": "Waive",
+        "bengali": "মওকুফ করা"
+    },
+    {
+        "id": 455,
+        "word": "Evenhanded",
+        "bengali": "নিরপেক্ষ"
+    },
+    {
+        "id": 456,
+        "word": "Enunciate",
+        "bengali": "উচ্চারন করা"
+    },
+    {
+        "id": 457,
+        "word": "Consolidation",
+        "bengali": "ঐক্যবদ্ধ/ একসাথে"
+    },
+    {
+        "id": 458,
+        "word": "Instigation",
+        "bengali": "উত্তেজনা"
+    },
+    {
+        "id": 459,
+        "word": "Provocation",
+        "bengali": "প্ররোচনা"
+    },
+    {
+        "id": 460,
+        "word": "Painstaking/ Persevering",
+        "bengali": "পরিশ্রমী"
+    },
+    {
+        "id": 461,
+        "word": "Stimulus/ Impetus",
+        "bengali": "আবেগ, প্রেরণা"
+    },
+    {
+        "id": 462,
+        "word": "Revulsion/Abhorrence/ Aversion/Repugnance",
+        "bengali": "প্রতিক্রিয়া"
+    },
+    {
+        "id": 463,
+        "word": "Evanescent/Fleeting",
+        "bengali": "ক্ষনস্থায়ী"
+    },
+    {
+        "id": 464,
+        "word": "Limpid",
+        "bengali": "স্পষ্ট"
+    },
+    {
+        "id": 465,
+        "word": "Evident",
+        "bengali": "স্পষ্ট"
+    },
+    {
+        "id": 466,
+        "word": "Subtlety",
+        "bengali": "অস্পষ্ট"
+    },
+    {
+        "id": 467,
+        "word": "Prima facie",
+        "bengali": "প্রথম দর্শনে"
+    },
+    {
+        "id": 468,
+        "word": "Subterfuge/Trickery",
+        "bengali": "প্রতারনা"
+    },
+    {
+        "id": 469,
+        "word": "Simplicity",
+        "bengali": "সরল"
+    },
+    {
+        "id": 470,
+        "word": "Applause",
+        "bengali": "সাধুবাদ"
+    },
+    {
+        "id": 471,
+        "word": "Impinge",
+        "bengali": "আঘাত হানা"
+    },
+    {
+        "id": 472,
+        "word": "Facilitate",
+        "bengali": "সহজতর"
+    },
+    {
+        "id": 473,
+        "word": "Trespass",
+        "bengali": "পাপ/সীমালঙ্গন"
+    },
+    {
+        "id": 474,
+        "word": "Profligate",
+        "bengali": "লম্পট"
+    },
+    {
+        "id": 475,
+        "word": "Intermittent",
+        "bengali": "অনিয়মিতভাবে"
+    },
+    {
+        "id": 476,
+        "word": "Broker",
+        "bengali": "দালাল"
+    },
+    {
+        "id": 477,
+        "word": "Merchant prince",
+        "bengali": "মহা ধনবান বণিক"
+    },
+    {
+        "id": 478,
+        "word": "Persistent",
+        "bengali": "নাছোড়বান্দা"
+    },
+    {
+        "id": 479,
+        "word": "Destitute",
+        "bengali": "দরিদ্র"
+    },
+    {
+        "id": 480,
+        "word": "Teller",
+        "bengali": "ব্যাংকের ক্যাশিয়ার"
+    },
+    {
+        "id": 481,
+        "word": "Intense",
+        "bengali": "তীব্র"
+    },
+    {
+        "id": 482,
+        "word": "Abrasive",
+        "bengali": "ঘর্ষণের মাধ্যমে তুলে ফেলা"
+    },
+    {
+        "id": 483,
+        "word": "Attempts",
+        "bengali": "চেষ্টা করা"
+    },
+    {
+        "id": 484,
+        "word": "Screams",
+        "bengali": "আর্তনাদ করা"
+    },
+    {
+        "id": 485,
+        "word": "Admit",
+        "bengali": "স্বীকার করা"
+    },
+    {
+        "id": 486,
+        "word": "Lucrative",
+        "bengali": "লাভজনক"
+    },
+    {
+        "id": 487,
+        "word": "Ridiculous",
+        "bengali": "হাস্যকর"
+    },
+    {
+        "id": 488,
+        "word": "Continuation",
+        "bengali": "ধারাবাহিকতা"
+    },
+    {
+        "id": 489,
+        "word": "Offshore",
+        "bengali": "সাগরমুখী"
+    },
+    {
+        "id": 490,
+        "word": "Solemn",
+        "bengali": "আনুষ্ঠানিক"
+    },
+    {
+        "id": 491,
+        "word": "Wholesale",
+        "bengali": "পাইকারী"
+    },
+    {
+        "id": 492,
+        "word": "Retail",
+        "bengali": "খুচরা"
+    },
+    {
+        "id": 493,
+        "word": "Push sale",
+        "bengali": "জোর করে বিক্রি করা"
+    },
+    {
+        "id": 494,
+.
+        "word": "Slothful",
+        "bengali": "নিষ্ক্রিয়"
+    },
+    {
+        "id": 495,
+        "word": "Quarrelsome",
+        "bengali": "ঝগড়াটে"
+    },
+    {
+        "id": 496,
+        "word": "Flat out",
+        "bengali": "সোজা"
+    },
+    {
+        "id": 497,
+        "word": "Backtrack",
+        "bengali": "প্রত্যাখ্যান করা"
+    }
+]

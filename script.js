@@ -5,6 +5,7 @@ const SAVE_KEY_WORDS = 'gre333Words';
 const DARK_MODE_KEY = 'gre333DarkMode';
 
 let vocabList = []; // To be loaded from JSON
+let previousVocabList = []; // To be loaded from JSON
 let words = []; // Holds word objects with SRS data
 let currentChunkIndex = 0;
 let totalMasteredCount = 0;
@@ -44,6 +45,7 @@ const startLearningText = document.getElementById('start-learning-text');
 const reviewMasteredButton = document.getElementById('review-mastered-button');
 const reviewMasteredButtonText = document.getElementById('review-mastered-text');
 const dailyRandomTestButton = document.getElementById('daily-random-test-button');
+const previousVocabularyButton = document.getElementById('previous-vocabulary-button');
 const resetProgressButton = document.getElementById('reset-progress-button');
 
 // Learn
@@ -133,7 +135,11 @@ function updateMainProgress() {
  */
 function loadWelcome() {
     updateMainProgress();
-    renderStudyStreak(); // --- NEW ---
+    try {
+        renderStudyStreak(); // --- NEW ---
+    } catch (error) {
+        console.error("Failed to render study streak:", error);
+    }
     const nextChunkIndex = Math.floor(totalMasteredCount / WORDS_PER_CHUNK);
     const startWord = (nextChunkIndex * WORDS_PER_CHUNK) + 1;
     const endWord = Math.min(startWord + WORDS_PER_CHUNK - 1, vocabList.length);
@@ -601,6 +607,11 @@ function startDailyRandomTest() {
     startTest();
 }
 
+function startPreviousVocabularyTest() {
+    wordsInCurrentChunk = previousVocabList;
+    startTest();
+}
+
 /**
  * --- NEW: Resets all saved progress
  */
@@ -852,10 +863,15 @@ function animateValue(id, start, end, duration, format) {
 document.addEventListener('DOMContentLoaded', async () => {
     try {
         const response = await fetch('vocabulary.json');
+        const preVocabResponse = await fetch('pre-vocabulary.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
+        if(!preVocabResponse.ok){
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         vocabList = await response.json();
+        previousVocabList = await preVocabResponse.json();
 
         // --- UPDATED: Initial Load ---
         loadDarkModeState();
@@ -882,6 +898,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
         reviewMasteredButton.addEventListener('click', startReviewMode);
         dailyRandomTestButton.addEventListener('click', startDailyRandomTest);
+        previousVocabularyButton.addEventListener('click', startPreviousVocabularyTest);
         resetProgressButton.addEventListener('click', resetProgress);
         document.getElementById('create-test-button').addEventListener('click', createDifficultWordsTest);
 
