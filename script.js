@@ -136,7 +136,7 @@ function loadWelcome() {
             </div>
             <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 text-right">${masteredCount} / ${totalCount} Mastered</p>
         `;
-
+        
         card.addEventListener('click', () => {
             currentCategory = cat.id;
             if (cat.id === 'recentgk') {
@@ -167,7 +167,7 @@ function loadLearnSection(chunkIndex) {
     catData.currentChunkIndex = chunkIndex;
 
     learnHeader.textContent = `${catData.list.length > 0 ? catData.title : ''} Words ${start + 1}-${end}`;
-    learnContainer.innerHTML = '';
+    learnContainer.innerHTML = ''; 
 
     wordsInCurrentChunk.forEach((word, index) => {
         const card = document.createElement('div');
@@ -559,7 +559,7 @@ function renderDifficultWords() {
         createTestButton.style.display = 'none';
         return;
     }
-
+    
     difficultWordsList.innerHTML = sortedWords.map(word => `
         <div class="flex justify-between items-center text-sm">
             <span class="font-semibold text-slate-700 dark:text-slate-300">${word.word}</span>
@@ -586,7 +586,7 @@ function calculateStudyStreak() {
     const today = new Date();
     const lastStudyDay = new Date(studyHistory[0]);
     if ((today.getTime() - lastStudyDay.getTime()) / (1000 * 3600 * 24) > 1.5) return 0;
-
+    
     let streak = 1;
     let currentDay = lastStudyDay;
     for (let i = 1; i < studyHistory.length; i++) {
@@ -639,7 +639,7 @@ function startPracticeMode() {
     wordsInCurrentChunk = [...vocabData.recentgk.list];
     currentQuizQuestionIndex = 0;
     loadPracticeQuestion();
-    showSection('test');
+    showSection('test'); 
 }
 
 function loadPracticeQuestion() {
@@ -680,10 +680,10 @@ function startTestMode() {
         numQuestions = allGkQuestions.length;
         questionCountInput.value = numQuestions;
     }
-
+    
     shuffleArray(allGkQuestions);
     wordsInCurrentChunk = allGkQuestions.slice(0, numQuestions);
-
+    
     currentCategory = 'recentgk'; // Ensure category is set for the test
     startTest(); // Re-use the existing test logic
 }
@@ -698,7 +698,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             fetch('recentgk.json')
         ]);
         if (!greResponse.ok || !preVocabResponse.ok || !recentGkResponse.ok) throw new Error(`HTTP error!`);
-
+        
         vocabData.gre.list = await greResponse.json();
         vocabData.gre.title = "GRE 333";
         vocabData.previous.list = await preVocabResponse.json();
@@ -717,14 +717,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         statsButton.addEventListener('click', loadStatsPage);
         aboutButton.addEventListener('click', () => showSection('about'));
         darkModeToggle.addEventListener('click', toggleDarkMode);
-
+        
         // Mobile Nav
         mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
         mobileMainMenuButton.addEventListener('click', loadWelcome);
         mobileDictionaryButton.addEventListener('click', () => showSection('dictionary'));
         mobileStatsButton.addEventListener('click', loadStatsPage);
         mobileAboutButton.addEventListener('click', () => showSection('about'));
-
+        
         resetProgressButton.addEventListener('click', resetProgress);
         document.getElementById('create-test-button').addEventListener('click', createDifficultWordsTest);
         startTestButton.addEventListener('click', startTest);
