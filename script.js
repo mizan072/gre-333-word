@@ -1,25 +1,24 @@
 // --- 1. GLOBAL STATE & CONSTANTS ---
 const WORDS_PER_CHUNK = 10;
-const SAVE_KEY_PROGRESS = 'gre333Progress';
-const SAVE_KEY_WORDS = 'gre333Words';
-const DARK_MODE_KEY = 'gre333DarkMode';
+const SAVE_KEY_WORDS_GRE = 'eprepGreWords';
+const SAVE_KEY_WORDS_PREVIOUS = 'eprepPreviousWords';
+const DARK_MODE_KEY = 'eprepDarkMode';
+const STUDY_HISTORY_KEY = 'eprepStudyHistory';
 
-let vocabList = []; // To be loaded from JSON
-let previousVocabList = []; // To be loaded from JSON
-let words = []; // Holds word objects with SRS data
-let currentChunkIndex = 0;
-let totalMasteredCount = 0;
+let vocabData = {
+    gre: { list: [], words: [] },
+    previous: { list: [], words: [] }
+};
+
+let currentCategory = 'gre'; // Default category
 let wordsInCurrentChunk = [];
 let currentQuizQuestionIndex = 0;
 let quizScores = { correct: 0, incorrect: 0 };
 let missedWords = [];
 let isAnswered = false;
 let masteryChart = null;
-let currentMode = 'gre'; // 'gre' or 'previous'
-let previousVocabChunkIndex = 0;
 
-
-// --- 3. DOM ELEMENTS ---
+// --- 2. DOM ELEMENTS ---
 const htmlElement = document.documentElement;
 const sections = {
     welcome: document.getElementById('welcome-section'),
@@ -27,28 +26,29 @@ const sections = {
     test: document.getElementById('test-section'),
     results: document.getElementById('results-section'),
     dictionary: document.getElementById('dictionary-section'),
-    stats: document.getElementById('stats-section'), // --- NEW ---
-    about: document.getElementById('about-section') // --- NEW ---
+    stats: document.getElementById('stats-section'),
+    about: document.getElementById('about-section')
 };
-const progressBarFill = document.getElementById('progress-bar-fill');
-const progressBarText = document.getElementById('progress-bar-text');
 
-// --- NEW: Header Buttons ---
+// Header & Nav
 const mainMenuButton = document.getElementById('main-menu-button');
 const dictionaryButton = document.getElementById('dictionary-button');
-const statsButton = document.getElementById('stats-button'); // --- NEW ---
-const aboutButton = document.getElementById('about-button'); // --- NEW ---
+const statsButton = document.getElementById('stats-button');
+const aboutButton = document.getElementById('about-button');
 const darkModeToggle = document.getElementById('dark-mode-toggle');
 const darkIconMoon = document.getElementById('dark-icon-moon');
 const darkIconSun = document.getElementById('dark-icon-sun');
 
-// --- NEW: Welcome Screen Buttons ---
-const startLearningButton = document.getElementById('start-learning-button');
-const startLearningText = document.getElementById('start-learning-text');
-const reviewMasteredButton = document.getElementById('review-mastered-button');
-const reviewMasteredButtonText = document.getElementById('review-mastered-text');
-const dailyRandomTestButton = document.getElementById('daily-random-test-button');
-const previousVocabularyButton = document.getElementById('previous-vocabulary-button');
+// Mobile Nav
+const mobileMenuButton = document.getElementById('mobile-menu-button');
+const mobileMenu = document.getElementById('mobile-menu');
+const mobileMainMenuButton = document.getElementById('mobile-main-menu-button');
+const mobileDictionaryButton = document.getElementById('mobile-dictionary-button');
+const mobileStatsButton = document.getElementById('mobile-stats-button');
+const mobileAboutButton = document.getElementById('mobile-about-button');
+
+// Welcome
+const categoryContainer = document.getElementById('category-container');
 const resetProgressButton = document.getElementById('reset-progress-button');
 
 // Learn
@@ -75,139 +75,108 @@ const wordsToReviewContainer = document.getElementById('words-to-review-containe
 const wordsToReviewList = document.getElementById('words-to-review-list');
 const continueButton = document.getElementById('continue-button');
 
-// --- NEW: Dictionary ---
+// Dictionary
 const searchBar = document.getElementById('search-bar');
 const dictionaryListContainer = document.getElementById('dictionary-list-container');
 
-// --- Footer Buttons ---
-const footerMenuButton = document.getElementById('footer-menu-button');
-const footerAboutButton = document.getElementById('footer-about-button');
 
+// --- 3. CORE FUNCTIONS ---
 
-// --- 4. CORE FUNCTIONS ---
-
-/**
- * Switches the visible section
- * @param {string} sectionName - 'welcome', 'learn', 'test', 'results', 'dictionary'
- */
 function showSection(sectionName) {
     Object.values(sections).forEach(section => {
         section.classList.remove('active');
     });
     if (sections[sectionName]) {
         sections[sectionName].classList.add('active');
-        window.scrollTo(0, 0); // Scroll to top on section change
+        window.scrollTo(0, 0);
     }
+    mobileMenu.classList.add('hidden'); // Close mobile menu on navigation
 }
 
-/**
- * Pronounces the given word using Web Speech API
- * @param {string} word - The word to speak
- */
 function speakWord(word) {
     if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(word);
-        utterance.lang = 'en-US'; 
-        utterance.rate = 0.9;   
+        utterance.lang = 'en-US';
+        utterance.rate = 0.9;
         window.speechSynthesis.speak(utterance);
     } else {
         console.warn("Browser does not support Speech Synthesis.");
     }
 }
 
-/**
- * Updates the main progress bar and review button
- */
-function updateMainProgress() {
-    const percentage = (totalMasteredCount / vocabList.length) * 100;
-    progressBarFill.style.width = `${percentage}%`;
-    progressBarText.textContent = `Mastered: ${totalMasteredCount} of 333 words`;
-
-    // --- NEW: Update review button ---
-    if (totalMasteredCount > 0) {
-        reviewMasteredButtonText.textContent = `Review Mastered Words (${totalMasteredCount})`;
-        reviewMasteredButton.style.display = 'flex';
-    } else {
-        reviewMasteredButton.style.display = 'none';
-    }
-}
-
-/**
- * Loads the Welcome/Main Menu screen
- */
 function loadWelcome() {
-    updateMainProgress();
-    try {
-        renderStudyStreak(); // --- NEW ---
-    } catch (error) {
-        console.error("Failed to render study streak:", error);
-    }
-    const nextChunkIndex = Math.floor(totalMasteredCount / WORDS_PER_CHUNK);
-    const startWord = (nextChunkIndex * WORDS_PER_CHUNK) + 1;
-    const endWord = Math.min(startWord + WORDS_PER_CHUNK - 1, vocabList.length);
+    categoryContainer.innerHTML = ''; // Clear existing categories
     
-    if (startWord > vocabList.length) {
-        startLearningText.textContent = "Congratulations! You've completed all lessons!";
-        startLearningButton.disabled = true;
-        startLearningButton.classList.add('bg-green-700', 'opacity-70');
-    } else {
-        startLearningText.textContent = `Begin Lesson ${nextChunkIndex + 1} (Words ${startWord}-${endWord})`;
-        startLearningButton.disabled = false;
-        startLearningButton.classList.remove('bg-green-700', 'opacity-70');
-    }
-    
+    // Define categories
+    const categories = [
+        { id: 'gre', title: 'GRE 333', description: 'The essential 333 high-frequency words for the GRE.' },
+        { id: 'previous', title: 'Previous Vocabulary', description: 'A supplementary vocabulary list for comprehensive learning.' }
+    ];
+
+    categories.forEach(cat => {
+        const catData = vocabData[cat.id];
+        const masteredCount = catData.words.filter(w => w.strength >= 10).length;
+        const totalCount = catData.list.length;
+        const percentage = totalCount > 0 ? Math.round((masteredCount / totalCount) * 100) : 0;
+
+        const card = document.createElement('div');
+        card.className = "bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-xl hover:scale-[1.02] transition-all duration-300 cursor-pointer";
+        card.dataset.category = cat.id;
+
+        card.innerHTML = `
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white">${cat.title}</h3>
+            <p class="text-slate-600 dark:text-slate-400 mt-1 mb-4">${cat.description}</p>
+            <div class="w-full bg-slate-200 dark:bg-gray-700 rounded-full h-2.5">
+                <div class="bg-indigo-600 h-2.5 rounded-full" style="width: ${percentage}%"></div>
+            </div>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 text-right">${masteredCount} / ${totalCount} Mastered</p>
+        `;
+
+        card.addEventListener('click', () => {
+            currentCategory = cat.id;
+            const nextChunkIndex = Math.floor(masteredCount / WORDS_PER_CHUNK);
+            if (nextChunkIndex * WORDS_PER_CHUNK >= totalCount) {
+                alert("Congratulations! You've completed all lessons in this category.");
+                return;
+            }
+            loadLearnSection(nextChunkIndex);
+        });
+
+        categoryContainer.appendChild(card);
+    });
+
     showSection('welcome');
 }
 
-/**
- * Loads the Learn section for a specific chunk
- * @param {number} chunkIndex - The index of the chunk (0 = words 1-10)
- */
-function loadLearnSection(chunkIndex, mode = 'gre') {
-    currentMode = mode;
-    let vocabSource = (mode === 'gre') ? vocabList : previousVocabList;
-
-    if (mode === 'gre') {
-        currentChunkIndex = chunkIndex;
-    } else {
-        previousVocabChunkIndex = chunkIndex;
-    }
-
+function loadLearnSection(chunkIndex) {
+    const catData = vocabData[currentCategory];
     const start = chunkIndex * WORDS_PER_CHUNK;
-    const end = Math.min(start + WORDS_PER_CHUNK, vocabSource.length);
-    wordsInCurrentChunk = vocabSource.slice(start, end);
-
-    learnHeader.textContent = `Learning Set: Words ${start + 1}-${end}`;
+    const end = Math.min(start + WORDS_PER_CHUNK, catData.list.length);
+    wordsInCurrentChunk = catData.list.slice(start, end);
     
-    learnContainer.innerHTML = ''; // Clear previous cards
+    catData.currentChunkIndex = chunkIndex;
+
+    learnHeader.textContent = `${catData.list.length > 0 ? catData.title : ''} Words ${start + 1}-${end}`;
+    learnContainer.innerHTML = '';
+
     wordsInCurrentChunk.forEach((word, index) => {
         const card = document.createElement('div');
-        card.className = "bg-white dark:bg-slate-800 p-5 rounded-lg shadow-md border border-slate-200 dark:border-slate-700 fade-in-card";
-        card.style.animationDelay = `${index * 100}ms`;
-        const synonymHTML = word.english ? `
-            <div class="definition-block">
-                <p class="definition-title">Synonym</p>
-                <p class="definition-content text-lg">${word.english}</p>
-            </div>
-        ` : '';
+        card.className = "bg-white dark:bg-gray-800 p-5 rounded-lg shadow-sm border border-slate-200 dark:border-gray-700";
+        card.style.animationDelay = `${index * 80}ms`;
+        card.classList.add('fade-in-card');
+
+        const synonymHTML = word.english ? `<p class="text-lg text-slate-600 dark:text-slate-400">${word.english}</p>` : '';
 
         card.innerHTML = `
-            <div class="flex justify-between items-start mb-3">
-                <div>
-                    <h4 class="text-2xl font-bold text-indigo-800 dark:text-indigo-300">${word.id}. ${word.word}</h4>
-                </div>
-                <button class="speak-button p-2 rounded-full text-indigo-600 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-slate-700 active:bg-indigo-200 dark:active:bg-slate-600 transition-colors" data-word="${word.word}" aria-label="Pronounce word">
+            <div class="flex justify-between items-center mb-2">
+                <h4 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">${word.word}</h4>
+                <button class="speak-button p-2 rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-gray-700" data-word="${word.word}">
                     <i data-lucide="volume-2" class="w-6 h-6"></i>
                 </button>
             </div>
-            <div class="space-y-4">
-                <div class="definition-block">
-                    <p class="definition-title">Meaning</p>
-                    <p class="lang-bn definition-content text-xl">${word.bengali}</p>
-                </div>
-                ${synonymHTML}
-            </div>
+            <p class="lang-bn text-xl text-slate-800 dark:text-slate-200 mb-2">${word.bengali}</p>
+            ${synonymHTML}
         `;
         learnContainer.appendChild(card);
     });
@@ -216,10 +185,6 @@ function loadLearnSection(chunkIndex, mode = 'gre') {
     showSection('learn');
 }
 
-/**
- * Shuffles an array in place (Fisher-Yates)
- * @param {Array} array - The array to shuffle
- */
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -227,10 +192,8 @@ function shuffleArray(array) {
     }
 }
 
-/**
- * Starts the quiz for the current chunk (or review)
- */
 function startTest() {
+    if (wordsInCurrentChunk.length === 0) return;
     shuffleArray(wordsInCurrentChunk);
     currentQuizQuestionIndex = 0;
     quizScores = { correct: 0, incorrect: 0 };
@@ -241,9 +204,6 @@ function startTest() {
     showSection('test');
 }
 
-/**
- * Loads the current quiz question
- */
 function loadQuestion() {
     if (currentQuizQuestionIndex >= wordsInCurrentChunk.length) {
         showQuizComplete();
@@ -257,61 +217,45 @@ function loadQuestion() {
     quizQuestionBengali.textContent = '';
     
     const currentWord = wordsInCurrentChunk[currentQuizQuestionIndex];
-    
-    // Determine if the word has a synonym, which dictates quiz type
     const hasSynonym = currentWord.english && currentWord.english.trim() !== '';
 
-    // If no synonym, force a word-to-Bengali or Bengali-to-word quiz.
-    // Otherwise, choose randomly between synonym-based and meaning-based.
     const quizType = !hasSynonym
         ? (Math.random() > 0.5 ? 'word-to-bengali' : 'bengali-to-word')
         : (Math.random() > 0.5 ? 'word-to-def' : 'def-to-word');
 
-    let question = '';
+    let question = '', correctAnswer = '', optionSourceKey = '';
     let questionIsBengali = false;
-    let correctAnswer = '';
-    let options = [];
-    let optionSourceKey = '';
+    let options = [currentWord];
 
     switch (quizType) {
         case 'word-to-bengali':
             question = currentWord.word;
             correctAnswer = currentWord.bengali;
             optionSourceKey = 'bengali';
-            options.push(currentWord);
             break;
         case 'bengali-to-word':
             question = currentWord.bengali;
             questionIsBengali = true;
             correctAnswer = currentWord.word;
             optionSourceKey = 'word';
-            options.push(currentWord);
             break;
-        case 'word-to-def': // Synonym based
+        case 'word-to-def':
             question = currentWord.word;
             correctAnswer = currentWord.english;
             optionSourceKey = 'english';
-            options.push(currentWord);
             break;
-        case 'def-to-word': // Synonym based
+        case 'def-to-word':
             question = currentWord.english;
             correctAnswer = currentWord.word;
             optionSourceKey = 'word';
-            options.push(currentWord);
             break;
     }
 
-    // Get 3 random wrong answers
-    let vocabSource = (currentMode === 'gre') ? vocabList : previousVocabList;
-    let fullWordListForOptions = wordsInCurrentChunk.length > 4 ? wordsInCurrentChunk : vocabSource;
+    let fullWordListForOptions = wordsInCurrentChunk.length > 4 ? wordsInCurrentChunk : vocabData[currentCategory].list;
     while (options.length < 4) {
         const randomWord = fullWordListForOptions[Math.floor(Math.random() * fullWordListForOptions.length)];
-        // Ensure the random word is not the same as the correct one and has the required property
-        if (randomWord.id !== currentWord.id && randomWord[optionSourceKey]) {
-            // Also ensure the option text is unique
-            if (!options.some(opt => opt[optionSourceKey] === randomWord[optionSourceKey])) {
-                options.push(randomWord);
-            }
+        if (randomWord.id !== currentWord.id && randomWord[optionSourceKey] && !options.some(opt => opt[optionSourceKey] === randomWord[optionSourceKey])) {
+            options.push(randomWord);
         }
     }
 
@@ -323,35 +267,19 @@ function loadQuestion() {
         quizQuestion.textContent = question;
     }
     
-    options.forEach(option => {
-        let text = option[optionSourceKey];
-        let isCorrect = (text === correctAnswer);
-        createOptionButton(text, isCorrect);
-    });
-
+    options.forEach(option => createOptionButton(option[optionSourceKey], option[optionSourceKey] === correctAnswer));
     updateQuizStats();
 }
 
-/**
- * Creates an option button for the quiz
- * @param {string} text - The text to display on the button
- * @param {boolean} isCorrect - Whether this is the correct answer
- */
 function createOptionButton(text, isCorrect) {
     const button = document.createElement('button');
     button.dataset.correct = isCorrect;
-    button.innerHTML = `<span class="font-medium">${text}</span>`;
-    // --- UPDATED: Added dark mode classes and pop effect ---
-    button.className = "quiz-option-button w-full text-left p-4 bg-white dark:bg-slate-700 border-2 border-slate-200 dark:border-slate-600 rounded-lg shadow-sm hover:bg-slate-50 dark:hover:bg-slate-600 transition-all duration-150 text-lg dark:text-slate-100 transform active:scale-95 duration-100";
-    
+    button.innerHTML = `<span class="font-medium text-lg">${text}</span>`;
+    button.className = "quiz-option-button w-full text-left p-4 bg-white dark:bg-gray-700 border-2 border-slate-200 dark:border-gray-600 rounded-lg shadow-sm hover:bg-slate-100 dark:hover:bg-gray-600/70 transition-all duration-150 transform active:scale-95";
     button.addEventListener('click', () => checkAnswer(button));
     quizOptionsContainer.appendChild(button);
 }
 
-/**
- * Checks the selected answer
- * @param {HTMLButtonElement} selectedButton - The button that was clicked
- */
 function checkAnswer(selectedButton) {
     if (isAnswered) return;
     isAnswered = true;
@@ -359,14 +287,12 @@ function checkAnswer(selectedButton) {
     const isCorrect = selectedButton.dataset.correct === 'true';
     const allButtons = quizOptionsContainer.querySelectorAll('button');
     const currentWord = wordsInCurrentChunk[currentQuizQuestionIndex];
-    const wordInMasterList = words.find(w => w.id === currentWord.id);
+    const wordInMasterList = vocabData[currentCategory].words.find(w => w.id === currentWord.id);
 
     allButtons.forEach(button => {
         button.disabled = true;
-        const correct = button.dataset.correct === 'true';
-        if (correct) {
-            button.classList.remove('bg-white', 'dark:bg-slate-700', 'border-slate-200', 'dark:border-slate-600');
-            button.classList.add('bg-green-100', 'dark:bg-green-900', 'border-green-500', 'dark:border-green-600', 'ring-2', 'ring-green-400');
+        if (button.dataset.correct === 'true') {
+            button.classList.add('correct');
         }
     });
 
@@ -376,235 +302,169 @@ function checkAnswer(selectedButton) {
         feedbackText.className = "text-2xl font-semibold text-green-600 dark:text-green-400";
         feedbackCorrectAnswer.textContent = '';
         if (wordInMasterList) {
-            wordInMasterList.strength = Math.min(12, wordInMasterList.strength + 1); // Cap strength
+            wordInMasterList.strength = Math.min(12, wordInMasterList.strength + 1);
             wordInMasterList.lastReviewed = new Date().toISOString();
         }
     } else {
         quizScores.incorrect++;
         missedWords.push(currentWord);
-        selectedButton.classList.remove('bg-white', 'dark:bg-slate-700', 'border-slate-200', 'dark:border-slate-600');
-        selectedButton.classList.add('bg-red-100', 'dark:bg-red-900', 'border-red-500', 'dark:border-red-600', 'ring-2', 'ring-red-400');
+        selectedButton.classList.add('incorrect');
         feedbackText.textContent = "Incorrect";
         feedbackText.className = "text-2xl font-semibold text-red-600 dark:text-red-400";
-        const correctAnswerText = currentWord.english ? `Correct: ${currentWord.word} (${currentWord.english})` : `Correct: ${currentWord.word} (${currentWord.bengali})`;
-        feedbackCorrectAnswer.textContent = correctAnswerText;
+        const correctAnswerText = currentWord.english ? `${currentWord.word} (${currentWord.english})` : `${currentWord.word} (${currentWord.bengali})`;
+        feedbackCorrectAnswer.textContent = `Correct: ${correctAnswerText}`;
         if (wordInMasterList) {
-            wordInMasterList.strength = Math.max(0, wordInMasterList.strength - 2); // Penalize
-            wordInMasterList.missedCount = (wordInMasterList.missedCount || 0) + 1; // --- NEW ---
+            wordInMasterList.strength = Math.max(0, wordInMasterList.strength - 2);
+            wordInMasterList.missedCount = (wordInMasterList.missedCount || 0) + 1;
         }
     }
 
     currentQuizQuestionIndex++;
-    updateQuizStats();
     feedbackContainer.style.display = 'block';
+    updateQuizStats();
 }
 
-
-/**
- * Updates the (10-question) quiz progress bar
- */
 function updateQuizStats() {
     const total = wordsInCurrentChunk.length;
     const progress = currentQuizQuestionIndex;
-    
     quizProgressText.textContent = `Question ${Math.min(progress + 1, total)} of ${total}`;
-    quizProgressBar.style.width = `${((progress) / total) * 100}%`; 
+    quizProgressBar.style.width = `${((progress) / total) * 100}%`;
 }
 
-/**
- * Shows the quiz completion (Results) screen
- */
 function showQuizComplete() {
     const total = wordsInCurrentChunk.length;
     const correct = quizScores.correct;
     const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
+    const catData = vocabData[currentCategory];
 
-    // --- NEW: Save the entire words array with updated strengths ---
-    localStorage.setItem(SAVE_KEY_WORDS, JSON.stringify(words));
+    saveProgress();
 
-    // --- NEW: Record Study Session ---
-    const today = new Date().toISOString().split('T')[0]; // Get YYYY-MM-DD
-    let studyHistory = JSON.parse(localStorage.getItem('studyHistory') || '[]');
+    const today = new Date().toISOString().split('T')[0];
+    let studyHistory = JSON.parse(localStorage.getItem(STUDY_HISTORY_KEY) || '[]');
     if (!studyHistory.includes(today)) {
         studyHistory.push(today);
-        localStorage.setItem('studyHistory', JSON.stringify(studyHistory));
+        localStorage.setItem(STUDY_HISTORY_KEY, JSON.stringify(studyHistory));
     }
     
-    // --- Recalculate mastered count and update progress ---
-    totalMasteredCount = words.filter(word => word.strength >= 10).length;
-    updateMainProgress();
-    
-    // --- Update Results Card ---
-    const isReview = wordsInCurrentChunk.length > WORDS_PER_CHUNK;
-    resultsHeader.textContent = isReview ? `Review Complete!` : `Lesson ${currentChunkIndex + 1} Complete!`;
+    resultsHeader.textContent = `Lesson Complete!`;
+    finalScoreText.textContent = `${correct} / ${total}`;
+    finalPercentageText.textContent = `(${percentage}%)`;
 
-    // --- NEW: Animate Score ---
-    animateValue("final-score-text", 0, correct, 500, (val) => `${val} / ${total}`);
-    animateValue("final-percentage-text", 0, percentage, 500, (val) => `(${val}%)`);
+    if (percentage >= 80) finalScoreText.className = "text-6xl font-bold my-2 text-green-600 dark:text-green-400";
+    else if (percentage >= 50) finalScoreText.className = "text-6xl font-bold my-2 text-yellow-500 dark:text-yellow-400";
+    else finalScoreText.className = "text-6xl font-bold my-2 text-red-600 dark:text-red-400";
 
-    if (percentage >= 80) {
-        finalScoreText.className = "text-7xl font-bold text-green-600 dark:text-green-400 my-4";
-    } else if (percentage >= 50) {
-        finalScoreText.className = "text-7xl font-bold text-yellow-600 dark:text-yellow-400 my-4";
-    } else {
-        finalScoreText.className = "text-7xl font-bold text-red-600 dark:text-red-400 my-4";
-    }
-
-    // --- Populate Corrective Feedback ---
     if (missedWords.length > 0) {
-        let html = '';
-        missedWords.forEach(word => {
-            const synonymHTML = word.english ? `<p class="text-md text-slate-500 dark:text-slate-400 italic">${word.english}</p>` : '';
-            // --- UPDATED: Added dark mode classes ---
-            html += `
-            <div class="word-review-card bg-red-50 dark:bg-slate-700 p-4 rounded-lg border border-red-200 dark:border-red-700 transition-transform duration-150">
-                <div class="flex justify-between items-center mb-1">
-                    <h4 class="text-xl font-bold text-red-800 dark:text-red-300">${word.word}</h4>
-                    <button class="speak-button p-2 rounded-full text-red-700 dark:text-red-300 hover:bg-red-100 dark:hover:bg-slate-600" data-word="${word.word}" aria-label="Pronounce word">
-                        <i data-lucide="volume-2" class="w-6 h-6"></i>
-                    </button>
+        wordsToReviewList.innerHTML = missedWords.map(word => `
+            <div class="bg-red-50 dark:bg-gray-700/50 p-3 rounded-md border border-red-200 dark:border-red-800/50">
+                <div class="flex justify-between items-center">
+                    <h4 class="font-bold text-red-800 dark:text-red-300">${word.word}</h4>
+                    <button class="speak-button p-1 rounded-full text-red-600 dark:text-red-300 hover:bg-red-100 dark:hover:bg-gray-600" data-word="${word.word}"><i data-lucide="volume-2" class="w-5 h-5"></i></button>
                 </div>
-                <p class="lang-bn text-lg text-slate-700 dark:text-slate-300 mb-1">${word.bengali}</p>
-                ${synonymHTML}
-            </div>
-            `;
-        });
-        wordsToReviewList.innerHTML = html;
+                <p class="lang-bn text-slate-700 dark:text-slate-300">${word.bengali}</p>
+                ${word.english ? `<p class="text-sm text-slate-500 dark:text-slate-400 italic">${word.english}</p>` : ''}
+            </div>`).join('');
         wordsToReviewContainer.style.display = 'block';
     } else {
-        wordsToReviewList.innerHTML = '';
         wordsToReviewContainer.style.display = 'none';
     }
     
-    // --- Configure Continue Button ---
-    if (currentMode === 'gre') {
-        // If it was a review, button just goes to main menu.
-        if (isReview) {
-            continueButton.textContent = "Return to Main Menu";
-            continueButton.onclick = () => loadWelcome();
-        } else {
-            // Original lesson logic
-            let nextChunkIndex = currentChunkIndex;
-            if (percentage < 80) {
-                continueButton.textContent = `Retry Lesson ${currentChunkIndex + 1}`;
-                continueButton.onclick = () => loadLearnSection(currentChunkIndex);
-            } else {
-                nextChunkIndex = currentChunkIndex + 1;
-                const nextStartWord = nextChunkIndex * WORDS_PER_CHUNK;
-
-                if (nextStartWord >= vocabList.length) {
-                    continueButton.textContent = "All Lessons Complete! Return to Menu";
-                    continueButton.onclick = () => loadWelcome();
-                } else {
-                    const nextEndWord = Math.min(nextStartWord + WORDS_PER_CHUNK, vocabList.length);
-                    continueButton.textContent = `Continue to Lesson ${nextChunkIndex + 1} (Words ${nextStartWord + 1}-${nextEndWord})`;
-                    continueButton.onclick = () => loadLearnSection(nextChunkIndex);
-                }
-            }
-        }
-    } else { // currentMode is 'previous'
-        let nextChunkIndex = previousVocabChunkIndex + 1;
-        const nextStartWord = nextChunkIndex * WORDS_PER_CHUNK;
-
-        if (nextStartWord >= previousVocabList.length) {
-            continueButton.textContent = "All Previous Vocabulary Lessons Complete! Return to Menu";
-            continueButton.onclick = () => loadWelcome();
-        } else {
-            const nextEndWord = Math.min(nextStartWord + WORDS_PER_CHUNK, previousVocabList.length);
-            continueButton.textContent = `Continue to Next Lesson (Words ${nextStartWord + 1}-${nextEndWord})`;
-            continueButton.onclick = () => loadLearnSection(nextChunkIndex, 'previous');
-        }
+    const nextChunkIndex = catData.currentChunkIndex + 1;
+    if ((nextChunkIndex * WORDS_PER_CHUNK) >= catData.list.length) {
+        continueButton.textContent = "All Lessons Complete! Back to Categories";
+        continueButton.onclick = loadWelcome;
+    } else {
+        continueButton.textContent = `Continue to Next Lesson`;
+        continueButton.onclick = () => loadLearnSection(nextChunkIndex);
     }
     
+    lucide.createIcons();
     showSection('results');
 }
 
-// --- 5. NEW FUNCTIONS ---
 
-/**
- * --- NEW: Loads saved progress from localStorage
- */
+// --- 4. DATA & PROGRESS MANAGEMENT ---
+
+function getSaveKey(category) {
+    return category === 'gre' ? SAVE_KEY_WORDS_GRE : SAVE_KEY_WORDS_PREVIOUS;
+}
+
 function loadProgress() {
-    const savedWords = localStorage.getItem(SAVE_KEY_WORDS);
-
-    if (savedWords) {
-        words = JSON.parse(savedWords);
-        // Ensure data integrity if vocabList changes
-        if (words.length !== vocabList.length) {
-            initializeWords();
+    Object.keys(vocabData).forEach(cat => {
+        const savedWords = localStorage.getItem(getSaveKey(cat));
+        if (savedWords) {
+            vocabData[cat].words = JSON.parse(savedWords);
+            if (vocabData[cat].words.length !== vocabData[cat].list.length) {
+                initializeWords(cat);
+            }
+        } else {
+            initializeWords(cat);
         }
-    } else {
-        initializeWords();
-    }
-
-    // Recalculate mastered count based on strength
-    totalMasteredCount = words.filter(word => word.strength >= 10).length; // Define 'mastered' as strength >= 10
-
+    });
     loadWelcome();
 }
 
-/**
- * --- NEW: Initializes the words array with SRS data for the first time
- */
-function initializeWords() {
-    words = vocabList.map(v => ({
+function initializeWords(category) {
+    const catData = vocabData[category];
+    catData.words = catData.list.map(v => ({
         id: v.id,
-        strength: 0, // 0: unseen, 1-10: learning, >10: mastered
+        strength: 0,
         lastReviewed: null,
-        missedCount: 0, // --- NEW ---
-        // We can keep the original data here too for easy access
+        missedCount: 0,
         ...v
     }));
-    localStorage.setItem(SAVE_KEY_WORDS, JSON.stringify(words));
+    saveProgress(category);
 }
 
-/**
- * --- NEW: Loads and populates the dictionary section
- */
+function saveProgress(category = null) {
+    if (category) {
+        localStorage.setItem(getSaveKey(category), JSON.stringify(vocabData[category].words));
+    } else {
+        Object.keys(vocabData).forEach(cat => {
+            localStorage.setItem(getSaveKey(cat), JSON.stringify(vocabData[cat].words));
+        });
+    }
+}
+
+function resetProgress() {
+    if (confirm("Are you sure you want to reset all progress for all categories? This cannot be undone.")) {
+        Object.keys(vocabData).forEach(cat => {
+            localStorage.removeItem(getSaveKey(cat));
+            initializeWords(cat);
+        });
+        loadWelcome();
+    }
+}
+
+// --- 5. UI COMPONENTS & OTHER FEATURES ---
+
 function loadDictionary() {
-    let html = '';
-    const allVocab = [...vocabList, ...previousVocabList];
-    allVocab.forEach(word => {
-        const synonymHTML = word.english ? `<p class="text-md text-slate-500 dark:text-slate-400 italic">${word.english}</p>` : '';
+    const allVocab = [...vocabData.gre.list, ...vocabData.previous.list];
+    dictionaryListContainer.innerHTML = allVocab.map(word => {
         const searchData = `${word.word.toLowerCase()} ${word.bengali} ${word.english ? word.english.toLowerCase() : ''}`;
-        // --- UPDATED: Use data-word for search and added dark mode classes ---
-        html += `
-        <div class="dictionary-word-card bg-white dark:bg-slate-800 p-4 rounded-lg shadow-md border border-slate-200 dark:border-slate-700 transition-shadow hover:shadow-lg" data-word="${searchData}">
+        return `
+        <div class="dictionary-word-card bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-slate-200 dark:border-gray-700" data-word="${searchData}">
             <div class="flex justify-between items-center mb-1">
-                <h4 class="text-xl font-bold text-indigo-800 dark:text-indigo-300">${word.id}. ${word.word}</h4>
-                <button class="speak-button p-2 rounded-full text-indigo-600 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-slate-700" data-word="${word.word}" aria-label="Pronounce word">
-                    <i data-lucide="volume-2" class="w-6 h-6"></i>
+                <h4 class="text-xl font-bold text-indigo-600 dark:text-indigo-400">${word.word}</h4>
+                <button class="speak-button p-2 rounded-full text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-gray-700" data-word="${word.word}">
+                    <i data-lucide="volume-2" class="w-5 h-5"></i>
                 </button>
             </div>
-            <p class="lang-bn text-xl text-slate-700 dark:text-slate-300 mb-2">${word.bengali}</p>
-            ${synonymHTML}
-        </div>
-        `;
-    });
-    dictionaryListContainer.innerHTML = html;
+            <p class="lang-bn text-lg text-slate-800 dark:text-slate-200 mb-1">${word.bengali}</p>
+            ${word.english ? `<p class="text-slate-600 dark:text-slate-400">${word.english}</p>` : ''}
+        </div>`;
+    }).join('');
     lucide.createIcons();
 }
 
-/**
- * --- NEW: Filters the dictionary list based on search bar input
- */
 function filterDictionary() {
     const searchTerm = searchBar.value.toLowerCase();
     const allWords = dictionaryListContainer.querySelectorAll('.dictionary-word-card');
-    
     allWords.forEach(card => {
-        const wordText = card.dataset.word;
-        if (wordText.includes(searchTerm)) {
-            card.style.display = 'block';
-        } else {
-            card.style.display = 'none';
-        }
+        card.style.display = card.dataset.word.includes(searchTerm) ? 'block' : 'none';
     });
 }
 
-/**
- * --- NEW: Toggles dark mode
- */
 function toggleDarkMode() {
     htmlElement.classList.toggle('dark');
     const isDarkMode = htmlElement.classList.contains('dark');
@@ -612,76 +472,17 @@ function toggleDarkMode() {
     updateDarkModeIcons(isDarkMode);
 }
 
-/**
- * --- NEW: Updates the dark mode icons
- * @param {boolean} isDarkMode
- */
 function updateDarkModeIcons(isDarkMode) {
-    if (isDarkMode) {
-        darkIconMoon.classList.add('hidden');
-        darkIconSun.classList.remove('hidden');
-    } else {
-        darkIconMoon.classList.remove('hidden');
-        darkIconSun.classList.add('hidden');
-    }
+    darkIconMoon.classList.toggle('hidden', isDarkMode);
+    darkIconSun.classList.toggle('hidden', !isDarkMode);
 }
 
-/**
- * --- NEW: Loads saved dark mode state
- */
 function loadDarkModeState() {
     const isDarkMode = localStorage.getItem(DARK_MODE_KEY) === 'true';
-    if (isDarkMode) {
-        htmlElement.classList.add('dark');
-    }
+    if (isDarkMode) htmlElement.classList.add('dark');
     updateDarkModeIcons(isDarkMode);
 }
 
-/**
- * --- NEW: Starts the review mode
- */
-function startReviewMode() {
-    // --- NEW SRS LOGIC ---
-    // Sort words by strength (lowest first), then by last reviewed (oldest first)
-    const sortedWords = [...words].sort((a, b) => {
-        if (a.strength !== b.strength) {
-            return a.strength - b.strength;
-        }
-        return new Date(a.lastReviewed) - new Date(b.lastReviewed);
-    });
-
-    // Take the 20 weakest words for review
-    const reviewWords = sortedWords.slice(0, 20);
-
-    if (reviewWords.length === 0) {
-        alert("No words available for review.");
-        return;
-    }
-    wordsInCurrentChunk = reviewWords;
-    startTest();
-}
-
-function startDailyRandomTest() {
-    const shuffled = [...vocabList].sort(() => 0.5 - Math.random());
-    wordsInCurrentChunk = shuffled.slice(0, 20);
-    startTest();
-}
-
-function startPreviousVocabularyTest() {
-    loadLearnSection(0, 'previous');
-}
-
-/**
- * --- NEW: Resets all saved progress
- */
-function resetProgress() {
-    if (confirm("Are you sure you want to reset all your progress? This cannot be undone.")) {
-        localStorage.removeItem(SAVE_KEY_WORDS);
-        initializeWords(); // Re-initialize the words array
-        totalMasteredCount = 0;
-        loadWelcome();
-    }
-}
 function loadStatsPage() {
     showSection('stats');
     renderMasteryChart();
@@ -691,15 +492,13 @@ function loadStatsPage() {
 }
 
 function renderMasteryChart() {
-    const mastered = words.filter(w => w.strength >= 10).length;
-    const learning = words.filter(w => w.strength > 0 && w.strength < 10).length;
-    const notSeen = words.length - mastered - learning;
+    const allWords = [...vocabData.gre.words, ...vocabData.previous.words];
+    const mastered = allWords.filter(w => w.strength >= 10).length;
+    const learning = allWords.filter(w => w.strength > 0 && w.strength < 10).length;
+    const notSeen = allWords.length - mastered - learning;
 
     const ctx = document.getElementById('mastery-chart').getContext('2d');
-
-    if (masteryChart) {
-        masteryChart.destroy();
-    }
+    if (masteryChart) masteryChart.destroy();
 
     masteryChart = new Chart(ctx, {
         type: 'pie',
@@ -707,14 +506,9 @@ function renderMasteryChart() {
             labels: [`Mastered (${mastered})`, `Learning (${learning})`, `Not Seen (${notSeen})`],
             datasets: [{
                 data: [mastered, learning, notSeen],
-                backgroundColor: [
-                    '#16a34a', // green-600
-                    '#f59e0b', // amber-500
-                    '#64748b'  // slate-500
-                ],
-                borderColor: document.documentElement.classList.contains('dark') ? '#1e293b' : '#ffffff',
-                borderWidth: 4,
-                hoverOffset: 8
+                backgroundColor: ['#16a34a', '#f59e0b', '#64748b'],
+                borderColor: htmlElement.classList.contains('dark') ? '#1f2937' : '#ffffff',
+                borderWidth: 4
             }]
         },
         options: {
@@ -722,269 +516,146 @@ function renderMasteryChart() {
             plugins: {
                 legend: {
                     position: 'bottom',
-                    labels: {
-                        color: document.documentElement.classList.contains('dark') ? '#cbd5e1' : '#475569',
-                        font: {
-                            size: 14,
-                            family: "'Inter', sans-serif"
-                        },
-                        padding: 20
-                    }
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            let label = context.label || '';
-                            if (label) {
-                                label += ': ';
-                            }
-                            const value = context.parsed;
-                            const percentage = ((value / words.length) * 100).toFixed(1);
-                            label += `${percentage}%`;
-                            return label;
-                        }
-                    }
+                    labels: { color: htmlElement.classList.contains('dark') ? '#cbd5e1' : '#475569', font: { size: 14 } }
                 }
             }
         }
     });
 }
+
 function renderDifficultWords() {
     const difficultWordsList = document.getElementById('difficult-words-list');
-    const sortedWords = [...words]
-        .filter(word => word.missedCount > 0)
-        .sort((a, b) => b.missedCount - a.missedCount)
-        .slice(0, 20);
+    const allWords = [...vocabData.gre.words, ...vocabData.previous.words];
+    const sortedWords = allWords.filter(w => w.missedCount > 0).sort((a, b) => b.missedCount - a.missedCount).slice(0, 20);
 
+    const createTestButton = document.getElementById('create-test-button');
     if (sortedWords.length === 0) {
-        difficultWordsList.innerHTML = `<p class="text-slate-500 dark:text-slate-400 text-center italic">No missed words yet. Keep practicing!</p>`;
-        document.getElementById('create-test-button').style.display = 'none';
+        difficultWordsList.innerHTML = `<p class="text-slate-500 dark:text-slate-400 text-center italic text-sm">No difficult words yet. Keep practicing!</p>`;
+        createTestButton.style.display = 'none';
         return;
     }
 
-    let html = '';
-    sortedWords.forEach(word => {
-        const synonymHTML = word.english ? `<p class="text-sm text-slate-500 dark:text-slate-500 italic">${word.english}</p>` : '';
-        html += `
-            <div class="bg-white dark:bg-slate-800 p-3 rounded-md shadow-sm border border-slate-200 dark:border-slate-600">
-                <div class="flex justify-between items-center">
-                    <span class="font-semibold text-slate-800 dark:text-slate-200">${word.word}</span>
-                    <span class="text-sm text-red-500 dark:text-red-400 font-bold">${word.missedCount} missed</span>
-                </div>
-                <p class="lang-bn text-slate-600 dark:text-slate-400">${word.bengali}</p>
-                ${synonymHTML}
-                 <button class="speak-button p-2 rounded-full text-indigo-600 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-slate-700 active:bg-indigo-200 dark:active:bg-slate-600 transition-colors" data-word="${word.word}" aria-label="Pronounce word">
-                    <i data-lucide="volume-2" class="w-5 h-5"></i>
-                </button>
-            </div>
-        `;
-    });
-    difficultWordsList.innerHTML = html;
-    lucide.createIcons();
-    document.getElementById('create-test-button').style.display = 'flex';
+    difficultWordsList.innerHTML = sortedWords.map(word => `
+        <div class="flex justify-between items-center text-sm">
+            <span class="font-semibold text-slate-700 dark:text-slate-300">${word.word}</span>
+            <span class="text-red-500 dark:text-red-400 font-bold">${word.missedCount} misses</span>
+        </div>`).join('');
+    createTestButton.style.display = 'flex';
 }
-function createDifficultWordsTest() {
-    const difficultWords = [...words]
-        .filter(word => word.missedCount > 0)
-        .sort((a, b) => b.missedCount - a.missedCount)
-        .slice(0, 20);
 
+function createDifficultWordsTest() {
+    const allWords = [...vocabData.gre.words, ...vocabData.previous.words];
+    const difficultWords = allWords.filter(w => w.missedCount > 0).sort((a, b) => b.missedCount - a.missedCount).slice(0, 20);
     if (difficultWords.length > 0) {
         wordsInCurrentChunk = difficultWords;
+        currentCategory = 'special'; // Special category for this test
         startTest();
-    } else {
-        alert("No difficult words to create a test from. Keep practicing!");
     }
 }
-function calculateStudyStreak() {
-    const studyHistory = JSON.parse(localStorage.getItem('studyHistory') || '[]');
-    if (studyHistory.length === 0) return 0;
 
+function calculateStudyStreak() {
+    const studyHistory = JSON.parse(localStorage.getItem(STUDY_HISTORY_KEY) || '[]');
+    if (studyHistory.length === 0) return 0;
     studyHistory.sort((a, b) => new Date(b) - new Date(a));
 
-    let streak = 0;
     const today = new Date();
-    const yesterday = new Date();
-    yesterday.setDate(today.getDate() - 1);
-
-    const todayStr = today.toISOString().split('T')[0];
-    const yesterdayStr = yesterday.toISOString().split('T')[0];
-
-    // Check if the most recent study day is today or yesterday
     const lastStudyDay = new Date(studyHistory[0]);
-    const timeDiff = today.getTime() - lastStudyDay.getTime();
-    const dayDiff = timeDiff / (1000 * 3600 * 24);
+    if ((today.getTime() - lastStudyDay.getTime()) / (1000 * 3600 * 24) > 1.5) return 0;
 
-    if (dayDiff > 1.5) { // Allow for some timezone flexibility
-        return 0; // Streak is broken
-    }
-
-    streak = 1;
-    let currentDay = new Date(studyHistory[0]);
-
+    let streak = 1;
+    let currentDay = lastStudyDay;
     for (let i = 1; i < studyHistory.length; i++) {
         const nextDay = new Date(studyHistory[i]);
         const expectedNextDay = new Date(currentDay);
         expectedNextDay.setDate(currentDay.getDate() - 1);
-
         if (nextDay.toISOString().split('T')[0] === expectedNextDay.toISOString().split('T')[0]) {
             streak++;
             currentDay = nextDay;
-        } else {
-            break; // Streak is broken
-        }
+        } else break;
     }
-
     return streak;
 }
 
 function renderStudyStreak() {
     const streak = calculateStudyStreak();
     const streakDisplay = document.getElementById('streak-display');
-    const mainMenuStreakDisplay = document.getElementById('main-menu-streak-display');
-    const mainMenuStreakCount = document.getElementById('main-menu-streak-count');
-
-    if (streak > 0) {
-        streakDisplay.innerHTML = `
-            <p class="text-6xl font-bold text-green-600 dark:text-green-400">${streak}</p>
-            <p class="text-slate-600 dark:text-slate-400">Day Streak</p>
-        `;
-        mainMenuStreakCount.textContent = streak;
-        mainMenuStreakDisplay.style.display = 'block';
-    } else {
-        streakDisplay.innerHTML = `
-            <p class="text-6xl font-bold text-slate-500 dark:text-slate-400">0</p>
-            <p class="text-slate-600 dark:text-slate-400">Day Streak</p>
-            <p class="text-xs text-slate-500 dark:text-slate-500 mt-2">Study today to start a new streak!</p>
-        `;
-        mainMenuStreakDisplay.style.display = 'none';
-    }
+    streakDisplay.innerHTML = `
+        <p class="text-6xl font-bold text-green-600 dark:text-green-400">${streak}</p>
+        <p class="text-slate-600 dark:text-slate-400">Day Streak</p>
+        ${streak === 0 ? `<p class="text-xs text-slate-500 mt-2">Study today to start a streak!</p>` : ''}
+    `;
 }
 
 function renderCalendar() {
     const container = document.getElementById('calendar-container');
-    const studyHistory = new Set(JSON.parse(localStorage.getItem('studyHistory') || '[]'));
+    const studyHistory = new Set(JSON.parse(localStorage.getItem(STUDY_HISTORY_KEY) || '[]'));
     const today = new Date();
     const month = today.getMonth();
     const year = today.getFullYear();
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    const daysInMonth = lastDay.getDate();
-    const startDayOfWeek = firstDay.getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const startDayOfWeek = new Date(year, month, 1).getDay();
 
-    let html = '<div class="grid grid-cols-7 gap-1 text-center text-xs text-slate-500 dark:text-slate-400">';
     const weekdays = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-    weekdays.forEach(day => {
-        html += `<div>${day}</div>`;
-    });
-
-    for (let i = 0; i < startDayOfWeek; i++) {
-        html += '<div></div>';
-    }
-
+    let html = `<div class="grid grid-cols-7 gap-1 text-center text-xs text-slate-500 dark:text-slate-400">${weekdays.map(d => `<div>${d}</div>`).join('')}`;
+    html += Array(startDayOfWeek).fill('<div></div>').join('');
     for (let i = 1; i <= daysInMonth; i++) {
-        const date = new Date(year, month, i);
-        const dateStr = date.toISOString().split('T')[0];
-        const isToday = (i === today.getDate());
-        const studied = studyHistory.has(dateStr);
-
-        let classes = 'w-6 h-6 rounded-full flex items-center justify-center ';
-        if (isToday) {
-            classes += 'bg-indigo-600 text-white font-bold ';
-        } else if (studied) {
-            classes += 'bg-green-200 dark:bg-green-800 ';
-        } else {
-            classes += 'bg-slate-200 dark:bg-slate-600 ';
-        }
+        const dateStr = new Date(year, month, i).toISOString().split('T')[0];
+        let classes = 'w-6 h-6 rounded-full flex items-center justify-center mx-auto ';
+        if (i === today.getDate()) classes += 'bg-indigo-600 text-white font-bold ';
+        else if (studyHistory.has(dateStr)) classes += 'bg-green-200 dark:bg-green-800 ';
+        else classes += 'bg-slate-200 dark:bg-gray-700 ';
         html += `<div><span class="${classes}">${i}</span></div>`;
     }
-
     html += '</div>';
     container.innerHTML = html;
 }
-function animateValue(id, start, end, duration, format) {
-    const obj = document.getElementById(id);
-    let startTimestamp = null;
-    const step = (timestamp) => {
-        if (!startTimestamp) startTimestamp = timestamp;
-        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-        const value = Math.floor(progress * (end - start) + start);
-        obj.textContent = format ? format(value) : value;
-        if (progress < 1) {
-            window.requestAnimationFrame(step);
-        }
-    };
-    window.requestAnimationFrame(step);
-}
-
-
 
 // --- 6. EVENT LISTENERS ---
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        const response = await fetch('vocabulary.json');
-        const preVocabResponse = await fetch('pre-vocabulary.json');
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        if(!preVocabResponse.ok){
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        vocabList = await response.json();
-        previousVocabList = await preVocabResponse.json();
+        const [greResponse, preVocabResponse] = await Promise.all([
+            fetch('vocabulary.json'),
+            fetch('pre-vocabulary.json')
+        ]);
+        if (!greResponse.ok || !preVocabResponse.ok) throw new Error(`HTTP error!`);
 
-        // --- UPDATED: Initial Load ---
+        vocabData.gre.list = await greResponse.json();
+        vocabData.gre.title = "GRE 333";
+        vocabData.previous.list = await preVocabResponse.json();
+        vocabData.previous.title = "Previous Vocabulary";
+
         loadDarkModeState();
-        loadProgress(); // This now handles the initial load and calls loadWelcome()
-        loadDictionary(); // Pre-load the dictionary in the background
-
+        loadProgress();
+        loadDictionary();
         lucide.createIcons();
 
-        // --- Navigation ---
+        // Nav
         mainMenuButton.addEventListener('click', loadWelcome);
         dictionaryButton.addEventListener('click', () => showSection('dictionary'));
         statsButton.addEventListener('click', loadStatsPage);
         aboutButton.addEventListener('click', () => showSection('about'));
         darkModeToggle.addEventListener('click', toggleDarkMode);
 
-        // --- Footer Navigation ---
-        footerMenuButton.addEventListener('click', loadWelcome);
-        footerAboutButton.addEventListener('click', () => showSection('about'));
+        // Mobile Nav
+        mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+        mobileMainMenuButton.addEventListener('click', loadWelcome);
+        mobileDictionaryButton.addEventListener('click', () => showSection('dictionary'));
+        mobileStatsButton.addEventListener('click', loadStatsPage);
+        mobileAboutButton.addEventListener('click', () => showSection('about'));
 
-        // --- Welcome Screen ---
-        startLearningButton.addEventListener('click', () => {
-            const nextChunkIndex = Math.floor(totalMasteredCount / WORDS_PER_CHUNK);
-            loadLearnSection(nextChunkIndex);
-        });
-        reviewMasteredButton.addEventListener('click', startReviewMode);
-        dailyRandomTestButton.addEventListener('click', startDailyRandomTest);
-        previousVocabularyButton.addEventListener('click', startPreviousVocabularyTest);
         resetProgressButton.addEventListener('click', resetProgress);
         document.getElementById('create-test-button').addEventListener('click', createDifficultWordsTest);
-
-
-        // --- Learn Section ---
         startTestButton.addEventListener('click', startTest);
-
-        // --- Test Section ---
         nextQuestionButton.addEventListener('click', loadQuestion);
-
-        // --- Dictionary ---
         searchBar.addEventListener('input', filterDictionary);
 
-        // --- Global: Event Delegation for Speak Buttons ---
-        document.body.addEventListener('click', function(event) {
+        document.body.addEventListener('click', (event) => {
             const speakButton = event.target.closest('.speak-button');
-            if (speakButton) {
-                const wordToSpeak = speakButton.dataset.word;
-                if (wordToSpeak) {
-                    speakWord(wordToSpeak);
-                }
-            }
+            if (speakButton) speakWord(speakButton.dataset.word);
         });
+
     } catch (error) {
         console.error("Failed to load vocabulary:", error);
-        // Display an error message to the user
-        document.body.innerHTML = '<div class="text-red-500 text-center p-8">Failed to load vocabulary data. Please try refreshing the page.</div>';
+        document.body.innerHTML = '<div class="text-red-500 text-center p-8">Failed to load vocabulary data. Please refresh the page.</div>';
     }
 });
