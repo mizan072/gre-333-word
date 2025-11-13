@@ -18,6 +18,8 @@ let currentQuizQuestionIndex = 0;
 let quizScores = { correct: 0, incorrect: 0 };
 let missedWords = [];
 let isAnswered = false;
+let isTestMode = false;
+let selectedTestAnswer = null;
 let masteryChart = null;
 
 // --- 2. DOM ELEMENTS ---
@@ -220,6 +222,7 @@ function loadQuestion() {
     }
 
     isAnswered = false;
+    selectedTestAnswer = null;
     feedbackContainer.style.display = 'none';
     quizOptionsContainer.innerHTML = '';
     quizQuestion.textContent = '';
@@ -298,9 +301,22 @@ function createOptionButton(text, isCorrect) {
     const button = document.createElement('button');
     button.dataset.correct = isCorrect;
     button.innerHTML = `<span class="font-medium text-lg">${text}</span>`;
-    button.className = "quiz-option-button w-full text-left p-4 bg-white dark:bg-gray-700 border-2 border-slate-200 dark:border-gray-600 rounded-lg shadow-sm hover:bg-slate-100 dark:hover:bg-gray-600/70 transition-all duration-150 transform active:scale-95";
-    button.addEventListener('click', () => checkAnswer(button));
+    button.className = "option-card w-full text-left p-4 bg-white dark:bg-gray-700 border-2 border-slate-200 dark:border-gray-600 rounded-lg shadow-sm hover:bg-slate-100 dark:hover:bg-gray-600/70 transition-all duration-150 transform active:scale-95";
+    button.addEventListener('click', () => {
+        if (isTestMode) {
+            handleTestSelection(button);
+        } else {
+            checkAnswer(button);
+        }
+    });
     quizOptionsContainer.appendChild(button);
+}
+
+function handleTestSelection(selectedButton) {
+    const allButtons = quizOptionsContainer.querySelectorAll('.option-card');
+    allButtons.forEach(btn => btn.classList.remove('selected-test'));
+    selectedButton.classList.add('selected-test');
+    selectedTestAnswer = selectedButton;
 }
 
 function checkAnswer(selectedButton) {
@@ -308,16 +324,18 @@ function checkAnswer(selectedButton) {
     isAnswered = true;
 
     const isCorrect = selectedButton.dataset.correct === 'true';
-    const allButtons = quizOptionsContainer.querySelectorAll('button');
+    const allButtons = quizOptionsContainer.querySelectorAll('.option-card');
     const currentWord = wordsInCurrentChunk[currentQuizQuestionIndex];
     const wordInMasterList = vocabData[currentCategory].words.find(w => w.id === currentWord.id);
 
-    allButtons.forEach(button => {
-        button.disabled = true;
-        if (button.dataset.correct === 'true') {
-            button.classList.add('correct');
-        }
-    });
+    if (!isTestMode) {
+        allButtons.forEach(button => {
+            button.classList.add('disabled');
+            if (button.dataset.correct === 'true') {
+                button.classList.add('correct-ui');
+            }
+        });
+    }
 
     if (isCorrect) {
         quizScores.correct++;
@@ -331,7 +349,7 @@ function checkAnswer(selectedButton) {
     } else {
         quizScores.incorrect++;
         missedWords.push(currentWord);
-        selectedButton.classList.add('incorrect');
+        selectedButton.classList.add('wrong-ui');
         feedbackText.textContent = "Incorrect";
         feedbackText.className = "text-2xl font-semibold text-red-600 dark:text-red-400";
         const correctAnswerText = currentWord.english ? `${currentWord.word} (${currentWord.english})` : `${currentWord.word} (${currentWord.bengali})`;
@@ -343,8 +361,16 @@ function checkAnswer(selectedButton) {
     }
 
     currentQuizQuestionIndex++;
-    feedbackContainer.style.display = 'block';
+    if (!isTestMode) {
+        feedbackContainer.style.display = 'block';
+    }
     updateQuizStats();
+    selectedTestAnswer = null; // Reset for next question
+}
+
+function gradeTestAnswer() {
+    if (!selectedTestAnswer) return;
+    checkAnswer(selectedTestAnswer);
 }
 
 function updateQuizStats() {
@@ -574,6 +600,7 @@ function createDifficultWordsTest() {
     if (difficultWords.length > 0) {
         wordsInCurrentChunk = difficultWords;
         currentCategory = 'special'; // Special category for this test
+        isTestMode = false;
         startTest();
     }
 }
@@ -636,6 +663,7 @@ function renderCalendar() {
 }
 
 function startPracticeMode() {
+    isTestMode = false;
     wordsInCurrentChunk = [...vocabData.recentgk.list];
     currentQuizQuestionIndex = 0;
     loadPracticeQuestion();
@@ -666,25 +694,28 @@ function loadPracticeQuestion() {
 }
 
 function startTestMode() {
-    const questionCountInput = document.getElementById('test-question-count');
-    let numQuestions = parseInt(questionCountInput.value, 10);
+    const activeLimitButton = document.querySelector('#gk-limit-buttons .limit-btn.active');
+    const limit = activeLimitButton.dataset.limit;
+    
+    let numQuestions;
+    const allGkQuestions = [...vocabData.recentgk.list];
 
-    if (isNaN(numQuestions) || numQuestions <= 0) {
-        alert("Please enter a valid number of questions.");
-        return;
+    if (limit === 'all') {
+        numQuestions = allGkQuestions.length;
+    } else {
+        numQuestions = parseInt(limit, 10);
     }
 
-    const allGkQuestions = [...vocabData.recentgk.list];
     if (numQuestions > allGkQuestions.length) {
-        alert(`You can't have a test with more than ${allGkQuestions.length} questions.`);
         numQuestions = allGkQuestions.length;
-        questionCountInput.value = numQuestions;
     }
     
     shuffleArray(allGkQuestions);
     wordsInCurrentChunk = allGkQuestions.slice(0, numQuestions);
     
     currentCategory = 'recentgk'; // Ensure category is set for the test
+    isTestMode = true;
+    selectedTestAnswer = null;
     startTest(); // Re-use the existing test logic
 }
 
@@ -727,11 +758,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         resetProgressButton.addEventListener('click', resetProgress);
         document.getElementById('create-test-button').addEventListener('click', createDifficultWordsTest);
-        startTestButton.addEventListener('click', startTest);
+        startTestButton.addEventListener('click', () => {
+            isTestMode = false;
+            startTest();
+        });
         nextQuestionButton.addEventListener('click', () => {
-            if (currentCategory === 'recentgk' && document.getElementById('quiz-progress-text').textContent.includes('Practice')) {
+            if (isTestMode) {
+                if (!selectedTestAnswer) {
+                    alert("Please select an answer before proceeding.");
+                    return;
+                }
+                gradeTestAnswer();
+                loadQuestion();
+            } else if (currentCategory === 'recentgk' && !isTestMode) { // Practice Mode
                 loadPracticeQuestion();
-            } else {
+            } else { // Standard vocab test
                 loadQuestion();
             }
         });
@@ -739,6 +780,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         document.getElementById('practice-mode-button').addEventListener('click', startPracticeMode);
         document.getElementById('test-mode-button').addEventListener('click', startTestMode);
+
+        document.getElementById('gk-limit-buttons').addEventListener('click', (event) => {
+            if (event.target.classList.contains('limit-btn')) {
+                document.querySelectorAll('#gk-limit-buttons .limit-btn').forEach(btn => btn.classList.remove('active'));
+                event.target.classList.add('active');
+            }
+        });
 
         document.body.addEventListener('click', (event) => {
             const speakButton = event.target.closest('.speak-button');
