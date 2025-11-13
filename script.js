@@ -234,8 +234,24 @@ function loadQuestion() {
     quizOptionsContainer.innerHTML = '';
     quizQuestion.textContent = '';
     quizQuestionBengali.textContent = '';
+
+    if (isTestMode) {
+        nextQuestionButton.disabled = true;
+        nextQuestionButton.classList.add('opacity-50', 'cursor-not-allowed');
+        if (currentQuizQuestionIndex === wordsInCurrentChunk.length - 1) {
+            nextQuestionButton.innerHTML = 'Finish Test <i data-lucide="check-circle" class="w-5 h-5 ml-2"></i>';
+        } else {
+            nextQuestionButton.innerHTML = 'Next <i data-lucide="arrow-right" class="w-5 h-5 ml-2"></i>';
+        }
+        lucide.createIcons();
+    }
     
     const currentItem = wordsInCurrentChunk[currentQuizQuestionIndex];
+
+    document.querySelector('#test-section > div').classList.add('question-slide-in');
+    setTimeout(() => {
+        document.querySelector('#test-section > div').classList.remove('question-slide-in');
+    }, 400);
 
     if (currentCategory === 'recentgk') {
         quizQuestion.textContent = '';
@@ -324,6 +340,8 @@ function handleTestSelection(selectedButton) {
     allButtons.forEach(btn => btn.classList.remove('selected-test'));
     selectedButton.classList.add('selected-test');
     selectedTestAnswer = selectedButton;
+    nextQuestionButton.disabled = false;
+    nextQuestionButton.classList.remove('opacity-50', 'cursor-not-allowed');
 }
 
 function checkAnswer(selectedButton) {
@@ -771,12 +789,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
         nextQuestionButton.addEventListener('click', () => {
             if (isTestMode) {
-                if (!selectedTestAnswer) {
-                    alert("Please select an answer before proceeding.");
-                    return;
-                }
+                if (!selectedTestAnswer) return;
+                
                 gradeTestAnswer();
-                loadQuestion();
+
+                // Show feedback for a moment before moving on
+                const allButtons = quizOptionsContainer.querySelectorAll('.option-card');
+                allButtons.forEach(button => {
+                    button.classList.add('disabled');
+                    if (button.dataset.correct === 'true') {
+                        button.classList.add('correct-ui');
+                    }
+                });
+                if (selectedTestAnswer.dataset.correct !== 'true') {
+                    selectedTestAnswer.classList.add('wrong-ui');
+                }
+                
+                setTimeout(() => {
+                    loadQuestion();
+                }, 1200);
+
             } else if (currentCategory === 'recentgk' && !isTestMode) { // Practice Mode
                 loadPracticeQuestion();
             } else { // Standard vocab test
