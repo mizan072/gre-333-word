@@ -109,7 +109,7 @@ function showSection(sectionName) {
     
     // Update nav active state
     document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
-    if(sectionName === 'welcome') mainMenuButton.classList.add('active');
+    if(sectionName === 'welcome' || sectionName === 'recentgk' || sectionName === 'learn') mainMenuButton.classList.add('active');
     if(sectionName === 'dictionary') dictionaryButton.classList.add('active');
     if(sectionName === 'stats') statsButton.classList.add('active');
     if(sectionName === 'about') aboutButton.classList.add('active');
@@ -192,13 +192,16 @@ function resetQuizState() {
     quizQuestion.textContent = '';
     quizQuestionBengali.textContent = '';
     
-    nextQuestionButton.innerHTML = 'Next Question';
+    nextQuestionButton.innerHTML = isTestMode ? 'Next Question' : 'Next';
     nextQuestionButton.disabled = false;
     nextQuestionButton.classList.remove('opacity-50', 'cursor-not-allowed');
     
-    // In test mode, prevent next until selected
     if (isTestMode) {
         nextQuestionButton.disabled = true; 
+        nextQuestionButton.classList.add('opacity-50', 'cursor-not-allowed');
+    } else {
+        nextQuestionButton.innerHTML = 'Next';
+        nextQuestionButton.disabled = true; // In practice mode, disable until answered
         nextQuestionButton.classList.add('opacity-50', 'cursor-not-allowed');
     }
 }
@@ -211,14 +214,14 @@ function loadLearnSection(chunkIndex) {
     
     catData.currentChunkIndex = chunkIndex;
 
-    learnHeader.textContent = `Set ${chunkIndex + 1}`;
+    learnHeader.textContent = `Set ${chunkIndex + 1} (${start + 1}-${end})`;
     learnContainer.innerHTML = ''; 
 
     wordsInCurrentChunk.forEach((word, index) => {
         const card = document.createElement('div');
         card.className = "bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-md border border-slate-100 dark:border-slate-700 flex flex-col gap-2";
-        card.style.animationDelay = `${index * 50}ms`;
-        card.classList.add('fade-in-card');
+        card.style.animation = `fadeIn 0.3s ease-out ${index * 50}ms forwards`;
+        card.style.opacity = 0;
 
         const synonymHTML = word.english ? `<p class="text-lg text-slate-500 dark:text-slate-400 font-medium">${word.english}</p>` : '';
 
@@ -275,10 +278,9 @@ function loadQuestion() {
     
     const currentItem = wordsInCurrentChunk[currentQuizQuestionIndex];
 
-    // Slide animation reset
     const card = document.querySelector('#test-section .bg-white');
     card.classList.remove('question-slide-in');
-    void card.offsetWidth; // trigger reflow
+    void card.offsetWidth; 
     card.classList.add('question-slide-in');
 
     if (currentCategory === 'recentgk') {
@@ -351,7 +353,6 @@ function loadQuestion() {
 function createOptionButton(text, isCorrect) {
     const button = document.createElement('button');
     button.dataset.correct = isCorrect;
-    // Add a circle icon for selection
     button.innerHTML = `
         <div class="flex items-center">
             <div class="w-6 h-6 rounded-full border-2 border-slate-300 dark:border-slate-500 mr-3 flex-shrink-0 flex items-center justify-center check-circle transition-colors"></div>
@@ -369,14 +370,16 @@ function createOptionButton(text, isCorrect) {
 }
 
 function handleTestSelection(selectedButton) {
+    if (isAnswered) return; // Don't allow changing answer after locking in
+    
     const allButtons = quizOptionsContainer.querySelectorAll('.option-card');
     allButtons.forEach(btn => {
         btn.classList.remove('selected-test');
+        btn.querySelector('.check-circle').innerHTML = '';
         btn.querySelector('.check-circle').classList.remove('bg-indigo-600', 'border-indigo-600');
     });
     
     selectedButton.classList.add('selected-test');
-    // Fill circle
     const circle = selectedButton.querySelector('.check-circle');
     circle.classList.add('bg-indigo-600', 'border-indigo-600');
     circle.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
@@ -390,107 +393,108 @@ function checkAnswer(selectedButton) {
     if (isAnswered) return;
     isAnswered = true;
 
+    // Enable the "Next" button for practice mode
+    nextQuestionButton.disabled = false;
+    nextQuestionButton.classList.remove('opacity-50', 'cursor-not-allowed');
+
     const isCorrect = selectedButton.dataset.correct === 'true';
     const allButtons = quizOptionsContainer.querySelectorAll('.option-card');
     const currentWord = wordsInCurrentChunk[currentQuizQuestionIndex];
-    
-    // Logic to update stats locally
     const wordInMasterList = vocabData[currentCategory].words.find(w => w.id === currentWord.id);
 
-    if (!isTestMode) {
-        allButtons.forEach(button => {
-            button.classList.add('disabled');
-            if (button.dataset.correct === 'true') {
-                button.classList.add('correct-ui');
-                button.querySelector('.check-circle').classList.add('bg-green-500', 'border-green-500');
-                button.querySelector('.check-circle').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
-            }
-        });
-    }
+    // This block is ONLY for Practice Mode feedback
+    allButtons.forEach(button => {
+        button.classList.add('disabled');
+        if (button.dataset.correct === 'true') {
+            button.classList.add('correct-ui');
+            button.querySelector('.check-circle').classList.add('bg-green-500', 'border-green-500');
+            button.querySelector('.check-circle').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+        }
+    });
 
     if (isCorrect) {
         quizScores.correct++;
-        if (!isTestMode) {
-            feedbackText.textContent = "Correct!";
-            feedbackText.className = "text-2xl font-bold text-green-600 dark:text-green-400";
-            feedbackIcon.innerHTML = `<i data-lucide="check-circle-2" class="w-8 h-8 text-green-500"></i>`;
-            feedbackCorrectAnswer.textContent = '';
-            if (wordInMasterList) {
-                wordInMasterList.strength = Math.min(12, wordInMasterList.strength + 1);
-                wordInMasterList.lastReviewed = new Date().toISOString();
-            }
+        feedbackText.textContent = "Correct!";
+        feedbackText.className = "text-2xl font-bold text-green-600 dark:text-green-400";
+        feedbackIcon.innerHTML = `<i data-lucide="check-circle-2" class="w-8 h-8 text-green-500"></i>`;
+        feedbackCorrectAnswer.textContent = '';
+        if (wordInMasterList) {
+            wordInMasterList.strength = Math.min(12, wordInMasterList.strength + 1);
+            wordInMasterList.lastReviewed = new Date().toISOString();
         }
     } else {
         quizScores.incorrect++;
         missedWords.push(currentWord);
         
-        if (!isTestMode) {
-            selectedButton.classList.add('wrong-ui');
-            selectedButton.querySelector('.check-circle').classList.add('bg-red-500', 'border-red-500');
-            selectedButton.querySelector('.check-circle').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
+        selectedButton.classList.add('wrong-ui');
+        selectedButton.querySelector('.check-circle').classList.add('bg-red-500', 'border-red-500');
+        selectedButton.querySelector('.check-circle').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
 
-            feedbackText.textContent = "Incorrect";
-            feedbackText.className = "text-2xl font-bold text-red-600 dark:text-red-400";
-            feedbackIcon.innerHTML = `<i data-lucide="x-circle" class="w-8 h-8 text-red-500"></i>`;
-            
-            let correctAnswerText;
-            if (currentCategory === 'recentgk') {
-                correctAnswerText = currentWord.answer;
-            } else {
-                correctAnswerText = currentWord.english 
-                    ? `${currentWord.word} (${currentWord.english})` 
-                    : `${currentWord.word} (${currentWord.bengali})`;
-            }
-            feedbackCorrectAnswer.textContent = `Correct answer: ${correctAnswerText}`;
-
-            if (wordInMasterList) {
-                wordInMasterList.strength = Math.max(0, wordInMasterList.strength - 2);
-                wordInMasterList.missedCount = (wordInMasterList.missedCount || 0) + 1;
-            }
+        feedbackText.textContent = "Incorrect";
+        feedbackText.className = "text-2xl font-bold text-red-600 dark:text-red-400";
+        feedbackIcon.innerHTML = `<i data-lucide="x-circle" class="w-8 h-8 text-red-500"></i>`;
+        
+        let correctAnswerText;
+        if (currentCategory === 'recentgk') {
+            correctAnswerText = currentWord.answer;
         } else {
-            // In Test Mode, record failure silently
-            if (wordInMasterList) {
-                wordInMasterList.strength = Math.max(0, wordInMasterList.strength - 1); // Less penalty in test mode?
-                wordInMasterList.missedCount = (wordInMasterList.missedCount || 0) + 1;
-            }
+            correctAnswerText = currentWord.english 
+                ? `${currentWord.word} (${currentWord.english})` 
+                : `${currentWord.word} (${currentWord.bengali})`;
+        }
+        feedbackCorrectAnswer.textContent = `Correct answer: ${correctAnswerText}`;
+
+        if (wordInMasterList) {
+            wordInMasterList.strength = Math.max(0, wordInMasterList.strength - 2);
+            wordInMasterList.missedCount = (wordInMasterList.missedCount || 0) + 1;
         }
     }
 
-    // If practice mode, increment index here
-    if (!isTestMode) {
-        currentQuizQuestionIndex++;
-        feedbackContainer.style.display = 'block';
-        lucide.createIcons();
-    }
-    
+    // This is practice mode, so we increment index here
+    currentQuizQuestionIndex++;
+    feedbackContainer.style.display = 'block';
+    lucide.createIcons();
     updateQuizStats();
 }
 
-// Function specifically for Test Mode "Next" click
+/**
+ * --- TEST MODE FIX ---
+ * This function is called ONLY in Test Mode.
+ * It silently records the answer and moves on.
+ */
 function recordTestAnswerAndAdvance() {
-    if (!selectedTestAnswer) return;
+    if (!selectedTestAnswer) return; // Should be impossible due to disabled button, but safe.
 
     const isCorrect = selectedTestAnswer.dataset.correct === 'true';
     const currentWord = wordsInCurrentChunk[currentQuizQuestionIndex];
+    const wordInMasterList = vocabData[currentCategory].words.find(w => w.id === currentWord.id);
     
     if (isCorrect) {
         quizScores.correct++;
+        if (wordInMasterList) {
+            wordInMasterList.strength = Math.min(12, wordInMasterList.strength + 1);
+        }
     } else {
         quizScores.incorrect++;
         missedWords.push(currentWord);
+        if (wordInMasterList) {
+            wordInMasterList.strength = Math.max(0, wordInMasterList.strength - 1);
+            wordInMasterList.missedCount = (wordInMasterList.missedCount || 0) + 1;
+        }
     }
 
-    // Advance immediately without feedback
+    // Advance immediately
     currentQuizQuestionIndex++;
-    loadQuestion();
-    selectedTestAnswer = null;
+    selectedTestAnswer = null; // Reset selection
+    updateQuizStats(); // Update progress bar
+    loadQuestion(); // Load next question
 }
 
 function updateQuizStats() {
     const total = wordsInCurrentChunk.length;
     const progress = currentQuizQuestionIndex;
     quizProgressText.textContent = `Question ${Math.min(progress + 1, total)}/${total}`;
-    quizProgressBar.style.width = `${((progress) / total) * 100}%`;
+    quizProgressBar.style.width = `${((progress + 1) / total) * 100}%`; // Use progress + 1 for 1-based index
 }
 
 function showQuizComplete() {
@@ -499,6 +503,14 @@ function showQuizComplete() {
     const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
 
     saveProgress();
+
+    // Update study streak
+    const today = new Date().toISOString().split('T')[0];
+    let studyHistory = JSON.parse(localStorage.getItem(STUDY_HISTORY_KEY) || '[]');
+    if (!studyHistory.includes(today)) {
+        studyHistory.push(today);
+        localStorage.setItem(STUDY_HISTORY_KEY, JSON.stringify(studyHistory));
+    }
 
     resultsHeader.textContent = isTestMode ? 'Exam Results' : 'Practice Complete';
     finalScoreText.textContent = `${correct}/${total}`;
@@ -532,9 +544,8 @@ function showQuizComplete() {
         }).join('');
         wordsToReviewContainer.style.display = 'block';
     } else {
-        wordsToReviewContainer.style.display = 'none';
+        wordsToReviewContainer.style.display = 'block';
         wordsToReviewList.innerHTML = `<div class="text-center p-6 text-slate-500"><i data-lucide="check-circle" class="w-12 h-12 mx-auto text-green-500 mb-2"></i><p>Perfect score! Nothing to review.</p></div>`;
-        lucide.createIcons();
     }
     
     continueButton.onclick = loadWelcome;
@@ -544,7 +555,6 @@ function showQuizComplete() {
 
 
 // --- 4. DATA & PROGRESS MANAGEMENT ---
-// (Kept mostly same, ensured styling consistency)
 function getSaveKey(category) {
     if (category === 'gre') return SAVE_KEY_WORDS_GRE;
     if (category === 'previous') return SAVE_KEY_WORDS_PREVIOUS;
@@ -564,7 +574,7 @@ function loadProgress() {
             initializeWords(cat, false);
         }
     });
-    loadWelcome();
+    // This will be called again by the DOM listener, but good to have
 }
 
 function initializeWords(category, merge = false) {
@@ -602,6 +612,35 @@ function resetProgress() {
 
 // --- 5. UI HELPERS ---
 
+function loadDictionary() {
+    const allVocab = [...vocabData.gre.list, ...vocabData.previous.list];
+    allVocab.sort((a, b) => a.word.localeCompare(b.word));
+
+    dictionaryListContainer.innerHTML = allVocab.map(word => {
+        const searchData = `${word.word.toLowerCase()} ${word.bengali} ${word.english ? word.english.toLowerCase() : ''}`;
+        return `
+        <div class="dictionary-word-card bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700" data-word="${searchData}">
+            <div class="flex justify-between items-center mb-1">
+                <h4 class="text-xl font-bold text-indigo-600 dark:text-indigo-400">${word.word}</h4>
+                <button class="speak-button p-2 rounded-full text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700" data-word="${word.word}">
+                    <i data-lucide="volume-2" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <p class="lang-bn text-lg text-slate-800 dark:text-slate-200 mb-1">${word.bengali}</p>
+            ${word.english ? `<p class="text-slate-600 dark:text-slate-400">${word.english}</p>` : ''}
+        </div>`;
+    }).join('');
+    lucide.createIcons();
+}
+
+function filterDictionary() {
+    const searchTerm = searchBar.value.toLowerCase();
+    const allWords = dictionaryListContainer.querySelectorAll('.dictionary-word-card');
+    allWords.forEach(card => {
+        card.style.display = card.dataset.word.includes(searchTerm) ? 'block' : 'none';
+    });
+}
+
 function toggleDarkMode() {
     htmlElement.classList.toggle('dark');
     const isDarkMode = htmlElement.classList.contains('dark');
@@ -622,7 +661,6 @@ function loadDarkModeState() {
 }
 
 // --- 6. STATS ---
-// (Same logic, just ensuring variables exist)
 function loadStatsPage() {
     showSection('stats');
     renderMasteryChart();
@@ -642,20 +680,38 @@ function renderMasteryChart() {
     const ctx = document.getElementById('mastery-chart').getContext('2d');
     if (masteryChart) masteryChart.destroy();
 
+    const chartData = {
+        labels: [`Mastered (${mastered})`, `Learning (${learning})`, `New (${notSeen})`],
+        datasets: [{
+            data: [mastered, learning, notSeen],
+            backgroundColor: ['#10b981', '#f59e0b', '#cbd5e1'],
+            borderColor: htmlElement.classList.contains('dark') ? '#1e293b' : '#ffffff',
+            borderWidth: 4,
+            hoverOffset: 4
+        }]
+    };
+
     masteryChart = new Chart(ctx, {
         type: 'doughnut',
-        data: {
-            labels: ['Mastered', 'Learning', 'New'],
-            datasets: [{
-                data: [mastered, learning, notSeen],
-                backgroundColor: ['#10b981', '#f59e0b', '#cbd5e1'],
-                borderWidth: 0
-            }]
-        },
+        data: chartData,
         options: {
             cutout: '70%',
             responsive: true,
-            plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20 } } }
+            plugins: { 
+                legend: { 
+                    position: 'bottom', 
+                    labels: { 
+                        usePointStyle: true, 
+                        padding: 20,
+                        color: htmlElement.classList.contains('dark') ? '#94a3b8' : '#334155',
+                        font: { family: 'Inter', weight: '500' }
+                    } 
+                },
+                tooltip: {
+                    bodyFont: { family: 'Inter' },
+                    titleFont: { family: 'Inter' },
+                }
+            }
         }
     });
 }
@@ -672,9 +728,9 @@ function renderDifficultWords() {
     }
     document.getElementById('create-test-button').style.display = 'block';
     list.innerHTML = sorted.map(w => `
-        <div class="flex justify-between text-sm border-b border-slate-100 dark:border-slate-700 pb-2">
+        <div class="flex justify-between items-center text-sm border-b border-slate-100 dark:border-slate-700 pb-2.5 mb-2.5">
             <span class="font-semibold text-slate-700 dark:text-slate-300">${w.word}</span>
-            <span class="text-red-500 font-bold">${w.missedCount}x</span>
+            <span class="text-red-500 font-bold bg-red-50 dark:bg-red-900/20 px-2 py-0.5 rounded">${w.missedCount} misses</span>
         </div>
     `).join('');
 }
@@ -690,18 +746,67 @@ function createDifficultWordsTest() {
     }
 }
 
-// Streak & Calendar Logic (Simplified for brevity)
-function calculateStudyStreak() { return 0; /* Logic same as before */ } // Placeholder for brevity, logic exists in previous ver
-function renderStudyStreak() { 
-    const streak = 0; // Replace with calculation
-    document.getElementById('streak-display').innerHTML = `<span class="text-4xl font-bold text-slate-800 dark:text-white">${streak}</span> <span class="text-sm text-slate-500">days</span>`;
-}
-function renderCalendar() {
-    const container = document.getElementById('calendar-container');
-    // ... (Use previous calendar logic) ...
-    container.innerHTML = `<div class="text-xs text-center text-slate-400">Calendar placeholder</div>`;
+function calculateStudyStreak() {
+    const studyHistory = JSON.parse(localStorage.getItem(STUDY_HISTORY_KEY) || '[]');
+    if (studyHistory.length === 0) return 0;
+    studyHistory.sort((a, b) => new Date(b) - new Date(a));
+
+    const today = new Date();
+    const todayStr = today.toISOString().split('T')[0];
+    const lastStudyDay = new Date(studyHistory[0]);
+
+    const diffDays = (today.getTime() - lastStudyDay.getTime()) / (1000 * 3600 * 24);
+    
+    if (diffDays > 1.5) return 0;
+    
+    let streak = 0;
+    let currentDay = today;
+    
+    if (studyHistory[0] !== todayStr) {
+        currentDay.setDate(today.getDate() - 1);
+    }
+    
+    for (const dateStr of studyHistory) {
+        const expectedDateStr = currentDay.toISOString().split('T')[0];
+        if (dateStr === expectedDateStr) {
+            streak++;
+            currentDay.setDate(currentDay.getDate() - 1);
+        } else if (new Date(dateStr) < new Date(expectedDateStr)) {
+            break;
+        }
+    }
+    return streak;
 }
 
+function renderStudyStreak() {
+    const streak = calculateStudyStreak();
+    document.getElementById('streak-display').innerHTML = `<span class="text-6xl font-extrabold text-slate-800 dark:text-white">${streak}</span> <span class="text-lg text-slate-500 font-medium ml-1">days</span>`;
+}
+
+function renderCalendar() {
+    const container = document.getElementById('calendar-container');
+    const studyHistory = new Set(JSON.parse(localStorage.getItem(STUDY_HISTORY_KEY) || '[]'));
+    const today = new Date();
+    const month = today.getMonth();
+    const year = today.getFullYear();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const startDayOfWeek = new Date(year, month, 1).getDay();
+
+    const weekdays = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+    let html = `<div class="grid grid-cols-7 gap-1 text-center text-xs text-slate-500 dark:text-slate-400 font-bold">${weekdays.map(d => `<div>${d}</div>`).join('')}</div>`;
+    html += `<div class="grid grid-cols-7 gap-1 text-center text-sm text-slate-700 dark:text-slate-300 mt-3">`;
+    html += Array(startDayOfWeek).fill('<div></div>').join('');
+    for (let i = 1; i <= daysInMonth; i++) {
+        const dateStr = new Date(year, month, i).toISOString().split('T')[0];
+        let classes = 'w-8 h-8 rounded-full flex items-center justify-center mx-auto ';
+        if (i === today.getDate()) classes += 'bg-indigo-600 text-white font-bold ';
+        else if (studyHistory.has(dateStr)) classes += 'bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-200 font-medium';
+        else classes += 'bg-slate-100 dark:bg-slate-700/50 text-slate-400 dark:text-slate-500';
+        html += `<div><span class="${classes}">${i}</span></div>`;
+    }
+    html += '</div>';
+    container.innerHTML = html;
+}
 
 // --- 7. INITIALIZATION ---
 function startPracticeMode() {
@@ -732,51 +837,108 @@ function startTestMode() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // Fetch Data (Mock for now, replace with real fetch)
     try {
-        const [gre, pre, gk] = await Promise.all([
-            fetch('vocabulary.json').then(r => r.json()),
-            fetch('pre-vocabulary.json').then(r => r.json()),
-            fetch('recentgk.json').then(r => r.json())
+        const [greResponse, preVocabResponse, recentGkResponse] = await Promise.all([
+            fetch('vocabulary.json'),
+            fetch('pre-vocabulary.json'),
+            fetch('recentgk.json')
         ]);
-        vocabData.gre.list = gre;
-        vocabData.previous.list = pre;
-        vocabData.recentgk.list = gk;
         
+        if (!greResponse.ok) throw new Error(`Failed to load vocabulary.json: ${greResponse.statusText}`);
+        if (!preVocabResponse.ok) throw new Error(`Failed to load pre-vocabulary.json: ${preVocabResponse.statusText}`);
+        if (!recentGkResponse.ok) throw new Error(`Failed to load recentgk.json: ${recentGkResponse.statusText}`);
+        
+        vocabData.gre.list = await greResponse.json();
+        vocabData.gre.title = "GRE 333";
+        vocabData.previous.list = await preVocabResponse.json();
+        vocabData.previous.title = "Previous Vocabulary";
+        vocabData.recentgk.list = await recentGkResponse.json();
+        vocabData.recentgk.title = "Recent GK";
+
         loadDarkModeState();
         loadProgress();
-        loadWelcome(); // This calls lucide.createIcons()
+        loadDictionary();
+        loadWelcome();
+
+        // --- Nav Event Listeners ---
+        mainMenuButton.addEventListener('click', loadWelcome);
+        dictionaryButton.addEventListener('click', () => { loadDictionary(); showSection('dictionary'); });
+        statsButton.addEventListener('click', loadStatsPage);
+        aboutButton.addEventListener('click', () => showSection('about'));
+        darkModeToggle.addEventListener('click', toggleDarkMode);
         
-        // Event Listeners
-        mainMenuButton.onclick = loadWelcome;
-        mobileMainMenuButton.onclick = loadWelcome;
-        // ... Add other nav listeners ...
+        // Mobile Nav
+        mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+        mobileMainMenuButton.addEventListener('click', loadWelcome);
+        mobileDictionaryButton.addEventListener('click', () => { loadDictionary(); showSection('dictionary'); });
+        mobileStatsButton.addEventListener('click', loadStatsPage);
+        mobileAboutButton.addEventListener('click', () => showSection('about'));
         
-        nextQuestionButton.onclick = () => {
-            if (isTestMode) {
-                recordTestAnswerAndAdvance();
-            } else {
-                // In practice mode, logic is handled by checkAnswer() except for moving to next?
-                // Actually, in Practice Mode checkAnswer() sets up feedback, we need next button to move on.
-                // Wait, checkAnswer() handles score, but we need to advance.
-                // Let's simplify:
-                if(!isAnswered) return; // Must answer first in practice mode
-                loadQuestion();
-            }
-        };
+        // --- Button Event Listeners ---
+        resetProgressButton.addEventListener('click', resetProgress);
+        document.getElementById('create-test-button').addEventListener('click', createDifficultWordsTest);
         
-        document.getElementById('practice-mode-button').onclick = startPracticeMode;
-        document.getElementById('test-mode-button').onclick = startTestMode;
-        
-        // Limit buttons
-        document.querySelectorAll('.limit-btn').forEach(btn => {
-            btn.onclick = (e) => {
-                document.querySelectorAll('.limit-btn').forEach(b => b.classList.remove('active'));
-                e.target.classList.add('active');
-            };
+        // Learn Section
+        startTestButton.addEventListener('click', () => {
+            isTestMode = false; // This is the "Practice" test
+            startTest();
         });
 
-    } catch (e) {
-        console.error(e);
+        // ---
+        // --- THIS IS THE TEST MODE FIX ---
+        // ---
+        nextQuestionButton.addEventListener('click', () => {
+            if (isTestMode) {
+                // In TEST mode, do not show feedback. Silently record and advance.
+                if (!selectedTestAnswer) return; // Wait for answer
+                recordTestAnswerAndAdvance();
+            } else {
+                // In PRACTICE mode, wait for an answer, then load next question.
+                // checkAnswer() provides the feedback and sets isAnswered = true.
+                if (!isAnswered) return; 
+                loadQuestion();
+            }
+        });
+
+        // Dictionary
+        searchBar.addEventListener('input', debounce(filterDictionary, 300));
+
+        // Recent GK Section
+        document.getElementById('practice-mode-button').addEventListener('click', startPracticeMode);
+        document.getElementById('test-mode-button').addEventListener('click', startTestMode);
+        document.getElementById('back-to-categories-gk').addEventListener('click', loadWelcome);
+
+        // Confirmation for exiting test
+        const confirmAndLoadWelcome = () => {
+            const userConfirmed = confirm("Are you sure you want to exit? Your current test progress will be lost.");
+            if (userConfirmed) {
+                loadWelcome();
+            }
+        };
+        document.getElementById('back-to-categories-test').addEventListener('click', confirmAndLoadWelcome);
+        
+        // Results Section
+        document.getElementById('back-to-categories-results').addEventListener('click', loadWelcome);
+
+        // GK Limit Buttons
+        document.getElementById('gk-limit-buttons').addEventListener('click', (event) => {
+            const clickedButton = event.target.closest('.limit-btn');
+            if (clickedButton) {
+                document.querySelectorAll('#gk-limit-buttons .limit-btn').forEach(btn => btn.classList.remove('active'));
+                clickedButton.classList.add('active');
+            }
+        });
+
+        // Global Speak Button Listener (Event Delegation)
+        document.body.addEventListener('click', (event) => {
+            const speakButton = event.target.closest('.speak-button');
+            if (speakButton) {
+                speakWord(speakButton.dataset.word);
+            }
+        });
+
+    } catch (error) {
+        console.error("Failed to initialize app:", error);
+        document.body.innerHTML = `<div class="text-red-500 text-center p-8">Failed to load critical app data. Please check your network connection and refresh the page. <br><small>${error.message}</small></div>`;
     }
 });
