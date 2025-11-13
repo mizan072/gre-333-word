@@ -87,6 +87,15 @@ const dictionaryListContainer = document.getElementById('dictionary-list-contain
 
 // --- 3. CORE FUNCTIONS ---
 
+function debounce(func, delay) {
+    let timeout;
+    return function(...args) {
+        const context = this;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(context, args), delay);
+    };
+}
+
 function showSection(sectionName) {
     Object.values(sections).forEach(section => {
         section.classList.remove('active');
@@ -396,6 +405,18 @@ function checkAnswer(selectedButton) {
 function gradeTestAnswer() {
     if (!selectedTestAnswer) return;
     checkAnswer(selectedTestAnswer);
+
+    // Show feedback visually after grading
+    const allButtons = quizOptionsContainer.querySelectorAll('.option-card');
+    allButtons.forEach(button => {
+        button.classList.add('disabled');
+        if (button.dataset.correct === 'true') {
+            button.classList.add('correct-ui');
+        }
+    });
+    if (selectedTestAnswer.dataset.correct !== 'true') {
+        selectedTestAnswer.classList.add('wrong-ui');
+    }
 }
 
 function updateQuizStats() {
@@ -790,35 +811,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         nextQuestionButton.addEventListener('click', () => {
             if (isTestMode) {
                 if (!selectedTestAnswer) return;
-                
                 gradeTestAnswer();
-
-                // Show feedback for a moment before moving on
-                const allButtons = quizOptionsContainer.querySelectorAll('.option-card');
-                allButtons.forEach(button => {
-                    button.classList.add('disabled');
-                    if (button.dataset.correct === 'true') {
-                        button.classList.add('correct-ui');
-                    }
-                });
-                if (selectedTestAnswer.dataset.correct !== 'true') {
-                    selectedTestAnswer.classList.add('wrong-ui');
-                }
-                
-                setTimeout(() => {
-                    loadQuestion();
-                }, 1200);
-
+                setTimeout(() => loadQuestion(), 1200);
             } else if (currentCategory === 'recentgk' && !isTestMode) { // Practice Mode
                 loadPracticeQuestion();
             } else { // Standard vocab test
                 loadQuestion();
             }
         });
-        searchBar.addEventListener('input', filterDictionary);
+        searchBar.addEventListener('input', debounce(filterDictionary, 300));
 
         document.getElementById('practice-mode-button').addEventListener('click', startPracticeMode);
         document.getElementById('test-mode-button').addEventListener('click', startTestMode);
+
+        document.getElementById('back-to-categories-test').addEventListener('click', loadWelcome);
+        document.getElementById('back-to-categories-results').addEventListener('click', loadWelcome);
 
         document.getElementById('gk-limit-buttons').addEventListener('click', (event) => {
             if (event.target.classList.contains('limit-btn')) {
