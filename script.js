@@ -115,9 +115,9 @@ function loadWelcome() {
     
     // Define categories
     const categories = [
-        { id: 'gre', title: 'GRE 333', description: 'The essential 333 high-frequency words for the GRE.' },
-        { id: 'previous', title: 'Previous Vocabulary', description: 'A supplementary vocabulary list for comprehensive learning.' },
-        { id: 'recentgk', title: 'Recent GK', description: 'A collection of recent general knowledge questions.' }
+        { id: 'gre', title: 'GRE 333', description: 'The essential 333 high-frequency words for the GRE.', bn_description: 'চাকরির পরীক্ষার জন্য অপরিহার্য ৩৩৩টি হাই-ফ্রিকোয়েন্সি ইংরেজি শব্দ।', icon: 'graduation-cap' },
+        { id: 'previous', title: 'Previous Vocabulary', description: 'A supplementary vocabulary list for comprehensive learning.', bn_description: 'বিগত ১৫ বছরের ব্যাংক ও বিসিএস পরীক্ষার প্রশ্ন থেকে বাছাইকৃত শব্দভাণ্ডার।', icon: 'history' },
+        { id: 'recentgk', title: 'Recent GK', description: 'A collection of recent general knowledge questions.', bn_description: 'দৈনিক পত্রিকা থেকে সংগৃহীত সাম্প্রতিক সাধারণ জ্ঞানের নিয়মিত আপডেট।', icon: 'newspaper' }
     ];
 
     categories.forEach(cat => {
@@ -127,13 +127,19 @@ function loadWelcome() {
         const percentage = totalCount > 0 ? Math.round((masteredCount / totalCount) * 100) : 0;
 
         const card = document.createElement('div');
-        card.className = "bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-xl hover:scale-[1.02] transition-all duration-300 cursor-pointer";
+        card.className = "bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-xl hover:scale-[1.02] transition-all duration-300 cursor-pointer flex flex-col";
         card.dataset.category = cat.id;
 
         card.innerHTML = `
-            <h3 class="text-xl font-bold text-slate-900 dark:text-white">${cat.title}</h3>
-            <p class="text-slate-600 dark:text-slate-400 mt-1 mb-4">${cat.description}</p>
-            <div class="w-full bg-slate-200 dark:bg-gray-700 rounded-full h-2.5">
+            <div class="flex-grow">
+                <div class="flex items-center mb-4">
+                    <i data-lucide="${cat.icon}" class="w-8 h-8 text-indigo-500 dark:text-indigo-400 mr-4"></i>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white">${cat.title}</h3>
+                </div>
+                <p class="text-slate-600 dark:text-slate-400 mt-1 mb-2 text-sm">${cat.description}</p>
+                <p class="lang-bn text-slate-600 dark:text-slate-400 mt-1 mb-4 text-sm">${cat.bn_description}</p>
+            </div>
+            <div class="w-full bg-slate-200 dark:bg-gray-700 rounded-full h-2.5 mt-auto">
                 <div class="bg-indigo-600 h-2.5 rounded-full" style="width: ${percentage}%"></div>
             </div>
             <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 text-right">${masteredCount} / ${totalCount} Mastered</p>
@@ -156,7 +162,8 @@ function loadWelcome() {
 
         categoryContainer.appendChild(card);
     });
-
+    
+    lucide.createIcons();
     showSection('welcome');
 }
 
