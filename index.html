@@ -27,11 +27,13 @@
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 min-h-screen flex flex-col font-sans custom-scrollbar relative overflow-x-hidden">
 
+    <!-- Decorative Background Elements -->
     <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
         <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-indigo-500/10 blur-[100px] dark:bg-indigo-500/5"></div>
         <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-sky-500/10 blur-[100px] dark:bg-sky-500/5"></div>
     </div>
 
+    <!-- Header -->
     <header class="fixed w-full top-0 z-50 transition-all duration-300 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/50 dark:border-slate-700/50">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center py-4">
@@ -61,6 +63,7 @@
             </div>
         </div>
         
+        <!-- Mobile Menu -->
         <div id="mobile-menu" class="sm:hidden hidden absolute w-full bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 shadow-xl">
             <div class="px-4 py-3 space-y-2">
                 <button id="mobile-main-menu-button" class="mobile-nav-item"><i data-lucide="layout-grid" class="w-5 h-5 mr-3"></i>Categories</button>
@@ -71,8 +74,10 @@
         </div>
     </header>
 
+    <!-- Main Content -->
     <main class="relative z-10 max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 flex-grow w-full mt-20">
 
+        <!-- Welcome Section -->
         <section id="welcome-section" class="app-section slide-up">
             <div class="text-center mb-12 py-8">
                 <span class="inline-block py-1 px-3 rounded-full bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-300 text-sm font-semibold mb-4 border border-indigo-100 dark:border-indigo-800">Smart Learning Platform</span>
@@ -81,7 +86,8 @@
             </div>
             
             <div id="category-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-2">
-                </div>
+                <!-- Dynamic Content -->
+            </div>
 
              <div class="text-center mt-16">
                  <button id="reset-progress-button" class="inline-flex items-center text-sm font-medium text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition-colors opacity-70 hover:opacity-100">
@@ -90,6 +96,7 @@
              </div>
         </section>
 
+        <!-- Learn Section -->
         <section id="learn-section" class="app-section slide-up">
             <div class="flex flex-col items-center mb-8">
                 <h2 id="learn-header" class="text-3xl font-bold text-slate-900 dark:text-white text-center"></h2>
@@ -97,7 +104,8 @@
             </div>
             
             <div id="learn-container" class="space-y-5 max-w-2xl mx-auto">
-                </div>
+                <!-- Cards -->
+            </div>
 
             <div class="max-w-2xl mx-auto mt-10">
                 <button id="start-test-button" class="primary-btn w-full group">
@@ -107,8 +115,10 @@
             </div>
         </section>
 
+        <!-- Test Section -->
         <section id="test-section" class="app-section slide-up">
             <div class="max-w-2xl mx-auto">
+                <!-- Progress Header -->
                 <div class="bg-white dark:bg-slate-800/50 backdrop-blur-sm p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm mb-6">
                     <div class="flex justify-between items-center mb-3">
                         <span id="quiz-progress-text" class="text-sm font-bold text-slate-600 dark:text-slate-400 tracking-wide uppercase">Question 1/10</span>
@@ -121,6 +131,7 @@
                     </div>
                 </div>
 
+                <!-- Question Card -->
                 <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
                     <div class="p-8 sm:p-10 min-h-[14rem] flex flex-col items-center justify-center border-b border-slate-100 dark:border-slate-700/50 bg-gradient-to-b from-white to-slate-50 dark:from-slate-800 dark:to-slate-800/50">
                         <h3 id="quiz-question" class="text-2xl sm:text-3xl font-bold text-center text-slate-900 dark:text-white leading-tight"></h3>
@@ -128,9 +139,11 @@
                     </div>
                     
                     <div id="quiz-options-container" class="p-6 bg-slate-50 dark:bg-slate-900/50 grid grid-cols-1 gap-3">
-                        </div>
+                        <!-- Options -->
+                    </div>
                 </div>
 
+                <!-- Feedback (for Practice Mode) -->
                 <div id="quiz-feedback-container" class="mt-6 p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-lg transform transition-all duration-300" style="display: none;">
                     <div class="flex items-center justify-center gap-3 mb-2">
                         <div id="feedback-icon"></div>
@@ -147,8 +160,12 @@
             </div>
         </section>
 
+        <!-- Results Section -->
         <section id="results-section" class="app-section slide-up">
-            <div class="max-w-xl mx-auto bg-white dark:bg-slate-800 p-8 sm:p-10 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-700 text-center relative overflow-hidden">
+            <!-- 
+              FIX 1: Removed 'overflow-hidden' from this div to allow the child scrollbar to appear.
+            -->
+            <div class="max-w-xl mx-auto bg-white dark:bg-slate-800 p-8 sm:p-10 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-700 text-center relative">
                 <div class="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjNDg0NUUzIi8+Cjwvc3ZnPg==')]"></div>
                 
                 <button id="back-to-categories-results" class="absolute top-6 right-6 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors text-slate-400 hover:text-slate-600">
@@ -173,15 +190,23 @@
                     <h3 class="text-lg font-bold text-slate-800 dark:text-slate-200 mb-4 flex items-center">
                         <i data-lucide="alert-circle" class="w-5 h-5 mr-2 text-amber-500"></i>Review Mistakes
                     </h3>
-                    <div id="words-to-review-list" class="space-y-3 max-h-60 overflow-y-auto custom-scrollbar pr-2"></div>
+                    <!-- 
+                      FIX 2: Increased max-h-60 to max-h-80 for more space before scrolling.
+                      The classes 'overflow-y-auto' and 'custom-scrollbar' will handle the scrolling.
+                    -->
+                    <div id="words-to-review-list" class="space-y-3 max-h-80 overflow-y-auto custom-scrollbar pr-2"></div>
                 </div>
 
+                <!-- 
+                  FIX 3: Added the 'primary-btn' class to this button for correct styling.
+                -->
                 <button id="continue-button" class="primary-btn w-full mt-10">
                     Continue Learning
                 </button>
             </div>
         </section>
 
+        <!-- Recent GK Section -->
         <section id="recentgk-section" class="app-section slide-up">
             <div class="max-w-5xl mx-auto px-4">
                  <div class="text-center mb-12">
@@ -193,6 +218,7 @@
                  </div>
 
                  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+                     <!-- Practice Mode -->
                      <div class="group bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-lg border border-slate-200 dark:border-slate-700 hover:border-sky-400 dark:hover:border-sky-500 transition-all duration-300 relative overflow-hidden">
                          <div class="absolute top-0 left-0 w-full h-1 bg-sky-500"></div>
                          <div class="flex items-center gap-4 mb-6">
@@ -207,6 +233,7 @@
                          </button>
                      </div>
 
+                     <!-- Test Mode -->
                      <div class="group bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-lg border border-slate-200 dark:border-slate-700 hover:border-indigo-400 dark:hover:border-indigo-500 transition-all duration-300 relative overflow-hidden">
                          <div class="absolute top-0 left-0 w-full h-1 bg-indigo-500"></div>
                          <div class="flex items-center gap-4 mb-6">
@@ -241,6 +268,7 @@
             </div>
         </section>
 
+        <!-- Dictionary Section -->
         <section id="dictionary-section" class="app-section slide-up">
             <div class="max-w-3xl mx-auto">
                 <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-6 text-center">Dictionary</h2>
@@ -248,10 +276,13 @@
                     <i data-lucide="search" class="absolute left-4 top-4 text-slate-400 w-6 h-6"></i>
                     <input id="search-bar" type="text" placeholder="Type to search..." class="w-full pl-12 pr-4 py-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-lg shadow-sm transition-all">
                 </div>
-                <div id="dictionary-list-container" class="grid grid-cols-1 gap-3"></div>
+                <div id="dictionary-list-container" class="grid grid-cols-1 gap-3">
+                    <!-- Dictionary items -->
+                </div>
             </div>
         </section>
 
+        <!-- Stats Section -->
         <section id="stats-section" class="app-section slide-up">
              <div class="max-w-5xl mx-auto">
                  <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-8 text-center">Performance Dashboard</h2>
@@ -280,6 +311,7 @@
              </div>
         </section>
 
+        <!-- About Section -->
         <section id="about-section" class="app-section slide-up">
             <div class="bg-white dark:bg-slate-800 p-8 sm:p-12 rounded-3xl shadow-xl max-w-3xl mx-auto border border-slate-200 dark:border-slate-700">
                 <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-8 text-center">About</h2>
@@ -291,6 +323,7 @@
 
     </main>
 
+    <!-- Footer -->
     <footer class="mt-12 py-8 text-center border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 z-10 relative">
         <p class="text-slate-500 dark:text-slate-500 font-medium">&copy; 2025 E-Preparation.</p>
     </footer>
