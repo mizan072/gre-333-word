@@ -12,7 +12,7 @@ let vocabData = {
     recentgk: { list: [], words: [] }
 };
 
-let currentCategory = 'gre'; // Default category
+let currentCategory = 'gre'; 
 let wordsInCurrentChunk = [];
 let currentQuizQuestionIndex = 0;
 let quizScores = { correct: 0, incorrect: 0 };
@@ -87,12 +87,6 @@ const dictionaryListContainer = document.getElementById('dictionary-list-contain
 
 // --- 3. CORE FUNCTIONS ---
 
-/**
- * Debounce function to limit the rate at which a function can fire.
- * @param {Function} func The function to debounce.
- * @param {number} delay The delay in milliseconds.
- * @returns {Function} The debounced function.
- */
 function debounce(func, delay) {
     let timeout;
     return function(...args) {
@@ -102,45 +96,32 @@ function debounce(func, delay) {
     };
 }
 
-/**
- * Shows a specific app section and hides all others.
- * @param {string} sectionName - The key of the section to show (e.g., 'welcome', 'learn').
- */
 function showSection(sectionName) {
     Object.values(sections).forEach(section => {
         section.classList.remove('active');
     });
     if (sections[sectionName]) {
         sections[sectionName].classList.add('active');
-        window.scrollTo(0, 0); // Scroll to top on section change
+        window.scrollTo(0, 0);
     }
-    mobileMenu.classList.add('hidden'); // Close mobile menu on navigation
+    mobileMenu.classList.add('hidden');
 }
 
-/**
- * Uses browser's Speech Synthesis to speak a word.
- * @param {string} word - The word or text to speak.
- */
 function speakWord(word) {
     if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel(); // Cancel any ongoing speech
+        window.speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(word);
         utterance.lang = 'en-US';
         utterance.rate = 0.9;
         window.speechSynthesis.speak(utterance);
     } else {
         console.warn("Browser does not support Speech Synthesis.");
-        // We don't use alert() here
     }
 }
 
-/**
- * Loads the main welcome screen, dynamically building category cards.
- */
 function loadWelcome() {
-    categoryContainer.innerHTML = ''; // Clear existing categories
+    categoryContainer.innerHTML = ''; 
     
-    // Define categories
     const categories = [
         { id: 'gre', title: 'GRE 333', description: 'The essential 333 high-frequency words for the GRE.', bn_description: 'চাকরির পরীক্ষার জন্য অপরিহার্য ৩৩৩টি হাই-ফ্রিকোয়েন্সি ইংরেজি শব্দ।', icon: 'graduation-cap' },
         { id: 'previous', title: 'Previous Vocabulary', description: 'A supplementary vocabulary list for comprehensive learning.', bn_description: 'বিগত ১৫ বছরের ব্যাংক ও বিসিএস পরীক্ষার প্রশ্ন থেকে বাছাইকৃত শব্দভাণ্ডার।', icon: 'history' },
@@ -149,7 +130,6 @@ function loadWelcome() {
 
     categories.forEach(cat => {
         const catData = vocabData[cat.id];
-        // Ensure catData.words exists before filtering
         const masteredCount = catData.words ? catData.words.filter(w => w.strength >= 10).length : 0;
         const totalCount = catData.list.length;
         const percentage = totalCount > 0 ? Math.round((masteredCount / totalCount) * 100) : 0;
@@ -181,9 +161,7 @@ function loadWelcome() {
             } else {
                 const nextChunkIndex = Math.floor(masteredCount / WORDS_PER_CHUNK);
                 if (nextChunkIndex * WORDS_PER_CHUNK >= totalCount && totalCount > 0) {
-                    // Custom alert/modal would be better, but for now, console log.
                     console.log("Congratulations! You've completed all lessons in this category.");
-                    // We don't use alert()
                     return;
                 }
                 loadLearnSection(nextChunkIndex);
@@ -197,9 +175,6 @@ function loadWelcome() {
     showSection('welcome');
 }
 
-/**
- * Resets the state of the quiz UI for the next question.
- */
 function resetQuizState() {
     isAnswered = false;
     selectedTestAnswer = null;
@@ -208,19 +183,14 @@ function resetQuizState() {
     quizQuestion.textContent = '';
     quizQuestionBengali.textContent = '';
     
-    // Reset and enable the next button
     nextQuestionButton.disabled = false;
     nextQuestionButton.classList.remove('opacity-50', 'cursor-not-allowed');
     if (isTestMode) {
-        nextQuestionButton.disabled = true; // Re-disable for test mode
+        nextQuestionButton.disabled = true; 
         nextQuestionButton.classList.add('opacity-50', 'cursor-not-allowed');
     }
 }
 
-/**
- * Loads the learning section with a specific chunk of words.
- * @param {number} chunkIndex - The index of the word chunk to load.
- */
 function loadLearnSection(chunkIndex) {
     const catData = vocabData[currentCategory];
     const start = chunkIndex * WORDS_PER_CHUNK;
@@ -236,7 +206,7 @@ function loadLearnSection(chunkIndex) {
         const card = document.createElement('div');
         card.className = "bg-white dark:bg-gray-800 p-5 rounded-lg shadow-sm border border-slate-200 dark:border-gray-700";
         card.style.animationDelay = `${index * 80}ms`;
-        card.classList.add('fade-in-card'); // CSS animation class
+        card.classList.add('fade-in-card');
 
         const synonymHTML = word.english ? `<p class="text-lg text-slate-600 dark:text-slate-400">${word.english}</p>` : '';
 
@@ -257,10 +227,6 @@ function loadLearnSection(chunkIndex) {
     showSection('learn');
 }
 
-/**
- * Shuffles an array in place.
- * @param {Array} array - The array to shuffle.
- */
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -268,9 +234,6 @@ function shuffleArray(array) {
     }
 }
 
-/**
- * Starts a new test (both vocab and GK).
- */
 function startTest() {
     if (wordsInCurrentChunk.length === 0) return;
     if (!isTestMode) {
@@ -285,9 +248,6 @@ function startTest() {
     showSection('test');
 }
 
-/**
- * Loads the current question onto the test screen.
- */
 function loadQuestion() {
     if (currentQuizQuestionIndex >= wordsInCurrentChunk.length) {
         showQuizComplete();
@@ -295,7 +255,6 @@ function loadQuestion() {
     }
     resetQuizState();
 
-    // Update 'Next' button text for the last question in Test Mode
     if (isTestMode) {
         if (currentQuizQuestionIndex === wordsInCurrentChunk.length - 1) {
             nextQuestionButton.innerHTML = 'Finish Test <i data-lucide="check-circle" class="w-5 h-5 ml-2"></i>';
@@ -307,17 +266,15 @@ function loadQuestion() {
     
     const currentItem = wordsInCurrentChunk[currentQuizQuestionIndex];
 
-    // Add slide-in animation
     document.querySelector('#test-section > div').classList.add('question-slide-in');
     setTimeout(() => {
         document.querySelector('#test-section > div').classList.remove('question-slide-in');
     }, 400);
 
-    // --- Handle GK Question ---
     if (currentCategory === 'recentgk') {
         quizQuestion.textContent = '';
         quizQuestionBengali.textContent = currentItem.question;
-        const options = [...currentItem.options]; // Clone to avoid shuffling original
+        const options = [...currentItem.options]; 
         shuffleArray(options);
         options.forEach(option => {
             createOptionButton(option, option === currentItem.answer);
@@ -326,11 +283,9 @@ function loadQuestion() {
         return;
     }
 
-    // --- Handle Vocabulary Question ---
     const currentWord = currentItem;
     const hasSynonym = currentWord.english && currentWord.english.trim() !== '';
 
-    // Determine quiz type (word->def or def->word)
     const quizType = !hasSynonym
         ? (Math.random() > 0.5 ? 'word-to-bengali' : 'bengali-to-word')
         : (Math.random() > 0.5 ? 'word-to-def' : 'def-to-word');
@@ -363,11 +318,9 @@ function loadQuestion() {
             break;
     }
 
-    // Get 3 distractor options
     let fullWordListForOptions = wordsInCurrentChunk.length > 4 ? wordsInCurrentChunk : vocabData[currentCategory].list;
     while (options.length < 4) {
         const randomWord = fullWordListForOptions[Math.floor(Math.random() * fullWordListForOptions.length)];
-        // Ensure distractor is not the correct answer and has the required property
         if (randomWord.id !== currentWord.id && randomWord[optionSourceKey] && !options.some(opt => opt[optionSourceKey] === randomWord[optionSourceKey])) {
             options.push(randomWord);
         }
@@ -385,11 +338,6 @@ function loadQuestion() {
     updateQuizStats();
 }
 
-/**
- * Creates and appends a single quiz option button.
- * @param {string} text - The text to display on the button.
- * @param {boolean} isCorrect - Whether this option is the correct answer.
- */
 function createOptionButton(text, isCorrect) {
     const button = document.createElement('button');
     button.dataset.correct = isCorrect;
@@ -399,16 +347,12 @@ function createOptionButton(text, isCorrect) {
         if (isTestMode) {
             handleTestSelection(button);
         } else {
-            checkAnswer(button); // Practice mode
+            checkAnswer(button);
         }
     });
     quizOptionsContainer.appendChild(button);
 }
 
-/**
- * Handles answer selection in 'Test Mode' (no immediate feedback).
- * @param {HTMLElement} selectedButton - The button element that was clicked.
- */
 function handleTestSelection(selectedButton) {
     const allButtons = quizOptionsContainer.querySelectorAll('.option-card');
     allButtons.forEach(btn => btn.classList.remove('selected-test'));
@@ -418,10 +362,6 @@ function handleTestSelection(selectedButton) {
     nextQuestionButton.classList.remove('opacity-50', 'cursor-not-allowed');
 }
 
-/**
- * Checks the selected answer, provides feedback, and updates scores.
- * @param {HTMLElement} selectedButton - The button element that was clicked.
- */
 function checkAnswer(selectedButton) {
     if (isAnswered) return;
     isAnswered = true;
@@ -431,12 +371,11 @@ function checkAnswer(selectedButton) {
     const currentWord = wordsInCurrentChunk[currentQuizQuestionIndex];
     const wordInMasterList = vocabData[currentCategory].words.find(w => w.id === currentWord.id);
 
-    // Show immediate feedback for Practice Mode
     if (!isTestMode) {
         allButtons.forEach(button => {
-            button.classList.add('disabled'); // Disable all options
+            button.classList.add('disabled');
             if (button.dataset.correct === 'true') {
-                button.classList.add('correct-ui'); // Highlight correct
+                button.classList.add('correct-ui');
             }
         });
     }
@@ -455,13 +394,12 @@ function checkAnswer(selectedButton) {
     } else {
         quizScores.incorrect++;
         missedWords.push(currentWord);
-        selectedButton.classList.add('wrong-ui'); // Highlight incorrect
+        selectedButton.classList.add('wrong-ui');
         
         if (!isTestMode) {
             feedbackText.textContent = "Incorrect";
             feedbackText.className = "text-2xl font-semibold text-red-600 dark:text-red-400";
             
-            // --- BUG FIX: Handle GK vs Vocabulary feedback text ---
             let correctAnswerText;
             if (currentCategory === 'recentgk') {
                 correctAnswerText = currentWord.answer;
@@ -471,7 +409,6 @@ function checkAnswer(selectedButton) {
                     : `${currentWord.word} (${currentWord.bengali})`;
             }
             feedbackCorrectAnswer.textContent = `Correct: ${correctAnswerText}`;
-            // ----------------------------------------------------
         }
         
         if (wordInMasterList) {
@@ -480,39 +417,29 @@ function checkAnswer(selectedButton) {
         }
     }
 
-    currentQuizQuestionIndex++;
+    currentQuizQuestionIndex++; // The index is incremented here!
     if (!isTestMode) {
         feedbackContainer.style.display = 'block';
     }
     updateQuizStats();
     if (isTestMode) {
-        selectedTestAnswer = null; // Reset for next question
+        selectedTestAnswer = null;
     }
 }
 
-/**
- * Grades the selected answer in Test Mode and shows visual feedback.
- */
 function gradeTestAnswer() {
     if (!selectedTestAnswer) return;
-    
-    // Grade the answer
     checkAnswer(selectedTestAnswer); 
 
-    // Show visual feedback after grading
     const allButtons = quizOptionsContainer.querySelectorAll('.option-card');
     allButtons.forEach(button => {
-        button.classList.add('disabled'); // Disable all options
+        button.classList.add('disabled');
         if (button.dataset.correct === 'true') {
-            button.classList.add('correct-ui'); // Highlight correct
+            button.classList.add('correct-ui');
         }
     });
-    // Wrong answer is already highlighted by checkAnswer()
 }
 
-/**
- * Updates the quiz progress bar and text.
- */
 function updateQuizStats() {
     const total = wordsInCurrentChunk.length;
     const progress = currentQuizQuestionIndex;
@@ -520,9 +447,6 @@ function updateQuizStats() {
     quizProgressBar.style.width = `${((progress) / total) * 100}%`;
 }
 
-/**
- * Displays the final quiz results screen.
- */
 function showQuizComplete() {
     const total = wordsInCurrentChunk.length;
     const correct = quizScores.correct;
@@ -531,7 +455,6 @@ function showQuizComplete() {
 
     saveProgress();
 
-    // Update study streak
     const today = new Date().toISOString().split('T')[0];
     let studyHistory = JSON.parse(localStorage.getItem(STUDY_HISTORY_KEY) || '[]');
     if (!studyHistory.includes(today)) {
@@ -543,23 +466,19 @@ function showQuizComplete() {
     finalScoreText.textContent = `${correct} / ${total}`;
     finalPercentageText.textContent = `(${percentage}%)`;
 
-    // Color code the score
     if (percentage >= 80) finalScoreText.className = "text-6xl font-bold my-2 text-green-600 dark:text-green-400";
     else if (percentage >= 50) finalScoreText.className = "text-6xl font-bold my-2 text-yellow-500 dark:text-yellow-400";
     else finalScoreText.className = "text-6xl font-bold my-2 text-red-600 dark:text-red-400";
 
-    // --- BUG FIX: Handle GK vs Vocabulary for missed items ---
     if (missedWords.length > 0) {
         wordsToReviewList.innerHTML = missedWords.map(item => {
             if (currentCategory === 'recentgk') {
-                // GK Review Card
                 return `
                 <div class="bg-red-50 dark:bg-gray-700/50 p-3 rounded-md border border-red-200 dark:border-red-800/50 text-left">
                     <h4 class="font-bold text-red-800 dark:text-red-300 mb-1 text-base lang-bn">${item.question}</h4>
                     <p class="text-slate-700 dark:text-slate-300 text-sm">Correct: <span class="font-semibold text-green-700 dark:text-green-400">${item.answer}</span></p>
                 </div>`;
             } else {
-                // Standard Vocabulary Card
                 return `
                 <div class="bg-red-50 dark:bg-gray-700/50 p-3 rounded-md border border-red-200 dark:border-red-800/50">
                     <div class="flex justify-between items-center">
@@ -577,9 +496,7 @@ function showQuizComplete() {
     } else {
         wordsToReviewContainer.style.display = 'none';
     }
-    // --------------------------------------------------------
     
-    // Update continue button
     if (currentCategory === 'recentgk' || currentCategory === 'special') {
         continueButton.textContent = "Back to Categories";
         continueButton.onclick = loadWelcome;
@@ -605,7 +522,7 @@ function getSaveKey(category) {
     if (category === 'gre') return SAVE_KEY_WORDS_GRE;
     if (category === 'previous') return SAVE_KEY_WORDS_PREVIOUS;
     if (category === 'recentgk') return SAVE_KEY_WORDS_RECENTGK;
-    return null; // Handle special cases
+    return null;
 }
 
 function loadProgress() {
@@ -613,9 +530,8 @@ function loadProgress() {
         const savedWords = localStorage.getItem(getSaveKey(cat));
         if (savedWords) {
             vocabData[cat].words = JSON.parse(savedWords);
-            // Sync with fetched list if lengths mismatch
             if (vocabData[cat].words.length !== vocabData[cat].list.length) {
-                initializeWords(cat, true); // Force merge
+                initializeWords(cat, true); 
             }
         } else {
             initializeWords(cat, false);
@@ -624,11 +540,6 @@ function loadProgress() {
     loadWelcome();
 }
 
-/**
- * Initializes or merges word progress data.
- * @param {string} category - The category to initialize.
- * @param {boolean} merge - Whether to merge with existing data or overwrite.
- */
 function initializeWords(category, merge = false) {
     const catData = vocabData[category];
     const existingWords = merge ? new Map(catData.words.map(w => [w.id, w])) : new Map();
@@ -636,10 +547,8 @@ function initializeWords(category, merge = false) {
     catData.words = catData.list.map(v => {
         const existing = existingWords.get(v.id);
         if (existing) {
-            // Merge: keep progress, update content
             return { ...v, ...existing, ...v };
         } else {
-            // New word
             return {
                 id: v.id,
                 strength: 0,
@@ -665,7 +574,6 @@ function saveProgress(category = null) {
 }
 
 function resetProgress() {
-    // A custom modal would be better than confirm()
     const userConfirmed = confirm("Are you sure you want to reset all progress for all categories? This cannot be undone.");
     if (userConfirmed) {
         Object.keys(vocabData).forEach(cat => {
@@ -683,7 +591,6 @@ function resetProgress() {
 
 function loadDictionary() {
     const allVocab = [...vocabData.gre.list, ...vocabData.previous.list];
-    // Sort alphabetically
     allVocab.sort((a, b) => a.word.localeCompare(b.word));
 
     dictionaryListContainer.innerHTML = allVocab.map(word => {
@@ -716,7 +623,6 @@ function toggleDarkMode() {
     const isDarkMode = htmlElement.classList.contains('dark');
     localStorage.setItem(DARK_MODE_KEY, isDarkMode);
     updateDarkModeIcons(isDarkMode);
-    // Re-render chart for dark mode (border colors)
     if (sections.stats.classList.contains('active')) {
         renderMasteryChart();
     }
@@ -743,7 +649,7 @@ function loadStatsPage() {
 
 function renderMasteryChart() {
     const allWords = [...vocabData.gre.words, ...vocabData.previous.words];
-    if (!allWords.length) return; // Don't render if no data
+    if (!allWords.length) return;
 
     const mastered = allWords.filter(w => w.strength >= 10).length;
     const learning = allWords.filter(w => w.strength > 0 && w.strength < 10).length;
@@ -758,7 +664,7 @@ function renderMasteryChart() {
             labels: [`Mastered (${mastered})`, `Learning (${learning})`, `Not Seen (${notSeen})`],
             datasets: [{
                 data: [mastered, learning, notSeen],
-                backgroundColor: ['#16a34a', '#f59e0b', '#64748b'], // green, amber, slate
+                backgroundColor: ['#16a34a', '#f59e0b', '#64748b'],
                 borderColor: htmlElement.classList.contains('dark') ? '#1f2937' : '#ffffff',
                 borderWidth: 4
             }]
@@ -801,8 +707,8 @@ function createDifficultWordsTest() {
     
     if (difficultWords.length > 0) {
         wordsInCurrentChunk = difficultWords;
-        currentCategory = 'special'; // Special category for this test
-        isTestMode = false; // Always practice mode
+        currentCategory = 'special';
+        isTestMode = false;
         startTest();
     }
 }
@@ -816,15 +722,13 @@ function calculateStudyStreak() {
     const todayStr = today.toISOString().split('T')[0];
     const lastStudyDay = new Date(studyHistory[0]);
 
-    // Check if last study day is today or yesterday
     const diffDays = (today.getTime() - lastStudyDay.getTime()) / (1000 * 3600 * 24);
     
-    if (diffDays > 1.5) return 0; // Streak is broken
+    if (diffDays > 1.5) return 0;
     
     let streak = 0;
     let currentDay = today;
     
-    // If last study day wasn't today, start check from yesterday
     if (studyHistory[0] !== todayStr) {
         currentDay.setDate(today.getDate() - 1);
     }
@@ -835,7 +739,7 @@ function calculateStudyStreak() {
             streak++;
             currentDay.setDate(currentDay.getDate() - 1);
         } else if (new Date(dateStr) < new Date(expectedDateStr)) {
-            break; // Gap in dates
+            break;
         }
     }
     return streak;
@@ -876,14 +780,11 @@ function renderCalendar() {
     container.innerHTML = html;
 }
 
-/**
- * Starts GK Practice Mode.
- */
 function startPracticeMode() {
     isTestMode = false;
     currentCategory = 'recentgk';
     wordsInCurrentChunk = [...vocabData.recentgk.list];
-    shuffleArray(wordsInCurrentChunk); // Shuffle for practice
+    shuffleArray(wordsInCurrentChunk);
     currentQuizQuestionIndex = 0;
     quizScores = { correct: 0, incorrect: 0 };
     missedWords = [];
@@ -891,12 +792,9 @@ function startPracticeMode() {
     showSection('test'); 
 }
 
-/**
- * Loads the next GK practice question.
- */
 function loadPracticeQuestion() {
     if (currentQuizQuestionIndex >= wordsInCurrentChunk.length) {
-        showQuizComplete(); // Show results after practicing all
+        showQuizComplete();
         return;
     }
     resetQuizState();
@@ -905,7 +803,6 @@ function loadPracticeQuestion() {
 
     const currentQuestion = wordsInCurrentChunk[currentQuizQuestionIndex];
     const options = [...currentQuestion.options];
-    // Don't shuffle options in practice mode to be consistent? Or shuffle? Let's shuffle.
     shuffleArray(options);
     options.forEach(option => {
         createOptionButton(option, option === currentQuestion.answer);
@@ -915,9 +812,6 @@ function loadPracticeQuestion() {
     quizProgressBar.style.width = `${((currentQuizQuestionIndex) / wordsInCurrentChunk.length) * 100}%`;
 }
 
-/**
- * Starts GK Test Mode based on selected limit.
- */
 function startTestMode() {
     const activeLimitButton = document.querySelector('#gk-limit-buttons .limit-btn.active');
     const limit = activeLimitButton.dataset.limit;
@@ -938,24 +832,20 @@ function startTestMode() {
     shuffleArray(allGkQuestions);
     wordsInCurrentChunk = allGkQuestions.slice(0, numQuestions);
     
-    currentCategory = 'recentgk'; // Ensure category is set for the test
+    currentCategory = 'recentgk';
     isTestMode = true;
     selectedTestAnswer = null;
-    startTest(); // Re-use the existing test logic
+    startTest(); 
 }
 
-
-// --- 6. EVENT LISTENERS ---
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        // Fetch all data sources concurrently
         const [greResponse, preVocabResponse, recentGkResponse] = await Promise.all([
             fetch('vocabulary.json'),
             fetch('pre-vocabulary.json'),
             fetch('recentgk.json')
         ]);
         
-        // Check if all responses are ok
         if (!greResponse.ok) throw new Error(`Failed to load vocabulary.json: ${greResponse.statusText}`);
         if (!preVocabResponse.ok) throw new Error(`Failed to load pre-vocabulary.json: ${preVocabResponse.statusText}`);
         if (!recentGkResponse.ok) throw new Error(`Failed to load recentgk.json: ${recentGkResponse.statusText}`);
@@ -972,66 +862,55 @@ document.addEventListener('DOMContentLoaded', async () => {
         loadDictionary();
         lucide.createIcons();
 
-        // --- Nav Event Listeners ---
         mainMenuButton.addEventListener('click', loadWelcome);
         dictionaryButton.addEventListener('click', () => showSection('dictionary'));
         statsButton.addEventListener('click', loadStatsPage);
         aboutButton.addEventListener('click', () => showSection('about'));
         darkModeToggle.addEventListener('click', toggleDarkMode);
         
-        // Mobile Nav
         mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
         mobileMainMenuButton.addEventListener('click', loadWelcome);
         mobileDictionaryButton.addEventListener('click', () => showSection('dictionary'));
         mobileStatsButton.addEventListener('click', loadStatsPage);
         mobileAboutButton.addEventListener('click', () => showSection('about'));
         
-        // --- Button Event Listeners ---
         resetProgressButton.addEventListener('click', resetProgress);
         document.getElementById('create-test-button').addEventListener('click', createDifficultWordsTest);
         
-        // Learn Section
         startTestButton.addEventListener('click', () => {
-            isTestMode = false; // This is the "Practice" test
+            isTestMode = false;
             startTest();
         });
 
-        // Test Section
         nextQuestionButton.addEventListener('click', () => {
             if (isTestMode) {
-                if (!selectedTestAnswer) return; // Don't do anything if no answer selected
+                if (!selectedTestAnswer) return;
                 
-                isAnswered = true; // Prevent further clicks
+                // BUG FIX: REMOVE "isAnswered = true" FROM HERE. 
+                // It prevents checkAnswer() from running properly.
                 
-                // Disable button immediately
                 nextQuestionButton.disabled = true;
                 nextQuestionButton.classList.add('opacity-50', 'cursor-not-allowed');
 
-                gradeTestAnswer(); // Grade and show feedback
+                gradeTestAnswer(); 
                 
-                // Wait to show feedback before loading next question
                 setTimeout(() => {
                     loadQuestion();
                 }, 1200);
 
             } else if (currentCategory === 'recentgk' && !isTestMode) {
-                // GK Practice Mode
                 loadPracticeQuestion();
             } else {
-                // Vocab Practice Mode
                 loadQuestion();
             }
         });
 
-        // Dictionary
         searchBar.addEventListener('input', debounce(filterDictionary, 300));
 
-        // Recent GK Section
         document.getElementById('practice-mode-button').addEventListener('click', startPracticeMode);
         document.getElementById('test-mode-button').addEventListener('click', startTestMode);
         document.getElementById('back-to-categories-gk').addEventListener('click', loadWelcome);
 
-        // Confirmation for exiting test
         const confirmAndLoadWelcome = () => {
             const userConfirmed = confirm("Are you sure you want to exit? Your current test progress will be lost.");
             if (userConfirmed) {
@@ -1040,10 +919,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
         document.getElementById('back-to-categories-test').addEventListener('click', confirmAndLoadWelcome);
         
-        // Results Section
         document.getElementById('back-to-categories-results').addEventListener('click', loadWelcome);
 
-        // GK Limit Buttons
         document.getElementById('gk-limit-buttons').addEventListener('click', (event) => {
             const clickedButton = event.target.closest('.limit-btn');
             if (clickedButton) {
@@ -1052,7 +929,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         });
 
-        // Global Speak Button Listener
         document.body.addEventListener('click', (event) => {
             const speakButton = event.target.closest('.speak-button');
             if (speakButton) {
