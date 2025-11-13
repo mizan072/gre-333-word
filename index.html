@@ -1,137 +1,109 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GRE 333 Vocabulary</title>
-    <meta name="description" content="Master the 333 essential GRE words with our proven learning system. Features active recall quizzes, Bengali meanings, progress tracking, and a searchable dictionary.">
+    <title>E-Preparation</title>
+    <meta name="description" content="Master vocabulary with a modern, minimalist, and effective learning system. Organized by category for focused study.">
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="style.css">
-
     <script src="https://unpkg.com/lucide@latest"></script>
-
     <script>
-        // Use 'class' strategy for dark mode
         tailwind.config = {
             darkMode: 'class',
         }
     </script>
 </head>
-<body class="bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 min-h-screen flex flex-col">
+<body class="bg-slate-50 dark:bg-gray-900 text-slate-800 dark:text-slate-200 min-h-screen flex flex-col font-sans">
 
-    <header class="bg-white dark:bg-slate-800 shadow-md sticky top-0 z-50 border-b border-slate-200 dark:border-slate-700">
-        <div class="max-w-5xl mx-auto px-2 sm:px-6 lg:px-8 py-3">
-            <div class="flex flex-wrap justify-center sm:justify-between items-center">
-                <h1 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-400 flex items-center text-center sm:text-left mb-2 sm:mb-0"><i data-lucide="graduation-cap" class="w-6 h-6 sm:w-7 sm:h-7 mr-2"></i>GRE 333 Learning System</h1>
-                <nav class="flex items-center space-x-1 sm:space-x-2">
-                    <button id="main-menu-button" class="px-2 sm:px-3 py-2 flex items-center text-xs sm:text-sm font-medium text-indigo-600 dark:text-indigo-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md transition-colors"><i data-lucide="home" class="w-4 h-4 mr-1 sm:mr-1.5"></i><span class="hidden sm:inline">Main Menu</span></button>
-                    <button id="dictionary-button" class="px-2 sm:px-3 py-2 flex items-center text-xs sm:text-sm font-medium text-indigo-600 dark:text-indigo-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md transition-colors"><i data-lucide="book-open" class="w-4 h-4 mr-1 sm:mr-1.5"></i><span class="hidden sm:inline">Dictionary</span></button>
-                    <button id="stats-button" class="px-2 sm:px-3 py-2 flex items-center text-xs sm:text-sm font-medium text-indigo-600 dark:text-indigo-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md transition-colors"><i data-lucide="bar-chart-3" class="w-4 h-4 mr-1 sm:mr-1.5"></i><span class="hidden sm:inline">Stats</span></button>
-                    <button id="about-button" class="px-2 sm:px-3 py-2 flex items-center text-xs sm:text-sm font-medium text-indigo-600 dark:text-indigo-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md transition-colors"><i data-lucide="info" class="w-4 h-4 mr-1 sm:mr-1.5"></i><span class="hidden sm:inline">About</span></button>
-                    
-                    <button id="dark-mode-toggle" class="p-2 rounded-full text-indigo-600 dark:text-indigo-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" aria-label="Toggle dark mode">
-                        <i id="dark-icon-moon" data-lucide="moon" class="w-5 h-5 sm:w-6 sm:h-6"></i>
-                        <i id="dark-icon-sun" data-lucide="sun" class="w-5 h-5 sm:w-6 sm:h-6 hidden"></i>
-                    </button>
+    <header class="bg-white dark:bg-gray-800/80 backdrop-blur-sm sticky top-0 z-50 border-b border-slate-200 dark:border-gray-700">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-2">
+                    <i data-lucide="book-marked" class="w-7 h-7 text-indigo-600 dark:text-indigo-400"></i>
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white">E-Preparation</h1>
+                </div>
+                <nav class="hidden sm:flex items-center space-x-2">
+                    <button id="main-menu-button" class="px-4 py-2 flex items-center text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"><i data-lucide="layout-grid" class="w-4 h-4 mr-2"></i>Categories</button>
+                    <button id="dictionary-button" class="px-4 py-2 flex items-center text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"><i data-lucide="book-open" class="w-4 h-4 mr-2"></i>Dictionary</button>
+                    <button id="stats-button" class="px-4 py-2 flex items-center text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"><i data-lucide="bar-chart-3" class="w-4 h-4 mr-2"></i>Dashboard</button>
+                    <button id="about-button" class="px-4 py-2 flex items-center text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"><i data-lucide="info" class="w-4 h-4 mr-2"></i>About</button>
                 </nav>
+                <div class="flex items-center">
+                     <button id="dark-mode-toggle" class="p-2 rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-gray-700 transition-colors" aria-label="Toggle dark mode">
+                        <i id="dark-icon-moon" data-lucide="moon" class="w-6 h-6"></i>
+                        <i id="dark-icon-sun" data-lucide="sun" class="w-6 h-6 hidden"></i>
+                    </button>
+                    <button id="mobile-menu-button" class="sm:hidden p-2 rounded-md text-slate-500 dark:text-slate-400">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
             </div>
-            
-            <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-3.5 mt-4">
-                <div id="progress-bar-fill" class="bg-green-600 h-3.5 rounded-full" style="width: 0%"></div>
-            </div>
-            <p id="progress-bar-text" class="text-sm text-slate-600 dark:text-slate-400 mt-1 text-center font-medium">Loading progress...</p>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="sm:hidden hidden px-4 pt-2 pb-4 space-y-2">
+            <button id="mobile-main-menu-button" class="w-full text-left px-3 py-2 flex items-center font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-md transition-colors"><i data-lucide="layout-grid" class="w-5 h-5 mr-3"></i>Categories</button>
+            <button id="mobile-dictionary-button" class="w-full text-left px-3 py-2 flex items-center font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-md transition-colors"><i data-lucide="book-open" class="w-5 h-5 mr-3"></i>Dictionary</button>
+            <button id="mobile-stats-button" class="w-full text-left px-3 py-2 flex items-center font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-md transition-colors"><i data-lucide="bar-chart-3" class="w-5 h-5 mr-3"></i>Dashboard</button>
+            <button id="mobile-about-button" class="w-full text-left px-3 py-2 flex items-center font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-md transition-colors"><i data-lucide="info" class="w-5 h-5 mr-3"></i>About</button>
         </div>
     </header>
 
-    <main class="max-w-5xl mx-auto p-2 sm:p-6 lg:p-8 flex-grow w-full">
+    <main class="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 flex-grow w-full">
 
         <section id="welcome-section" class="app-section">
-            <div class="bg-white dark:bg-slate-800 p-4 sm:p-8 rounded-lg shadow-xl text-center">
-                <div class="max-w-xs mx-auto mb-4 sm:mb-6">
-                    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                        <path class="fill-indigo-500 dark:fill-indigo-400" d="M38.1,-63.3C50.2,-57.4,61.4,-49.5,69,-39.1C76.6,-28.7,80.6,-15.8,79.5,-3.6C78.4,8.6,72.2,20.2,64.8,30.3C57.4,40.4,48.8,49,38.8,56.7C28.8,64.4,17.4,71.2,5.2,73.1C-7,75,-20.1,72,-32.1,66.8C-44.1,61.6,-55,54.2,-63.5,44.7C-72,35.2,-78.1,23.6,-79.8,11.1C-81.5,-1.3,-78.8,-14.6,-72.2,-25.9C-65.6,-37.2,-55.1,-46.5,-44.2,-53.4C-33.3,-60.2,-22,-64.6,-10.5,-67.6C1.1,-70.6,12.6,-71.2,24.8,-68.9C37,-66.6,49.2,-62.3,58.1,-54.9L58.1,-54.9C57.1,-54.3,38.1,-63.3,38.1,-63.3Z" transform="translate(100 100) scale(1.2)" />
-                      </svg>
-                </div>
-                <h2 class="text-2xl sm:text-3xl font-bold mb-4 text-indigo-800 dark:text-indigo-300 text-center">Welcome, Student!</h2>
-                <p class="text-base sm:text-lg text-slate-700 dark:text-slate-300 mb-6 max-w-2xl mx-auto">
-                    Reading a list is not learning. We will master this 333-word vocabulary using a proven, psychological method.
-                </p>
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold text-slate-900 dark:text-white mb-2">Choose Your Category</h2>
+                <p class="text-lg text-slate-600 dark:text-slate-400">Select a vocabulary set to start learning.</p>
+            </div>
+            <div id="category-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Categories will be dynamically inserted here -->
+            </div>
+             <button id="reset-progress-button" class="mt-12 mx-auto flex items-center text-sm text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 transition-colors">
+                <i data-lucide="trash-2" class="w-4 h-4 mr-2"></i>Reset All Progress
+            </button>
+        </section>
 
-                <!-- --- NEW: Current Streak Display --- -->
-                <div id="main-menu-streak-display" class="mb-8 text-center" style="display: none;">
-                    <span class="text-xl sm:text-2xl font-bold text-green-600 dark:text-green-400">🔥 Current Streak: <span id="main-menu-streak-count">0</span> Days!</span>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 text-left mb-10">
-                    <div class="bg-slate-50 dark:bg-slate-700 p-4 sm:p-6 rounded-lg border border-slate-200 dark:border-slate-600">
-                        <h3 class="text-lg sm:text-xl font-semibold text-indigo-700 dark:text-indigo-300 mb-2">Step 1: Learn in Chunks</h3>
-                        <p class="text-sm sm:text-base text-slate-600 dark:text-slate-300">You will be presented with 10 words at a time. Focus on understanding each word, its Bengali meaning, and its English synonym.</p>
-                    </div>
-                    <div class="bg-slate-50 dark:bg-slate-700 p-4 sm:p-6 rounded-lg border border-slate-200 dark:border-slate-600">
-                        <h3 class="text-lg sm:text-xl font-semibold text-indigo-700 dark:text-indigo-300 mb-2">Step 2: Active Recall</h3>
-                        <p class="text-sm sm:text-base text-slate-600 dark:text-slate-300">Immediately after reviewing the 10 words, you will be tested on them. This active recall is the *most* effective way to build strong, long-term memory.</p>
-                    </div>
-                </div>
-
-                <div class="space-y-4">
-                    <button id="start-learning-button" class="w-full max-w-xs mx-auto bg-indigo-600 text-white text-xl font-bold py-4 rounded-lg shadow-lg hover:bg-indigo-700 transition-transform transform hover:scale-105 duration-200 flex items-center justify-center">
-                        <i data-lucide="play-circle" class="w-6 h-6 mr-2"></i><span id="start-learning-text">Begin Lesson 1</span>
-                    </button>
-                    <button id="review-mastered-button" class="w-full max-w-xs mx-auto bg-green-600 text-white text-lg font-bold py-3 rounded-lg shadow-lg hover:bg-green-700 transition-transform transform hover:scale-105 duration-200 flex items-center justify-center" style="display: none;">
-                        <i data-lucide="history" class="w-5 h-5 mr-2"></i><span id="review-mastered-text">Review Mastered Words (0)</span>
-                    </button>
-                    <button id="daily-random-test-button" class="w-full max-w-xs mx-auto bg-sky-600 text-white text-lg font-bold py-3 rounded-lg shadow-lg hover:bg-sky-700 transition-transform transform hover:scale-105 duration-200 flex items-center justify-center">
-                        <i data-lucide="shuffle" class="w-5 h-5 mr-2"></i>Daily Random Test (20)
-                    </button>
-                    <button id="previous-vocabulary-button" class="w-full max-w-xs mx-auto bg-purple-600 text-white text-lg font-bold py-3 rounded-lg shadow-lg hover:bg-purple-700 transition-transform transform hover:scale-105 duration-200 flex items-center justify-center">
-                        <i data-lucide="book-marked" class="w-5 h-5 mr-2"></i>Previous Vocabulary
-                    </button>
-                </div>
-
-                <button id="reset-progress-button" class="mt-10 text-sm text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 transition-colors">
-                    Reset All Progress
+        <section id="learn-section" class="app-section">
+            <h2 id="learn-header" class="text-3xl font-bold mb-8 text-slate-900 dark:text-white text-center"></h2>
+            <div id="learn-container" class="space-y-4 max-w-2xl mx-auto">
+                <!-- Word cards will be inserted here -->
+            </div>
+            <div class="max-w-2xl mx-auto mt-8">
+                <button id="start-test-button" class="w-full bg-indigo-600 text-white text-lg font-bold py-3 rounded-lg shadow-md hover:bg-indigo-700 transition-transform transform hover:scale-105 duration-200">
+                    Start Test
                 </button>
             </div>
         </section>
 
-        <section id="learn-section" class="app-section">
-            <h2 id="learn-header" class="text-3xl font-bold mb-6 text-indigo-800 dark:text-indigo-300 text-center flex items-center justify-center"><i data-lucide="notebook-tabs" class="w-8 h-8 mr-3"></i>Learning Set: Words 1-10</h2>
-            <div id="learn-container" class="space-y-4">
-                </div>
-            <button id="start-test-button" class="mt-8 w-full bg-green-600 text-white text-xl font-bold py-4 rounded-lg shadow-lg hover:bg-green-700 transition-transform transform hover:scale-105 duration-200">
-                I've reviewed these 10 words. Start the Test!
-            </button>
-        </section>
-
         <section id="test-section" class="app-section">
             <div class="max-w-2xl mx-auto">
-                <div class="bg-white dark:bg-slate-800 p-4 rounded-lg shadow mb-6">
+                <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm mb-6">
                     <div class="flex justify-between items-center mb-2">
-                        <span id="quiz-progress-text" class="text-lg font-medium text-slate-700 dark:text-slate-300">Question 1 of 10</span>
+                        <span id="quiz-progress-text" class="text-sm font-medium text-slate-600 dark:text-slate-400"></span>
                     </div>
-                    <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2.5">
-                        <div id="quiz-progress-bar" class="bg-indigo-600 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+                    <div class="w-full bg-slate-200 dark:bg-gray-700 rounded-full h-2">
+                        <div id="quiz-progress-bar" class="bg-indigo-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
                     </div>
                 </div>
 
-                <div class="bg-white dark:bg-slate-800 rounded-lg shadow-xl min-h-[20rem] sm:min-h-[30rem]">
-                    <div class="p-6 sm:p-12 min-h-[10rem] sm:min-h-[12rem] flex items-center justify-center">
-                        <h3 id="quiz-question" class="text-2xl sm:text-4xl font-bold text-center text-slate-800 dark:text-slate-100"></h3>
-                        <p id="quiz-question-bengali" class="lang-bn text-xl sm:text-3xl font-bold text-center text-slate-800 dark:text-slate-100"></p>
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg">
+                    <div class="p-8 sm:p-12 min-h-[12rem] flex items-center justify-center">
+                        <h3 id="quiz-question" class="text-3xl sm:text-4xl font-bold text-center text-slate-900 dark:text-white"></h3>
+                        <p id="quiz-question-bengali" class="lang-bn text-2xl sm:text-3xl font-bold text-center text-slate-900 dark:text-white"></p>
                     </div>
-                    <div id="quiz-options-container" class="p-4 sm:p-6 bg-slate-50 dark:bg-slate-800 rounded-b-lg grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                        </div>
+                    <div id="quiz-options-container" class="p-4 bg-slate-50 dark:bg-gray-800/50 rounded-b-xl grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <!-- Quiz options will be inserted here -->
+                    </div>
                 </div>
 
                 <div id="quiz-feedback-container" class="mt-6 text-center" style="display: none;">
                     <p id="quiz-feedback-text" class="text-2xl font-semibold"></p>
                     <p id="quiz-feedback-correct-answer" class="text-lg text-slate-600 dark:text-slate-400 mt-2"></p>
-                    <button id="next-question-button" class="mt-4 w-full bg-indigo-700 text-white text-lg font-bold py-3 rounded-lg shadow hover:bg-indigo-800 transition-colors duration-200">
+                    <button id="next-question-button" class="mt-4 w-full max-w-sm mx-auto bg-indigo-600 text-white font-bold py-3 rounded-lg shadow hover:bg-indigo-700 transition-colors duration-200">
                         Next
                     </button>
                 </div>
@@ -139,124 +111,103 @@
         </section>
 
         <section id="results-section" class="app-section">
-            <div class="max-w-xl mx-auto bg-white dark:bg-slate-800 p-8 sm:p-12 rounded-lg shadow-xl text-center">
-                <h2 id="results-header" class="text-4xl font-bold mb-4 text-indigo-700 dark:text-indigo-300 flex items-center justify-center"><i data-lucide="award" class="w-10 h-10 mr-3"></i>Lesson 1 Complete!</h2>
-                
+            <div class="max-w-xl mx-auto bg-white dark:bg-gray-800 p-8 sm:p-12 rounded-lg shadow-xl text-center">
+                <h2 id="results-header" class="text-3xl font-bold mb-4 text-slate-900 dark:text-white"></h2>
                 <div class="my-8">
-                    <p class="text-2xl text-slate-700 dark:text-slate-300">Your Score:</p>
-                    <p id="final-score-text" class="text-7xl font-bold text-green-600 my-4">8 / 10</p>
-                    <p id="final-percentage-text" class="text-3xl text-slate-500 dark:text-slate-400">(80%)</p>
+                    <p class="text-xl text-slate-600 dark:text-slate-400">Your Score:</p>
+                    <p id="final-score-text" class="text-6xl font-bold my-2"></p>
+                    <p id="final-percentage-text" class="text-2xl text-slate-500 dark:text-slate-400"></p>
                 </div>
-
                 <div id="words-to-review-container" class="text-left mt-10">
-                    <h3 class="text-2xl font-semibold text-red-700 dark:text-red-400 mb-4 text-center flex items-center justify-center"><i data-lucide="alert-triangle" class="w-6 h-6 mr-2"></i>Words to Review</h3>
-                    <p class="text-center text-slate-600 dark:text-slate-400 mb-4">Focus on these words you missed. The correct answers are shown.</p>
-                    <div id="words-to-review-list" class="space-y-4">
-                        </div>
+                    <h3 class="text-xl font-semibold text-red-700 dark:text-red-400 mb-4 text-center">Words to Review</h3>
+                    <div id="words-to-review-list" class="space-y-3"></div>
                 </div>
-                
-                <button id="continue-button" class="mt-10 w-full max-w-xs mx-auto bg-indigo-600 text-white text-xl font-bold py-4 rounded-lg shadow-lg hover:bg-indigo-700 transition-transform transform hover:scale-105 duration-200">
-                    Continue to Lesson 2 (Words 11-20)
+                <button id="continue-button" class="mt-10 w-full max-w-xs mx-auto bg-indigo-600 text-white text-lg font-bold py-3 rounded-lg shadow-md hover:bg-indigo-700 transition-transform transform hover:scale-105 duration-200">
+                    Continue
                 </button>
             </div>
         </section>
 
         <section id="dictionary-section" class="app-section">
-            <h2 class="text-3xl font-bold text-indigo-800 dark:text-indigo-300 mb-6 flex items-center justify-center"><i data-lucide="book-open-check" class="w-8 h-8 mr-3"></i>Word Dictionary (1-333)</h2>
-            
-            <input id="search-bar" type="text" placeholder="Type to search for a word (e.g., Abate)" class="w-full p-4 text-lg bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500 mb-6 dark:placeholder-slate-400">
-            
-            <div id="dictionary-list-container" class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                </div>
+            <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-8 text-center">Word Dictionary</h2>
+            <input id="search-bar" type="text" placeholder="Search for a word..." class="w-full max-w-xl mx-auto p-4 text-lg bg-white dark:bg-gray-800 border border-slate-300 dark:border-gray-600 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500 mb-8 dark:placeholder-slate-400">
+            <div id="dictionary-list-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Dictionary items will be inserted here -->
+            </div>
         </section>
 
         <section id="about-section" class="app-section">
-            <div class="bg-white dark:bg-slate-800 p-8 sm:p-12 rounded-lg shadow-xl max-w-3xl mx-auto">
-                <div class="max-w-xs mx-auto mb-6">
-                    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                        <path class="fill-indigo-500 dark:fill-indigo-400" d="M38.1,-63.3C50.2,-57.4,61.4,-49.5,69,-39.1C76.6,-28.7,80.6,-15.8,79.5,-3.6C78.4,8.6,72.2,20.2,64.8,30.3C57.4,40.4,48.8,49,38.8,56.7C28.8,64.4,17.4,71.2,5.2,73.1C-7,75,-20.1,72,-32.1,66.8C-44.1,61.6,-55,54.2,-63.5,44.7C-72,35.2,-78.1,23.6,-79.8,11.1C-81.5,-1.3,-78.8,-14.6,-72.2,-25.9C-65.6,-37.2,-55.1,-46.5,-44.2,-53.4C-33.3,-60.2,-22,-64.6,-10.5,-67.6C1.1,-70.6,12.6,-71.2,24.8,-68.9C37,-66.6,49.2,-62.3,58.1,-54.9L58.1,-54.9C57.1,-54.3,38.1,-63.3,38.1,-63.3Z" transform="translate(100 100) scale(1.2)" />
-                      </svg>
+            <div class="bg-white dark:bg-gray-800 p-8 sm:p-12 rounded-lg shadow-xl max-w-3xl mx-auto">
+                <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-6 text-center">About E-Preparation</h2>
+                <div class="space-y-4 text-slate-700 dark:text-slate-300 prose prose-lg max-w-none">
+                    <p>This application is designed to provide a minimalist, aesthetic, and mobile-responsive platform for mastering vocabulary.</p>
+                    <h3 class="text-slate-900 dark:text-white">Core Principles</h3>
+                    <ul>
+                        <li><strong>Categorization:</strong> Words are organized into distinct categories, allowing for focused and systematic learning.</li>
+                        <li><strong>Minimalist Design:</strong> The user interface is clean and uncluttered, removing distractions and allowing you to concentrate on learning.</li>
+                        <li><strong>Active Recall:</strong> Instead of passive review, you are tested on each set of words to strengthen memory retention.</li>
+                    </ul>
+                    <h3 class="text-slate-900 dark:text-white">Features</h3>
+                    <ul>
+                        <li>Category-based learning modules.</li>
+                        <li>Progress tracking and performance dashboard.</li>
+                        <li>Fully searchable dictionary of all words.</li>
+                        <li>Text-to-speech for pronunciation.</li>
+                        <li>Light and Dark mode support.</li>
+                    </ul>
                 </div>
-                <h2 class="text-3xl font-bold text-indigo-800 dark:text-indigo-300 mb-6 text-center flex items-center justify-center"><i data-lucide="info" class="w-8 h-8 mr-3"></i>About This App</h2>
-                <div class="space-y-4 text-slate-700 dark:text-slate-300">
-                  <p class="text-lg">This application is built to help students master the 333 essential GRE vocabulary words using proven cognitive science principles.</p>
-                  
-                  <h3 class="text-2xl font-semibold text-slate-800 dark:text-slate-100 pt-4">Core Learning Method</h3>
-                  <p>Our system is based on two key ideas:</p>
-                  <ul class="list-disc list-inside space-y-2 pl-4">
-                    <li><strong>Chunking:</strong> We break the 333 words into small, 10-word lessons. This prevents you from being overwhelmed.</li>
-                    <li><strong>Active Recall:</strong> Instead of just re-reading (passive learning), you are immediately tested on each lesson. This act of pulling information *from* your memory is the single most effective way to build strong, long-term retention.</li>
-                  </ul>
-                  
-                  <h3 class="text-2xl font-semibold text-slate-800 dark:text-slate-100 pt-4">Features</h3>
-                  <ul class="list-disc list-inside space-y-2 pl-4">
-                    <li>Full 333-word GRE vocabulary list.</li>
-                    <li>Progress tracking with a mastery-based system (80% to pass).</li>
-                    <li>Spaced repetition-style "Review All Mastered Words" mode.</li>
-                    <li>Daily random tests to check your retention.</li>
-                    <li>Full searchable dictionary.</li>
-                    <li>English (en-US) pronunciation for every word.</li>
-                    <li>Dark mode support.</li>
-                  </ul>
-                </div>
-              </div>
+            </div>
         </section>
 
         <section id="stats-section" class="app-section">
-            <div class="bg-white dark:bg-slate-800 p-4 sm:p-12 rounded-lg shadow-xl max-w-4xl mx-auto">
-                <h2 class="text-2xl sm:text-3xl font-bold text-indigo-800 dark:text-indigo-300 mb-6 text-center flex items-center justify-center"><i data-lucide="layout-dashboard" class="w-7 h-7 sm:w-8 sm:h-8 mr-3"></i>Your Progress Dashboard</h2>
-
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
-
-                    <!-- Left Column: Streak and Difficult Words -->
-                    <div class="lg:col-span-1 space-y-6 sm:space-y-8">
-                        <!-- Study Streak -->
-                        <div class="bg-slate-50 dark:bg-slate-700 p-4 sm:p-6 rounded-lg border border-slate-200 dark:border-slate-600">
-                            <h3 class="text-lg sm:text-xl font-semibold text-indigo-700 dark:text-indigo-300 mb-4 text-center">Study Streak</h3>
-                            <div id="streak-display" class="text-center">
-                                <p class="text-5xl sm:text-6xl font-bold text-green-600">5</p>
-                                <p class="text-sm sm:text-base text-slate-600 dark:text-slate-400">Day Streak</p>
-                            </div>
-                            <div id="calendar-container" class="mt-4">
-                                <!-- Calendar will be generated here -->
-                            </div>
+             <div class="max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-8 text-center">Your Dashboard</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 sm:gap-8">
+                    <div class="lg:col-span-2 space-y-6">
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+                            <h3 class="text-lg font-semibold text-slate-700 dark:text-slate-300 mb-4 text-center">Study Streak</h3>
+                             <div id="streak-display" class="text-center"></div>
+                             <div id="calendar-container" class="mt-4"></div>
                         </div>
-
-                        <!-- Difficult Words -->
-                        <div class="bg-slate-50 dark:bg-slate-700 p-4 sm:p-6 rounded-lg border border-slate-200 dark:border-slate-600">
-                            <h3 class="text-lg sm:text-xl font-semibold text-red-700 dark:text-red-400 mb-4 text-center">Top 20 Difficult Words</h3>
-                            <div id="difficult-words-list" class="space-y-3">
-                                <!-- Difficult words will be listed here -->
-                            </div>
-                             <button id="create-test-button" class="w-full bg-red-600 text-white text-lg font-bold py-3 rounded-lg shadow-lg hover:bg-red-700 transition-transform transform hover:scale-105 duration-200 flex items-center justify-center mt-4">
-                                <i data-lucide="file-plus-2" class="w-5 h-5 mr-2"></i>Create Test with These Words
+                         <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+                            <h3 class="text-lg font-semibold text-red-700 dark:text-red-400 mb-4 text-center">Difficult Words</h3>
+                            <div id="difficult-words-list" class="space-y-3 max-h-80 overflow-y-auto"></div>
+                             <button id="create-test-button" class="w-full bg-red-600 text-white font-bold py-2 rounded-lg shadow hover:bg-red-700 transition-transform transform hover:scale-105 duration-200 flex items-center justify-center mt-4 text-sm">
+                                <i data-lucide="file-plus-2" class="w-4 h-4 mr-2"></i>Create Test
                             </button>
                         </div>
                     </div>
-
-                    <!-- Right Column: Mastery Breakdown -->
-                    <div class="lg:col-span-2 bg-slate-50 dark:bg-slate-700 p-4 sm:p-6 rounded-lg border border-slate-200 dark:border-slate-600 flex flex-col justify-center items-center">
-                        <h3 class="text-lg sm:text-xl font-semibold text-indigo-700 dark:text-indigo-300 mb-4 text-center">Mastery Breakdown</h3>
-                        <div class="w-full max-w-xs sm:max-w-sm mx-auto">
+                    <div class="lg:col-span-3 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md flex flex-col justify-center items-center">
+                         <h3 class="text-lg font-semibold text-slate-700 dark:text-slate-300 mb-4 text-center">Mastery Breakdown</h3>
+                        <div class="w-full max-w-md mx-auto">
                             <canvas id="mastery-chart"></canvas>
                         </div>
                     </div>
-
                 </div>
             </div>
         </section>
 
     </main>
-    <footer class="bg-slate-800 dark:bg-slate-950 text-slate-400 mt-12 py-8 border-t border-slate-700">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center text-center sm:text-left">
-          <p class="text-sm">&copy; 2025 GRE 333 Learning System. All rights reserved.</p>
-          <nav class="flex space-x-4 mt-4 sm:mt-0">
-            <button id="footer-menu-button" class="text-sm hover:text-indigo-300 transition-colors">Main Menu</button>
-            <button id="footer-about-button" class="text-sm hover:text-indigo-300 transition-colors">About</button>
-          </nav>
+    <footer class="bg-white dark:bg-gray-800/80 mt-12 py-6 border-t border-slate-200 dark:border-gray-700">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-slate-500 dark:text-slate-400">
+          <p>&copy; 2024 E-Preparation. All rights reserved.</p>
         </div>
     </footer>
 
+    <section id="recentgk-section" class="app-section">
+        <div class="max-w-xl mx-auto text-center">
+            <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-4">Recent GK</h2>
+            <p id="recentgk-total-questions" class="text-lg text-slate-600 dark:text-slate-400 mb-8"></p>
+            <div class="space-y-4">
+                <button id="practice-mode-button" class="w-full max-w-xs mx-auto bg-sky-600 text-white text-lg font-bold py-3 rounded-lg shadow-md hover:bg-sky-700 transition-transform transform hover:scale-105 duration-200">Practice Mode</button>
+                <div class="max-w-xs mx-auto">
+                    <label for="test-question-count" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Number of questions for the test:</label>
+                    <input type="number" id="test-question-count" class="w-full p-2 border border-slate-300 dark:border-gray-600 rounded-md" value="10" min="1">
+                </div>
+                <button id="test-mode-button" class="w-full max-w-xs mx-auto bg-indigo-600 text-white text-lg font-bold py-3 rounded-lg shadow-md hover:bg-indigo-700 transition-transform transform hover:scale-105 duration-200">Test Mode</button>
+            </div>
+        </div>
+    </section>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="script.js"></script>
 </body>

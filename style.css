@@ -3,39 +3,18 @@ body {
     font-family: 'Inter', sans-serif;
 }
 
-/* --- Bengali Font --- */
 .lang-bn {
     font-family: 'Hind Siliguri', sans-serif;
 }
 
-/* --- APP SECTIONS --- */
 .app-section {
     display: none;
 }
 .app-section.active {
     display: block;
+    animation: fadeIn 0.5s ease-out forwards;
 }
 
-/* --- QUIZ BUTTON FEEDBACK --- */
-.quiz-option-button.correct {
-    background-color: #dcfce7; /* green-100 */
-    border-color: #4ade80; /* green-400 */
-}
-.dark .quiz-option-button.correct {
-    background-color: #166534; /* green-800 */
-    border-color: #22c55e; /* green-500 */
-}
-
-.quiz-option-button.incorrect {
-    background-color: #fee2e2; /* red-100 */
-    border-color: #f87171; /* red-400 */
-}
-.dark .quiz-option-button.incorrect {
-    background-color: #991b1b; /* red-800 */
-    border-color: #ef4444; /* red-500 */
-}
-
-/* --- NEW: STAGGERED FADE-IN ANIMATION --- */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -47,47 +26,39 @@ body {
     }
 }
 
-.fade-in-card {
-    animation: fadeIn 0.5s ease-out forwards;
-    opacity: 0; /* Start hidden */
+/* --- QUIZ BUTTON FEEDBACK --- */
+.quiz-option-button.correct {
+    background-color: #dcfce7 !important; /* green-100 */
+    border-color: #4ade80 !important; /* green-400 */
+    color: #166534 !important; /* green-800 */
+}
+.dark .quiz-option-button.correct {
+    background-color: #166534 !important; /* green-800 */
+    border-color: #22c55e !important; /* green-500 */
+    color: #f0fdf4 !important; /* green-50 */
 }
 
-/* --- NEW: Professional Definition Styling --- */
-.definition-block {
-    border-left: 3px solid #4f46e5; /* indigo-600 */
-    padding-left: 1rem;
+.quiz-option-button.incorrect {
+    background-color: #fee2e2 !important; /* red-100 */
+    border-color: #f87171 !important; /* red-400 */
+     color: #991b1b !important; /* red-800 */
+}
+.dark .quiz-option-button.incorrect {
+    background-color: #991b1b !important; /* red-800 */
+    border-color: #ef4444 !important; /* red-500 */
+    color: #fef2f2 !important; /* red-50 */
 }
 
-.dark .definition-block {
-    border-left-color: #818cf8; /* indigo-400 */
+.prose {
+  color: #374151;
 }
-
-.definition-title {
-    font-size: 0.8rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    color: #475569; /* slate-600 */
-    margin-bottom: 0.25rem;
-    letter-spacing: 0.05em;
+.dark .prose {
+  color: #d1d5db;
 }
-
-.dark .definition-title {
-    color: #94a3b8; /* slate-400 */
+.prose h3 {
+  color: #111827;
+  font-weight: 600;
 }
-
-.definition-content {
-    color: #1e293b; /* slate-800 */
-}
-
-.dark .definition-content {
-    color: #e2e8f0; /* slate-200 */
-}
-
-/* --- UI/UX Improvements --- */
-header {
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-}
-
-#create-test-button:hover {
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+.dark .prose h3 {
+    color: #f9fafb;
 }
