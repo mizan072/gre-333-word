@@ -2,12 +2,14 @@
 const WORDS_PER_CHUNK = 10;
 const SAVE_KEY_WORDS_GRE = 'eprepGreWords';
 const SAVE_KEY_WORDS_PREVIOUS = 'eprepPreviousWords';
+const SAVE_KEY_WORDS_RECENTGK = 'eprepRecentGkWords';
 const DARK_MODE_KEY = 'eprepDarkMode';
 const STUDY_HISTORY_KEY = 'eprepStudyHistory';
 
 let vocabData = {
     gre: { list: [], words: [] },
-    previous: { list: [], words: [] }
+    previous: { list: [], words: [] },
+    recentgk: { list: [], words: [] }
 };
 
 let currentCategory = 'gre'; // Default category
@@ -27,7 +29,8 @@ const sections = {
     results: document.getElementById('results-section'),
     dictionary: document.getElementById('dictionary-section'),
     stats: document.getElementById('stats-section'),
-    about: document.getElementById('about-section')
+    about: document.getElementById('about-section'),
+    recentgk: document.getElementById('recentgk-section')
 };
 
 // Header & Nav
@@ -111,7 +114,8 @@ function loadWelcome() {
     // Define categories
     const categories = [
         { id: 'gre', title: 'GRE 333', description: 'The essential 333 high-frequency words for the GRE.' },
-        { id: 'previous', title: 'Previous Vocabulary', description: 'A supplementary vocabulary list for comprehensive learning.' }
+        { id: 'previous', title: 'Previous Vocabulary', description: 'A supplementary vocabulary list for comprehensive learning.' },
+        { id: 'recentgk', title: 'Recent GK', description: 'A collection of recent general knowledge questions.' }
     ];
 
     categories.forEach(cat => {
@@ -132,15 +136,20 @@ function loadWelcome() {
             </div>
             <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 text-right">${masteredCount} / ${totalCount} Mastered</p>
         `;
-
+        
         card.addEventListener('click', () => {
             currentCategory = cat.id;
-            const nextChunkIndex = Math.floor(masteredCount / WORDS_PER_CHUNK);
-            if (nextChunkIndex * WORDS_PER_CHUNK >= totalCount) {
-                alert("Congratulations! You've completed all lessons in this category.");
-                return;
+            if (cat.id === 'recentgk') {
+                document.getElementById('recentgk-total-questions').textContent = `Total Questions: ${totalCount}`;
+                showSection('recentgk');
+            } else {
+                const nextChunkIndex = Math.floor(masteredCount / WORDS_PER_CHUNK);
+                if (nextChunkIndex * WORDS_PER_CHUNK >= totalCount) {
+                    alert("Congratulations! You've completed all lessons in this category.");
+                    return;
+                }
+                loadLearnSection(nextChunkIndex);
             }
-            loadLearnSection(nextChunkIndex);
         });
 
         categoryContainer.appendChild(card);
@@ -158,7 +167,7 @@ function loadLearnSection(chunkIndex) {
     catData.currentChunkIndex = chunkIndex;
 
     learnHeader.textContent = `${catData.list.length > 0 ? catData.title : ''} Words ${start + 1}-${end}`;
-    learnContainer.innerHTML = '';
+    learnContainer.innerHTML = ''; 
 
     wordsInCurrentChunk.forEach((word, index) => {
         const card = document.createElement('div');
@@ -216,7 +225,21 @@ function loadQuestion() {
     quizQuestion.textContent = '';
     quizQuestionBengali.textContent = '';
     
-    const currentWord = wordsInCurrentChunk[currentQuizQuestionIndex];
+    const currentItem = wordsInCurrentChunk[currentQuizQuestionIndex];
+
+    if (currentCategory === 'recentgk') {
+        quizQuestion.textContent = '';
+        quizQuestionBengali.textContent = currentItem.question;
+        const options = currentItem.options;
+        shuffleArray(options);
+        options.forEach(option => {
+            createOptionButton(option, option === currentItem.answer);
+        });
+        updateQuizStats();
+        return;
+    }
+
+    const currentWord = currentItem;
     const hasSynonym = currentWord.english && currentWord.english.trim() !== '';
 
     const quizType = !hasSynonym
@@ -386,7 +409,9 @@ function showQuizComplete() {
 // --- 4. DATA & PROGRESS MANAGEMENT ---
 
 function getSaveKey(category) {
-    return category === 'gre' ? SAVE_KEY_WORDS_GRE : SAVE_KEY_WORDS_PREVIOUS;
+    if (category === 'gre') return SAVE_KEY_WORDS_GRE;
+    if (category === 'previous') return SAVE_KEY_WORDS_PREVIOUS;
+    if (category === 'recentgk') return SAVE_KEY_WORDS_RECENTGK;
 }
 
 function loadProgress() {
@@ -534,7 +559,7 @@ function renderDifficultWords() {
         createTestButton.style.display = 'none';
         return;
     }
-
+    
     difficultWordsList.innerHTML = sortedWords.map(word => `
         <div class="flex justify-between items-center text-sm">
             <span class="font-semibold text-slate-700 dark:text-slate-300">${word.word}</span>
@@ -561,7 +586,7 @@ function calculateStudyStreak() {
     const today = new Date();
     const lastStudyDay = new Date(studyHistory[0]);
     if ((today.getTime() - lastStudyDay.getTime()) / (1000 * 3600 * 24) > 1.5) return 0;
-
+    
     let streak = 1;
     let currentDay = lastStudyDay;
     for (let i = 1; i < studyHistory.length; i++) {
@@ -610,19 +635,76 @@ function renderCalendar() {
     container.innerHTML = html;
 }
 
+function startPracticeMode() {
+    wordsInCurrentChunk = [...vocabData.recentgk.list];
+    currentQuizQuestionIndex = 0;
+    loadPracticeQuestion();
+    showSection('test'); 
+}
+
+function loadPracticeQuestion() {
+    if (currentQuizQuestionIndex >= wordsInCurrentChunk.length) {
+        alert("You have completed all practice questions!");
+        loadWelcome();
+        return;
+    }
+
+    isAnswered = false;
+    feedbackContainer.style.display = 'none';
+    quizOptionsContainer.innerHTML = '';
+    quizQuestion.textContent = '';
+    quizQuestionBengali.textContent = wordsInCurrentChunk[currentQuizQuestionIndex].question;
+
+    const currentQuestion = wordsInCurrentChunk[currentQuizQuestionIndex];
+    const options = currentQuestion.options;
+    options.forEach(option => {
+        createOptionButton(option, option === currentQuestion.answer);
+    });
+
+    quizProgressText.textContent = `Practice Question ${currentQuizQuestionIndex + 1} of ${wordsInCurrentChunk.length}`;
+    quizProgressBar.style.width = `${((currentQuizQuestionIndex) / wordsInCurrentChunk.length) * 100}%`;
+}
+
+function startTestMode() {
+    const questionCountInput = document.getElementById('test-question-count');
+    let numQuestions = parseInt(questionCountInput.value, 10);
+
+    if (isNaN(numQuestions) || numQuestions <= 0) {
+        alert("Please enter a valid number of questions.");
+        return;
+    }
+
+    const allGkQuestions = [...vocabData.recentgk.list];
+    if (numQuestions > allGkQuestions.length) {
+        alert(`You can't have a test with more than ${allGkQuestions.length} questions.`);
+        numQuestions = allGkQuestions.length;
+        questionCountInput.value = numQuestions;
+    }
+    
+    shuffleArray(allGkQuestions);
+    wordsInCurrentChunk = allGkQuestions.slice(0, numQuestions);
+    
+    currentCategory = 'recentgk'; // Ensure category is set for the test
+    startTest(); // Re-use the existing test logic
+}
+
+
 // --- 6. EVENT LISTENERS ---
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        const [greResponse, preVocabResponse] = await Promise.all([
+        const [greResponse, preVocabResponse, recentGkResponse] = await Promise.all([
             fetch('vocabulary.json'),
-            fetch('pre-vocabulary.json')
+            fetch('pre-vocabulary.json'),
+            fetch('recentgk.json')
         ]);
-        if (!greResponse.ok || !preVocabResponse.ok) throw new Error(`HTTP error!`);
-
+        if (!greResponse.ok || !preVocabResponse.ok || !recentGkResponse.ok) throw new Error(`HTTP error!`);
+        
         vocabData.gre.list = await greResponse.json();
         vocabData.gre.title = "GRE 333";
         vocabData.previous.list = await preVocabResponse.json();
         vocabData.previous.title = "Previous Vocabulary";
+        vocabData.recentgk.list = await recentGkResponse.json();
+        vocabData.recentgk.title = "Recent GK";
 
         loadDarkModeState();
         loadProgress();
@@ -635,19 +717,28 @@ document.addEventListener('DOMContentLoaded', async () => {
         statsButton.addEventListener('click', loadStatsPage);
         aboutButton.addEventListener('click', () => showSection('about'));
         darkModeToggle.addEventListener('click', toggleDarkMode);
-
+        
         // Mobile Nav
         mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
         mobileMainMenuButton.addEventListener('click', loadWelcome);
         mobileDictionaryButton.addEventListener('click', () => showSection('dictionary'));
         mobileStatsButton.addEventListener('click', loadStatsPage);
         mobileAboutButton.addEventListener('click', () => showSection('about'));
-
+        
         resetProgressButton.addEventListener('click', resetProgress);
         document.getElementById('create-test-button').addEventListener('click', createDifficultWordsTest);
         startTestButton.addEventListener('click', startTest);
-        nextQuestionButton.addEventListener('click', loadQuestion);
+        nextQuestionButton.addEventListener('click', () => {
+            if (currentCategory === 'recentgk' && document.getElementById('quiz-progress-text').textContent.includes('Practice')) {
+                loadPracticeQuestion();
+            } else {
+                loadQuestion();
+            }
+        });
         searchBar.addEventListener('input', filterDictionary);
+
+        document.getElementById('practice-mode-button').addEventListener('click', startPracticeMode);
+        document.getElementById('test-mode-button').addEventListener('click', startTestMode);
 
         document.body.addEventListener('click', (event) => {
             const speakButton = event.target.closest('.speak-button');
