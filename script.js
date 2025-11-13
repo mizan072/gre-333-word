@@ -176,6 +176,23 @@ function loadWelcome() {
     showSection('welcome');
 }
 
+function resetQuizState() {
+    isAnswered = false;
+    selectedTestAnswer = null;
+    feedbackContainer.style.display = 'none';
+    quizOptionsContainer.innerHTML = '';
+    quizQuestion.textContent = '';
+    quizQuestionBengali.textContent = '';
+    
+    // Reset and enable the next button
+    nextQuestionButton.disabled = false;
+    nextQuestionButton.classList.remove('opacity-50', 'cursor-not-allowed');
+    if (isTestMode) {
+        nextQuestionButton.disabled = true;
+        nextQuestionButton.classList.add('opacity-50', 'cursor-not-allowed');
+    }
+}
+
 function loadLearnSection(chunkIndex) {
     const catData = vocabData[currentCategory];
     const start = chunkIndex * WORDS_PER_CHUNK;
@@ -236,17 +253,9 @@ function loadQuestion() {
         showQuizComplete();
         return;
     }
-
-    isAnswered = false;
-    selectedTestAnswer = null;
-    feedbackContainer.style.display = 'none';
-    quizOptionsContainer.innerHTML = '';
-    quizQuestion.textContent = '';
-    quizQuestionBengali.textContent = '';
+    resetQuizState();
 
     if (isTestMode) {
-        nextQuestionButton.disabled = true;
-        nextQuestionButton.classList.add('opacity-50', 'cursor-not-allowed');
         if (currentQuizQuestionIndex === wordsInCurrentChunk.length - 1) {
             nextQuestionButton.innerHTML = 'Finish Test <i data-lucide="check-circle" class="w-5 h-5 ml-2"></i>';
         } else {
@@ -333,7 +342,7 @@ function createOptionButton(text, isCorrect) {
     const button = document.createElement('button');
     button.dataset.correct = isCorrect;
     button.innerHTML = `<span class="font-medium text-lg">${text}</span>`;
-    button.className = "option-card w-full text-left p-4 bg-white dark:bg-gray-700 border-2 border-slate-200 dark:border-gray-600 rounded-lg shadow-sm hover:bg-slate-100 dark:hover:bg-gray-600/70 transition-all duration-150 transform active:scale-95";
+    button.className = "option-card w-full text-left p-4 bg-white dark:bg-gray-700 border-2 border-slate-200 dark:border-gray-600 rounded-lg shadow-sm transition-all duration-150 transform active:scale-95";
     button.addEventListener('click', () => {
         if (isTestMode) {
             handleTestSelection(button);
@@ -373,9 +382,11 @@ function checkAnswer(selectedButton) {
 
     if (isCorrect) {
         quizScores.correct++;
-        feedbackText.textContent = "Correct!";
-        feedbackText.className = "text-2xl font-semibold text-green-600 dark:text-green-400";
-        feedbackCorrectAnswer.textContent = '';
+        if (!isTestMode) {
+            feedbackText.textContent = "Correct!";
+            feedbackText.className = "text-2xl font-semibold text-green-600 dark:text-green-400";
+            feedbackCorrectAnswer.textContent = '';
+        }
         if (wordInMasterList) {
             wordInMasterList.strength = Math.min(12, wordInMasterList.strength + 1);
             wordInMasterList.lastReviewed = new Date().toISOString();
@@ -384,10 +395,12 @@ function checkAnswer(selectedButton) {
         quizScores.incorrect++;
         missedWords.push(currentWord);
         selectedButton.classList.add('wrong-ui');
-        feedbackText.textContent = "Incorrect";
-        feedbackText.className = "text-2xl font-semibold text-red-600 dark:text-red-400";
-        const correctAnswerText = currentWord.english ? `${currentWord.word} (${currentWord.english})` : `${currentWord.word} (${currentWord.bengali})`;
-        feedbackCorrectAnswer.textContent = `Correct: ${correctAnswerText}`;
+        if (!isTestMode) {
+            feedbackText.textContent = "Incorrect";
+            feedbackText.className = "text-2xl font-semibold text-red-600 dark:text-red-400";
+            const correctAnswerText = currentWord.english ? `${currentWord.word} (${currentWord.english})` : `${currentWord.word} (${currentWord.bengali})`;
+            feedbackCorrectAnswer.textContent = `Correct: ${correctAnswerText}`;
+        }
         if (wordInMasterList) {
             wordInMasterList.strength = Math.max(0, wordInMasterList.strength - 2);
             wordInMasterList.missedCount = (wordInMasterList.missedCount || 0) + 1;
@@ -409,7 +422,6 @@ function gradeTestAnswer() {
     // Show feedback visually after grading
     const allButtons = quizOptionsContainer.querySelectorAll('.option-card');
     allButtons.forEach(button => {
-        button.classList.add('disabled');
         if (button.dataset.correct === 'true') {
             button.classList.add('correct-ui');
         }
@@ -722,11 +734,8 @@ function loadPracticeQuestion() {
         loadWelcome();
         return;
     }
+    resetQuizState();
 
-    isAnswered = false;
-    feedbackContainer.style.display = 'none';
-    quizOptionsContainer.innerHTML = '';
-    quizQuestion.textContent = '';
     quizQuestionBengali.textContent = wordsInCurrentChunk[currentQuizQuestionIndex].question;
 
     const currentQuestion = wordsInCurrentChunk[currentQuizQuestionIndex];
@@ -811,11 +820,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         nextQuestionButton.addEventListener('click', () => {
             if (isTestMode) {
                 if (!selectedTestAnswer) return;
+                isAnswered = true; // Prevent further clicks during feedback
+                
+                // Disable button immediately to prevent multiple clicks
+                nextQuestionButton.disabled = true;
+                nextQuestionButton.classList.add('opacity-50', 'cursor-not-allowed');
+
                 gradeTestAnswer();
-                setTimeout(() => loadQuestion(), 1200);
-            } else if (currentCategory === 'recentgk' && !isTestMode) { // Practice Mode
+                setTimeout(() => {
+                    loadQuestion();
+                }, 1200);
+            } else if (currentCategory === 'recentgk' && !isTestMode) {
                 loadPracticeQuestion();
-            } else { // Standard vocab test
+            } else {
                 loadQuestion();
             }
         });
@@ -824,7 +841,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('practice-mode-button').addEventListener('click', startPracticeMode);
         document.getElementById('test-mode-button').addEventListener('click', startTestMode);
 
-        document.getElementById('back-to-categories-test').addEventListener('click', loadWelcome);
+        const confirmAndLoadWelcome = () => {
+            if (confirm("Are you sure you want to exit? Your current progress will be lost.")) {
+                loadWelcome();
+            }
+        };
+
+        document.getElementById('back-to-categories-test').addEventListener('click', confirmAndLoadWelcome);
         document.getElementById('back-to-categories-results').addEventListener('click', loadWelcome);
 
         document.getElementById('gk-limit-buttons').addEventListener('click', (event) => {
