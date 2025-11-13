@@ -696,7 +696,7 @@ function loadPracticeQuestion() {
 function startTestMode() {
     const activeLimitButton = document.querySelector('#gk-limit-buttons .limit-btn.active');
     const limit = activeLimitButton.dataset.limit;
-
+    
     let numQuestions;
     const allGkQuestions = [...vocabData.recentgk.list];
 
