@@ -18,6 +18,8 @@ let currentQuizQuestionIndex = 0;
 let quizScores = { correct: 0, incorrect: 0 };
 let missedWords = [];
 let isAnswered = false;
+let isTestMode = false;
+let selectedTestAnswer = null;
 let masteryChart = null;
 
 // --- 2. DOM ELEMENTS ---
@@ -113,9 +115,9 @@ function loadWelcome() {
     
     // Define categories
     const categories = [
-        { id: 'gre', title: 'GRE 333', description: 'The essential 333 high-frequency words for the GRE.' },
-        { id: 'previous', title: 'Previous Vocabulary', description: 'A supplementary vocabulary list for comprehensive learning.' },
-        { id: 'recentgk', title: 'Recent GK', description: 'A collection of recent general knowledge questions.' }
+        { id: 'gre', title: 'GRE 333', description: 'The essential 333 high-frequency words for the GRE.', bn_description: 'চাকরির পরীক্ষার জন্য অপরিহার্য ৩৩৩টি হাই-ফ্রিকোয়েন্সি ইংরেজি শব্দ।', icon: 'graduation-cap' },
+        { id: 'previous', title: 'Previous Vocabulary', description: 'A supplementary vocabulary list for comprehensive learning.', bn_description: 'বিগত ১৫ বছরের ব্যাংক ও বিসিএস পরীক্ষার প্রশ্ন থেকে বাছাইকৃত শব্দভাণ্ডার।', icon: 'history' },
+        { id: 'recentgk', title: 'Recent GK', description: 'A collection of recent general knowledge questions.', bn_description: 'দৈনিক পত্রিকা থেকে সংগৃহীত সাম্প্রতিক সাধারণ জ্ঞানের নিয়মিত আপডেট।', icon: 'newspaper' }
     ];
 
     categories.forEach(cat => {
@@ -125,13 +127,19 @@ function loadWelcome() {
         const percentage = totalCount > 0 ? Math.round((masteredCount / totalCount) * 100) : 0;
 
         const card = document.createElement('div');
-        card.className = "bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-xl hover:scale-[1.02] transition-all duration-300 cursor-pointer";
+        card.className = "bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-xl hover:scale-[1.02] transition-all duration-300 cursor-pointer flex flex-col";
         card.dataset.category = cat.id;
 
         card.innerHTML = `
-            <h3 class="text-xl font-bold text-slate-900 dark:text-white">${cat.title}</h3>
-            <p class="text-slate-600 dark:text-slate-400 mt-1 mb-4">${cat.description}</p>
-            <div class="w-full bg-slate-200 dark:bg-gray-700 rounded-full h-2.5">
+            <div class="flex-grow">
+                <div class="flex items-center mb-4">
+                    <i data-lucide="${cat.icon}" class="w-8 h-8 text-indigo-500 dark:text-indigo-400 mr-4"></i>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white">${cat.title}</h3>
+                </div>
+                <p class="text-slate-600 dark:text-slate-400 mt-1 mb-2 text-sm">${cat.description}</p>
+                <p class="lang-bn text-slate-600 dark:text-slate-400 mt-1 mb-4 text-sm">${cat.bn_description}</p>
+            </div>
+            <div class="w-full bg-slate-200 dark:bg-gray-700 rounded-full h-2.5 mt-auto">
                 <div class="bg-indigo-600 h-2.5 rounded-full" style="width: ${percentage}%"></div>
             </div>
             <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 text-right">${masteredCount} / ${totalCount} Mastered</p>
@@ -155,6 +163,7 @@ function loadWelcome() {
         categoryContainer.appendChild(card);
     });
 
+    lucide.createIcons();
     showSection('welcome');
 }
 
@@ -220,6 +229,7 @@ function loadQuestion() {
     }
 
     isAnswered = false;
+    selectedTestAnswer = null;
     feedbackContainer.style.display = 'none';
     quizOptionsContainer.innerHTML = '';
     quizQuestion.textContent = '';
@@ -298,9 +308,22 @@ function createOptionButton(text, isCorrect) {
     const button = document.createElement('button');
     button.dataset.correct = isCorrect;
     button.innerHTML = `<span class="font-medium text-lg">${text}</span>`;
-    button.className = "quiz-option-button w-full text-left p-4 bg-white dark:bg-gray-700 border-2 border-slate-200 dark:border-gray-600 rounded-lg shadow-sm hover:bg-slate-100 dark:hover:bg-gray-600/70 transition-all duration-150 transform active:scale-95";
-    button.addEventListener('click', () => checkAnswer(button));
+    button.className = "option-card w-full text-left p-4 bg-white dark:bg-gray-700 border-2 border-slate-200 dark:border-gray-600 rounded-lg shadow-sm hover:bg-slate-100 dark:hover:bg-gray-600/70 transition-all duration-150 transform active:scale-95";
+    button.addEventListener('click', () => {
+        if (isTestMode) {
+            handleTestSelection(button);
+        } else {
+            checkAnswer(button);
+        }
+    });
     quizOptionsContainer.appendChild(button);
+}
+
+function handleTestSelection(selectedButton) {
+    const allButtons = quizOptionsContainer.querySelectorAll('.option-card');
+    allButtons.forEach(btn => btn.classList.remove('selected-test'));
+    selectedButton.classList.add('selected-test');
+    selectedTestAnswer = selectedButton;
 }
 
 function checkAnswer(selectedButton) {
@@ -308,16 +331,18 @@ function checkAnswer(selectedButton) {
     isAnswered = true;
 
     const isCorrect = selectedButton.dataset.correct === 'true';
-    const allButtons = quizOptionsContainer.querySelectorAll('button');
+    const allButtons = quizOptionsContainer.querySelectorAll('.option-card');
     const currentWord = wordsInCurrentChunk[currentQuizQuestionIndex];
     const wordInMasterList = vocabData[currentCategory].words.find(w => w.id === currentWord.id);
 
-    allButtons.forEach(button => {
-        button.disabled = true;
-        if (button.dataset.correct === 'true') {
-            button.classList.add('correct');
-        }
-    });
+    if (!isTestMode) {
+        allButtons.forEach(button => {
+            button.classList.add('disabled');
+            if (button.dataset.correct === 'true') {
+                button.classList.add('correct-ui');
+            }
+        });
+    }
 
     if (isCorrect) {
         quizScores.correct++;
@@ -331,7 +356,7 @@ function checkAnswer(selectedButton) {
     } else {
         quizScores.incorrect++;
         missedWords.push(currentWord);
-        selectedButton.classList.add('incorrect');
+        selectedButton.classList.add('wrong-ui');
         feedbackText.textContent = "Incorrect";
         feedbackText.className = "text-2xl font-semibold text-red-600 dark:text-red-400";
         const correctAnswerText = currentWord.english ? `${currentWord.word} (${currentWord.english})` : `${currentWord.word} (${currentWord.bengali})`;
@@ -343,8 +368,16 @@ function checkAnswer(selectedButton) {
     }
 
     currentQuizQuestionIndex++;
-    feedbackContainer.style.display = 'block';
+    if (!isTestMode) {
+        feedbackContainer.style.display = 'block';
+    }
     updateQuizStats();
+    selectedTestAnswer = null; // Reset for next question
+}
+
+function gradeTestAnswer() {
+    if (!selectedTestAnswer) return;
+    checkAnswer(selectedTestAnswer);
 }
 
 function updateQuizStats() {
@@ -574,6 +607,7 @@ function createDifficultWordsTest() {
     if (difficultWords.length > 0) {
         wordsInCurrentChunk = difficultWords;
         currentCategory = 'special'; // Special category for this test
+        isTestMode = false;
         startTest();
     }
 }
@@ -636,6 +670,7 @@ function renderCalendar() {
 }
 
 function startPracticeMode() {
+    isTestMode = false;
     wordsInCurrentChunk = [...vocabData.recentgk.list];
     currentQuizQuestionIndex = 0;
     loadPracticeQuestion();
@@ -666,25 +701,28 @@ function loadPracticeQuestion() {
 }
 
 function startTestMode() {
-    const questionCountInput = document.getElementById('test-question-count');
-    let numQuestions = parseInt(questionCountInput.value, 10);
+    const activeLimitButton = document.querySelector('#gk-limit-buttons .limit-btn.active');
+    const limit = activeLimitButton.dataset.limit;
 
-    if (isNaN(numQuestions) || numQuestions <= 0) {
-        alert("Please enter a valid number of questions.");
-        return;
+    let numQuestions;
+    const allGkQuestions = [...vocabData.recentgk.list];
+
+    if (limit === 'all') {
+        numQuestions = allGkQuestions.length;
+    } else {
+        numQuestions = parseInt(limit, 10);
     }
 
-    const allGkQuestions = [...vocabData.recentgk.list];
     if (numQuestions > allGkQuestions.length) {
-        alert(`You can't have a test with more than ${allGkQuestions.length} questions.`);
         numQuestions = allGkQuestions.length;
-        questionCountInput.value = numQuestions;
     }
     
     shuffleArray(allGkQuestions);
     wordsInCurrentChunk = allGkQuestions.slice(0, numQuestions);
     
     currentCategory = 'recentgk'; // Ensure category is set for the test
+    isTestMode = true;
+    selectedTestAnswer = null;
     startTest(); // Re-use the existing test logic
 }
 
@@ -727,11 +765,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         resetProgressButton.addEventListener('click', resetProgress);
         document.getElementById('create-test-button').addEventListener('click', createDifficultWordsTest);
-        startTestButton.addEventListener('click', startTest);
+        startTestButton.addEventListener('click', () => {
+            isTestMode = false;
+            startTest();
+        });
         nextQuestionButton.addEventListener('click', () => {
-            if (currentCategory === 'recentgk' && document.getElementById('quiz-progress-text').textContent.includes('Practice')) {
+            if (isTestMode) {
+                if (!selectedTestAnswer) {
+                    alert("Please select an answer before proceeding.");
+                    return;
+                }
+                gradeTestAnswer();
+                loadQuestion();
+            } else if (currentCategory === 'recentgk' && !isTestMode) { // Practice Mode
                 loadPracticeQuestion();
-            } else {
+            } else { // Standard vocab test
                 loadQuestion();
             }
         });
@@ -739,6 +787,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         document.getElementById('practice-mode-button').addEventListener('click', startPracticeMode);
         document.getElementById('test-mode-button').addEventListener('click', startTestMode);
+
+        document.getElementById('gk-limit-buttons').addEventListener('click', (event) => {
+            if (event.target.classList.contains('limit-btn')) {
+                document.querySelectorAll('#gk-limit-buttons .limit-btn').forEach(btn => btn.classList.remove('active'));
+                event.target.classList.add('active');
+            }
+        });
 
         document.body.addEventListener('click', (event) => {
             const speakButton = event.target.closest('.speak-button');
