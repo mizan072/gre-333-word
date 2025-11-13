@@ -1,12 +1,27 @@
 /* --- GLOBAL STYLES --- */
 body {
     font-family: 'Inter', sans-serif;
+    -webkit-tap-highlight-color: transparent; /* Disable tap highlight on mobile */
 }
 
 .lang-bn {
     font-family: 'Hind Siliguri', sans-serif;
 }
 
+/* Gradient Text for Headers */
+.gradient-text {
+    background: linear-gradient(to right, #4f46e5, #7c3aed); /* indigo-600 to purple-600 */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.dark .gradient-text {
+    background: linear-gradient(to right, #a5b4fc, #c4b5fd); /* indigo-300 to purple-300 */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+
+/* --- SECTION TRANSITIONS --- */
 .app-section {
     display: none;
 }
@@ -26,53 +41,9 @@ body {
     }
 }
 
-/* --- QUIZ BUTTON FEEDBACK --- */
-.quiz-option-button.correct {
-    background-color: #dcfce7 !important; /* green-100 */
-    border-color: #4ade80 !important; /* green-400 */
-    color: #166534 !important; /* green-800 */
-}
-.dark .quiz-option-button.correct {
-    background-color: #166534 !important; /* green-800 */
-    border-color: #22c55e !important; /* green-500 */
-    color: #f0fdf4 !important; /* green-50 */
-}
-
-.quiz-option-button.incorrect {
-    background-color: #fee2e2 !important; /* red-100 */
-    border-color: #f87171 !important; /* red-400 */
-     color: #991b1b !important; /* red-800 */
-}
-.dark .quiz-option-button.incorrect {
-    background-color: #991b1b !important; /* red-800 */
-    border-color: #ef4444 !important; /* red-500 */
-    color: #fef2f2 !important; /* red-50 */
-}
-
-.prose {
-  color: #374151;
-}
-.dark .prose {
-  color: #d1d5db;
-}
-.prose h3 {
-  color: #111827;
-  font-weight: 600;
-}
-.dark .prose h3 {
-    color: #f9fafb;
-}
-
-body {
-font-family: 'Hind Siliguri', sans-serif;
--webkit-tap-highlight-color: transparent;
-}
-
-/* Animation Classes */
 .fade-in { animation: fadeIn 0.3s ease-in-out; }
 .slide-up { animation: slideUp 0.4s ease-out; }
 
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slideUp { from { transform: translateY(15px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
 .question-slide-in {
@@ -89,66 +60,121 @@ font-family: 'Hind Siliguri', sans-serif;
     }
 }
 
-/* Scrollbar */
-.custom-scrollbar::-webkit-scrollbar { width: 5px; }
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+.dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; }
 
-/* Limit Buttons (Quantity selection) */
+
+/* --- PROSE (ABOUT PAGE) --- */
+.prose {
+  color: #374151;
+}
+.dark .prose {
+  color: #d1d5db;
+}
+.prose h3 {
+  color: #111827;
+  font-weight: 600;
+}
+.dark .prose h3 {
+    color: #f9fafb;
+}
+
+/* --- GK LIMIT BUTTONS --- */
 .limit-btn {
-padding: 10px;
-background: #f8fafc;
-border: 1px solid #e2e8f0;
-border-radius: 8px;
-font-weight: 600;
-color: #64748b;
-font-size: 0.9rem;
-transition: all 0.2s;
+    padding: 8px 12px;
+    background: #f8fafc; /* slate-50 */
+    border: 1px solid #e2e8f0; /* slate-200 */
+    border-radius: 8px;
+    font-weight: 600;
+    color: #64748b; /* slate-500 */
+    font-size: 0.9rem;
+    transition: all 0.2s;
 }
-.limit-btn:hover { background: #f1f5f9; }
+.limit-btn:hover { 
+    background: #f1f5f9; /* slate-100 */
+    border-color: #cbd5e1; /* slate-300 */
+}
 .limit-btn.active {
-background: #334155; /* slate-700 */
-color: white;
-border-color: #334155;
-box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    background: #4f46e5; /* indigo-600 */
+    color: white;
+    border-color: #4f46e5;
+    box-shadow: 0 4px 10px -1px rgba(79, 70, 229, 0.3);
 }
 
-/* Option Cards */
+/* Dark Mode Limit Buttons */
+.dark .limit-btn {
+    background: #1e293b; /* slate-800 */
+    border-color: #334155; /* slate-700 */
+    color: #94a3b8; /* slate-400 */
+}
+.dark .limit-btn:hover {
+    background: #334155; /* slate-700 */
+    border-color: #475569; /* slate-600 */
+}
+.dark .limit-btn.active {
+    background: #6366f1; /* indigo-500 */
+    border-color: #6366f1;
+    color: #f8fafc; /* white */
+    box-shadow: 0 4px 10px -1px rgba(99, 102, 241, 0.3);
+}
+
+
+/* --- QUIZ OPTION CARDS --- */
 .option-card {
-transition: all 0.2s ease;
-border: 2px solid transparent;
-position: relative;
+    transition: all 0.2s ease;
+    border-width: 2px;
+    position: relative;
 }
 .option-card:hover {
-background-color: #f8fafc;
+    background-color: #f8fafc; /* slate-50 */
+    border-color: #e2e8f0; /* slate-200 */
+}
+.dark .option-card:hover {
+    background-color: #1f2937; /* gray-800 */
+    border-color: #374151; /* gray-700 */
 }
 
-/* --- PRACTICE MODE STYLES --- */
+/* --- PRACTICE MODE FEEDBACK --- */
 /* Correct Answer */
 .option-card.correct-ui {
-border-color: #22c55e; background-color: #f0fdf4; color: #15803d;
+    border-color: #22c55e !important; /* green-500 */
+    background-color: #f0fdf4 !important; /* green-50 */
+    color: #15803d !important; /* green-700 */
 }
-.option-card.correct-ui .icon-box {
-background-color: #22c55e; color: white; border-color: #22c55e;
+.dark .option-card.correct-ui {
+    background-color: #064e3b !important; /* green-900 */
+    border-color: #059669 !important; /* green-600 */
+    color: #a7f3d0 !important; /* green-200 */
 }
 
 /* Wrong Answer */
 .option-card.wrong-ui {
-border-color: #ef4444; background-color: #fef2f2; color: #991b1b;
+    border-color: #ef4444 !important; /* red-500 */
+    background-color: #fef2f2 !important; /* red-50 */
+    color: #991b1b !important; /* red-800 */
 }
-.option-card.wrong-ui .icon-box {
-background-color: #ef4444; color: white; border-color: #ef4444;
+.dark .option-card.wrong-ui {
+    background-color: #7f1d1d !important; /* red-900 */
+    border-color: #dc2626 !important; /* red-600 */
+    color: #fecaca !important; /* red-200 */
 }
 
-/* --- TEST MODE STYLES --- */
+/* --- TEST MODE FEEDBACK --- */
 /* Selected (Neutral Blue) */
 .option-card.selected-test {
-border-color: #3b82f6; /* blue-500 */
-background-color: #eff6ff; /* blue-50 */
+    border-color: #3b82f6 !important; /* blue-500 */
+    background-color: #eff6ff !important; /* blue-50 */
 }
-.option-card.selected-test .icon-box {
-background-color: #3b82f6; color: white; border-color: #3b82f6;
+.dark .option-card.selected-test {
+    background-color: #1e3a8a !important; /* blue-900 */
+    border-color: #2563eb !important; /* blue-600 */
+    color: #bfdbfe !important; /* blue-200 */
 }
 
 /* Disable interactions */
-.option-card.disabled { pointer-events: none; }
+.option-card.disabled { 
+    pointer-events: none; 
+}
